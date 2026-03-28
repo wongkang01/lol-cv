@@ -1,1 +1,25 @@
-"""Visualization modules for generating charts, heatmaps, and dashboards."""
+"""
+Visualization modules for charts, heatmaps, and dashboards.
+
+- plots: Static matplotlib/seaborn visualizations (heatmaps, trajectories, bar charts)
+"""
+
+from lol_cv.visualization.plots import (
+    plot_heatmap,
+    plot_trajectory,
+    plot_model_comparison,
+    plot_feature_importance,
+    plot_cluster_scatter,
+    plot_grouping_timeline,
+    plot_ablation_comparison,
+)
+
+__all__ = [
+    "plot_heatmap",
+    "plot_trajectory",
+    "plot_model_comparison",
+    "plot_feature_importance",
+    "plot_cluster_scatter",
+    "plot_grouping_timeline",
+    "plot_ablation_comparison",
+]
