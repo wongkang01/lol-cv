@@ -2,7 +2,7 @@
 
 extraction:
   minimap:
-    model: "yolov12"  # pyLoL's pretrained model
+    model: "yolov12.pt"  # pyLoL's pretrained weights (YOLOv8 architecture)
     confidence: 0.4
     overlap: 0.3
     input_size: 512

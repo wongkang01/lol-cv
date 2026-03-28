@@ -375,3 +375,106 @@ Based on the landscape, here are potential research questions for your project:
 4. "How effectively can modern object detection models (YOLOv10) detect and classify champion positions on the LoL minimap across different game phases?"
 
 5. "Can a multimodal pipeline combining minimap tracking, OCR, and event detection produce a more comprehensive game analysis than any single technique alone?"
+
+---
+
+## 10. Replay File Access & Data Acquisition (Added March 28)
+
+### 10.1 How LoL Replays Work
+
+`.rofl` (Replay OF LoL) files are **not video files** — they contain encrypted game state data that the LoL client reconstructs visually. They are stored at `C:\Users\<user>\Documents\League of Legends\Replays\`.
+
+**Critical constraint**: Replays are **patch-locked** — a replay from patch 15.1 cannot play on patch 15.2. Patches cycle every ~2 weeks, so replays have a short usable window.
+
+### 10.2 Sources of Replay Data
+
+| Source | Type | Availability |
+|--------|------|-------------|
+| **Your own games** | .rofl files | Save from client within current patch |
+| **replays.xyz** | .rofl files | Indexes Challenger matches, archives old client versions |
+| **League of Graphs** | .rofl files | Browse by champion/rank/region |
+| **YouTube VODs** | Video | Pro/ranked spectator footage, no expiry |
+| **DeepLeague dataset** | Labeled images | 100k+ minimap images with bounding boxes |
+| **Roboflow Universe** | Labeled images | 4,468 images (jasperan/league-of-legends-detection) |
+| **TLoL dataset** | Structured data | ~2,488 early-game replays at 4 frames/sec |
+| **Pro match replays** | ❌ Not available | Played on private Tournament Realm |
+
+### 10.3 Practical Data Strategy
+
+1. **Immediate (no replay needed)**: Use YouTube spectator VODs as video input for OCR and VLM analysis. Use DeepLeague/Roboflow datasets for training/testing minimap detection.
+2. **Short-term**: Play/spectate ranked games, save replays within the current patch, extract via pyLoL before patch expires.
+3. **Alternative**: Screen-record spectator mode directly — avoids .rofl format entirely.
+
+pyLoL's pipeline: launches LoL client → plays .rofl → captures minimap frames via screen capture → runs YOLO detection. Requires **Windows + LoL client installed**.
+
+---
+
+## 11. pyLoL Model Details (Added March 28)
+
+### 11.1 Architecture Clarification
+
+The model is branded as "YOLOv12" in the pyLoL README, but the repo pins `ultralytics==8.0.124`, which only supports up to **YOLOv8**. The "v12" is a project-internal version number, not the YOLO architecture version. The actual model is **YOLOv8**.
+
+### 11.2 Weights & Training
+
+- **Weights file**: `yolov12.pt` (227 MB), hosted on Google Drive
+- **Download**: `https://drive.google.com/uc?export=download&id=1ymd7Thcz1XdejEW94LjSFDl3zDqYH0qq`
+- **Also on Roboflow**: project `lolpago-multi-tracking-service` (version 18)
+- **Input size**: 512×512 PNG
+- **Champions supported**: 167 / 170
+- **Metrics**: mAP 92.2%, Precision 91.3%, Recall 90.2%
+
+### 11.3 Self-Augmented Training Pipeline
+
+pyLoL describes a synthetic data generation approach:
+1. Download champion portrait images from Riot's DataDragon CDN
+2. Composite portraits onto minimap backgrounds with augmentation
+3. Include "ping" and "turret" icons to handle occlusion
+4. No manual labeling required
+
+**Caveat**: The actual generation code is not fully open-sourced in the repo — the described pipeline appears partially implemented or lives elsewhere.
+
+### 11.4 Loading the Model
+
+```python
+from ultralytics import YOLO
+model = YOLO("data/models/yolov12.pt")
+results = model.predict("minimap_frame.png", conf=0.4)
+```
+
+---
+
+## 12. Riot API Access for Research (Added March 28)
+
+### 12.1 Access Tiers
+
+| Tier | Expiry | Rate Limit | Best For |
+|------|--------|------------|----------|
+| **Development** | Every 24 hours | 20 req/s, 100 req/2min | Prototyping |
+| **Personal** | Never | Same as dev | **University projects** (Riot's recommendation) |
+| **Production** | Never | ~300 req/s | Public-facing apps (requires hosted app + ToS) |
+
+**Recommendation**: Apply for a **Personal key** immediately — it takes 10-20 business days to approve but doesn't expire. Use a Development key in the meantime.
+
+### 12.2 Available Endpoints
+
+All standard endpoints are available with a dev/personal key:
+- `match-v5`: Full match data + timelines (1-minute interval position/gold/XP snapshots)
+- `summoner-v4`: Summoner profile lookup
+- `account-v1`: PUUID lookup by Riot ID
+- `league-v4`: Ranked standings
+
+**Only the Tournaments API** is gated behind production keys.
+
+### 12.3 API vs CV Data Comparison
+
+| Data Point | Riot API | CV Pipeline |
+|-----------|----------|-------------|
+| Champion positions | Every 60 seconds | Every 1 second (60× more granular) |
+| Gold/XP | Per-minute snapshots | Per-frame OCR (sub-second possible) |
+| Kill events | Timestamped | Timestamped + visual context |
+| Ability usage | ❌ Not available | Detectable from game footage |
+| Item builds | Post-game snapshot | Per-frame tracking of item progression |
+| Teamfight dynamics | ❌ Kill events only | Full spatial movement during fights |
+
+This comparison is the **core argument** for why CV adds value beyond the API.
