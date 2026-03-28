@@ -1,0 +1,59 @@
+# Default configuration for the LoL CV Analysis pipeline
+
+extraction:
+  minimap:
+    model: "yolov12"  # pyLoL's pretrained model
+    confidence: 0.4
+    overlap: 0.3
+    input_size: 512
+    fps: 1  # Extract 1 frame per second
+
+  ocr:
+    engine: "paddleocr"
+    regions:
+      # Define HUD regions to extract (spectator mode)
+      scoreboard: [0, 0, 1920, 80]
+      timer: [920, 0, 1000, 30]
+      minimap: [1650, 790, 1920, 1080]
+
+  api:
+    region: "euw1"
+    queue: "RANKED_SOLO_5x5"
+    tier: "MASTER"
+
+  vlm:
+    model: "gemini-3-flash"
+    max_tokens: 1024
+
+features:
+  spatial:
+    zone_grid_size: 16  # 16x16 grid for zone analysis
+    grouping_threshold: 200  # pixels for "grouped" detection
+    speed_window: 5  # seconds for speed calculation
+
+  temporal:
+    early_game_end: 900   # 15 minutes
+    mid_game_end: 1500    # 25 minutes
+    event_types:
+      - kill
+      - tower
+      - dragon
+      - baron
+      - inhibitor
+
+analysis:
+  models:
+    - random_forest
+    - svm
+    - gradient_boosting
+    - mlp
+  cv_folds: 5
+  test_size: 0.2
+  random_state: 42
+
+embeddings:
+  model: "gemini-embedding-002"
+  dimensions: 3072
+  clustering:
+    method: "kmeans"
+    n_clusters: 8

@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# uv
+.python-version
+uv.lock
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables & secrets
+.env
+.env.local
+*.key
+
+# Data (large files - download separately)
+data/raw/*.rofl
+data/raw/*.mp4
+data/raw/*.avi
+data/models/*.pt
+data/models/*.pth
+data/models/*.onnx
+!data/models/.gitkeep
+
+# pyLoL cloned repo (installed via uv from GitHub)
+pyLoL/
+
+# Logs
+logs/
+*.log
+
+# Temporary
+tmp/
+temp/
