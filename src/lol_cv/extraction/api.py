@@ -17,6 +17,7 @@ Other endpoints (summoner, league) use platform routing (na1, euw1, kr, etc.).
 
 import os
 import time
+from urllib.parse import quote
 
 import requests
 
@@ -43,10 +44,15 @@ class RiotApiClient:
             platform: Platform routing value (e.g. 'euw1', 'na1', 'kr').
         """
         self.api_key = api_key or os.getenv("RIOT_API_KEY")
+        if not self.api_key:
+            raise ValueError(
+                "Riot API key not configured. Set RIOT_API_KEY env var "
+                "or pass api_key= to RiotApiClient."
+            )
         self.platform = platform
         self.region = REGIONAL_HOSTS.get(platform, "europe")
         self._session = requests.Session()
-        self._session.headers["X-Riot-Token"] = self.api_key or ""
+        self._session.headers["X-Riot-Token"] = self.api_key
 
     @property
     def _regional_url(self) -> str:
@@ -68,7 +74,7 @@ class RiotApiClient:
                 time.sleep(retry_after)
                 continue
             resp.raise_for_status()
-        raise requests.HTTPError(f"Failed after 4 retries: {url}")
+        raise requests.HTTPError(f"Rate-limited after 4 retries: {url}", response=resp)
 
     # ── Match-v5 (regional routing) ──────────────────────────────────
 
@@ -122,7 +128,7 @@ class RiotApiClient:
         """
         url = (
             f"{self._regional_url}/riot/account/v1"
-            f"/accounts/by-riot-id/{game_name}/{tag_line}"
+            f"/accounts/by-riot-id/{quote(game_name)}/{quote(tag_line)}"
         )
         logger.info("Looking up %s#%s", game_name, tag_line)
         return self._get(url)

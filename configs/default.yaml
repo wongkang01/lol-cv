@@ -51,7 +51,7 @@ analysis:
   test_size: 0.2
   random_state: 42
 
-embeddings:
+embedding:
   model: "gemini-embedding-002"
   dimensions: 3072
   clustering:

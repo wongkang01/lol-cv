@@ -8,7 +8,6 @@ displayed in notebooks or saved to file.
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import seaborn as sns
 
 from lol_cv.utils import setup_logger
@@ -253,10 +252,17 @@ def plot_ablation_comparison(
     colors = {"cv_only": "#6366F1", "api_only": "#F59E0B", "combined": "#10B981"}
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    df.plot(kind="bar", ax=ax, rot=0, color=[colors.get(c, "#888") for c in df.index])
+    bar_colors = [colors.get(idx, "#888") for idx in df.index]
+    x = np.arange(len(df.columns))
+    width = 0.8 / len(df)
+    for i, (idx, row) in enumerate(df.iterrows()):
+        ax.bar(x + i * width, row.values, width, label=idx, color=bar_colors[i])
+    ax.set_xticks(x + width * (len(df) - 1) / 2)
+    ax.set_xticklabels(df.columns)
     ax.set_title(title)
     ax.set_ylabel("Score")
     ax.set_ylim(0, 1)
+    ax.legend(loc="lower right")
 
     for container in ax.containers:
         ax.bar_label(container, fmt="%.3f", fontsize=8, padding=2)

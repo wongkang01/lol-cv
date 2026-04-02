@@ -42,6 +42,16 @@ ZONES = {
     "red_base": (0.8, 0.0, 1.0, 0.2),
 }
 
+# Priority ordering for zone classification when zones overlap.
+# Checked first-to-last: bases > objective pits > river > lanes > jungle.
+ZONE_PRIORITY = [
+    "blue_base", "red_base",
+    "dragon_pit", "baron_pit",
+    "river_top", "river_bot",
+    "top_lane", "mid_lane", "bot_lane",
+    "top_jungle_blue", "top_jungle_red", "bot_jungle_blue", "bot_jungle_red",
+]
+
 # Key objective locations (normalised coordinates)
 OBJECTIVES = {
     "dragon": (0.62, 0.78),
@@ -77,10 +87,14 @@ class SpatialFeatures:
     def classify_zone(self, x: float, y: float) -> str:
         """Determine which map zone a position falls in.
 
+        Zones are checked in priority order (bases > pits > river > lanes >
+        jungle) so that overlapping regions resolve deterministically.
+
         Returns:
             Zone name, or 'unknown' if no zone matches.
         """
-        for zone_name, (x_min, y_min, x_max, y_max) in ZONES.items():
+        for zone_name in ZONE_PRIORITY:
+            x_min, y_min, x_max, y_max = ZONES[zone_name]
             if x_min <= x <= x_max and y_min <= y <= y_max:
                 return zone_name
         return "unknown"

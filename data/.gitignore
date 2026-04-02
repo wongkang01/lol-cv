@@ -1,4 +1,4 @@
 # Ignore data files (large models, videos, processed output)
 *
 !.gitignore
-!*/.gitkeep
+!**/.gitkeep

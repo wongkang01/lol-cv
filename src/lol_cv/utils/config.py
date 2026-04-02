@@ -14,6 +14,9 @@ _DEFAULT_CONFIG = _PROJECT_ROOT / "configs" / "default.yaml"
 def load_config(config_path: str = None) -> dict:
     """Load pipeline configuration from a YAML file.
 
+    API keys are NOT stored in the returned dict — each module reads
+    them directly from environment variables to avoid accidental logging.
+
     Args:
         config_path: Path to a YAML config file. Defaults to configs/default.yaml.
 
@@ -25,10 +28,5 @@ def load_config(config_path: str = None) -> dict:
     path = Path(config_path) if config_path else _DEFAULT_CONFIG
     with open(path) as f:
         config = yaml.safe_load(f)
-
-    # Inject API keys from environment
-    config.setdefault("keys", {})
-    config["keys"]["riot_api_key"] = os.getenv("RIOT_API_KEY")
-    config["keys"]["gemini_api_key"] = os.getenv("GEMINI_API_KEY")
 
     return config

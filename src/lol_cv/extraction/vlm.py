@@ -11,6 +11,7 @@ Recommended models (March 2026):
 """
 
 import base64
+import mimetypes
 import os
 from pathlib import Path
 
@@ -19,6 +20,17 @@ from google import genai
 from lol_cv.utils import setup_logger
 
 logger = setup_logger("lol_cv.extraction.vlm")
+
+# Supported image MIME types for Gemini API
+_IMAGE_MIMETYPES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
+
+
+def _detect_mime(path: Path) -> str:
+    """Detect MIME type for an image file."""
+    mime, _ = mimetypes.guess_type(str(path))
+    if mime and mime.startswith("image/"):
+        return mime
+    return "image/jpeg"  # safe fallback
 
 # Default structured prompt for tactical analysis of a spectator-mode frame.
 DEFAULT_ANALYSIS_PROMPT = """Analyze this League of Legends spectator-mode screenshot.
@@ -47,15 +59,34 @@ Only include fields you can confidently determine from the screenshot."""
 class VlmAnalyzer:
     """Analyze game screenshots using Gemini Vision-Language Models."""
 
-    def __init__(self, model: str = "gemini-2.0-flash", api_key: str = None):
+    def __init__(
+        self,
+        model: str = "gemini-3-flash",
+        embed_model: str = "gemini-embedding-002",
+        api_key: str = None,
+    ):
         """
         Args:
             model: Gemini model name for analysis.
+            embed_model: Gemini model name for embeddings.
             api_key: Gemini API key. Falls back to GEMINI_API_KEY env var.
         """
         self.model = model
-        api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.client = genai.Client(api_key=api_key)
+        self.embed_model = embed_model
+        self._api_key = api_key or os.getenv("GEMINI_API_KEY")
+        self._client = None  # Lazy-initialized on first use
+
+    @property
+    def client(self) -> genai.Client:
+        """Lazy-initialize the Gemini client on first use."""
+        if self._client is None:
+            if not self._api_key:
+                raise ValueError(
+                    "Gemini API key not configured. Set GEMINI_API_KEY env var "
+                    "or pass api_key= to VlmAnalyzer."
+                )
+            self._client = genai.Client(api_key=self._api_key)
+        return self._client
 
     def analyze_frame(self, frame_path: str, prompt: str = None) -> str:
         """Send a game frame to Gemini with a structured prompt.
@@ -72,7 +103,7 @@ class VlmAnalyzer:
 
         # Read and encode image
         image_bytes = image_path.read_bytes()
-        mime = "image/png" if image_path.suffix == ".png" else "image/jpeg"
+        mime = _detect_mime(image_path)
 
         logger.info("Analyzing frame %s with %s", image_path.name, self.model)
         response = self.client.models.generate_content(
@@ -122,11 +153,11 @@ class VlmAnalyzer:
         """
         image_path = Path(frame_path)
         image_bytes = image_path.read_bytes()
-        mime = "image/png" if image_path.suffix == ".png" else "image/jpeg"
+        mime = _detect_mime(image_path)
 
         logger.info("Embedding frame %s", image_path.name)
         response = self.client.models.embed_content(
-            model="gemini-embedding-exp-03-07",
+            model=self.embed_model,
             contents=[
                 {
                     "parts": [
@@ -150,7 +181,7 @@ class VlmAnalyzer:
             3072-dimensional embedding vector in the same space as frame embeddings.
         """
         response = self.client.models.embed_content(
-            model="gemini-embedding-exp-03-07",
+            model=self.embed_model,
             contents=text,
         )
         return response.embeddings[0].values
