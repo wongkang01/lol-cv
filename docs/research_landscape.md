@@ -110,78 +110,57 @@ Meta's promptable segmentation model (SAM 3 supports text prompts).
 
 ---
 
-## 5. Potential Project Avenues (Ranked by Ambition & Feasibility)
+## 5. Chosen Project Direction (Revised April 2)
 
-### Avenue A: Enhanced Minimap Tracking + Macro Strategy Analysis
-**Feasibility**: HIGH | **Impressiveness**: MEDIUM-HIGH
+### Approach: CV-Only Performance Analysis from Tournament VODs
 
-Build on pyLoL's position tracking to create a macro strategy analyzer:
-1. Use YOLOv10/v11 to track all 10 champions on the minimap every second
-2. Construct movement trajectories and heatmaps over time
-3. Detect macro events: rotations, split-push setups, objective groupings
-4. Compare winning vs. losing macro patterns
-5. Supplement with Riot API data for gold/XP context
+**Data source**: 2026 First Stand tournament VODs (spectator mode broadcasts from YouTube/Twitch). Tournament realm matches have **no Riot API data**, making CV the only way to extract structured performance data — this is the core research justification.
 
-**Why it works**: Minimap detection is the most mature area with existing labeled data (DeepLeague's 100k+ images). You can focus your novelty on the *analysis layer* rather than reinventing detection.
+**Why not the Riot API hybrid approach?**
+- Tournament realm matches are not accessible via the API
+- Spectator-mode broadcasts guarantee consistent HUD layout and full minimap visibility
+- Focusing on CV-only keeps the project tightly scoped around the primary topic (CV&IC)
+- The Riot API client remains in the codebase as an optional utility but is not part of the core pipeline
 
-### Avenue B: Multi-Modal Game State Extraction Pipeline
-**Feasibility**: MEDIUM-HIGH | **Impressiveness**: HIGH
+### Pipeline Overview
 
-Build a comprehensive pipeline that combines multiple CV techniques:
-1. **Minimap tracking** (YOLO) for positions
-2. **OCR** (PaddleOCR/TrOCR) for gold, KDA, items, timers
-3. **Object detection** for on-screen events (ability effects, champion deaths)
-4. Fuse all extracted data into a structured timeline
-5. Apply data mining/process mining to find performance patterns
+1. **Detect** — Track champion positions on the minimap using YOLO (benchmark pyLoL YOLOv8 vs boboyes YOLOv11)
+2. **Extract** — OCR the spectator HUD for gold difference, kill score, objective timers, item levels
+3. **Analyse** — VLM tactical analysis of key moments via Gemini Flash
+4. **Engineer** — Compute spatial features (zone transitions, team grouping near objectives, positional heatmaps) and correlate with OCR-extracted game state (gold diff, item levels, objective timers)
+5. **Predict** — ML classifiers to identify which CV-extracted features have the highest correlation with match outcome
+6. **Embed & Cluster** — Gemini Embedding on game-state frames for unsupervised pattern discovery
 
-**Why it's impressive**: Demonstrates breadth of CV techniques + data fusion, directly echoing the reference paper's process mining approach but from *video* instead of API data.
+### Core Analysis: Feature Correlation with Win Rate
 
-### Avenue C: Teamfight Detection & Analysis
-**Feasibility**: MEDIUM | **Impressiveness**: HIGH
+The central experiment: which CV-extracted features best predict match outcomes?
 
-Focus specifically on teamfight events:
-1. Use action recognition (VideoMAE/TimeSformer) to detect when teamfights occur
-2. Extract participants, outcomes, ability usage from fight footage
-3. Analyze what distinguishes winning vs. losing teamfights
-4. Identify key moments (first death, ultimate usage, positioning)
+| Feature Category | Specific Features | Source |
+|-----------------|-------------------|--------|
+| **Zone transitions** | Rotation frequency, unique zones visited per phase, lane swap timing | Minimap YOLO |
+| **Team grouping** | Grouping distance near objectives, grouping timing relative to objective spawns | Minimap YOLO |
+| **Objective context** | Team proximity to dragon/baron at spawn time, convergence speed | Minimap YOLO + OCR timers |
+| **Gold state** | Gold difference at key events, gold diff trajectory over time | OCR |
+| **Item progression** | Item completion timing, item level at key moments | OCR |
+| **Kill differential** | Kill score at phase transitions, kill tempo | OCR |
 
-**Why it's interesting**: Teamfights are the highest-impact events in LoL and are poorly captured by API data alone.
+**Not included** (with rationale):
+- ~~Movement speed~~: Minimap icons move in discrete steps; per-second sampling yields unreliable speed values (acknowledged per Joschka's feedback)
+- ~~Clone/Yuumi detection~~: Champions like LeBlanc, Wukong, Neeko, Shaco create duplicate minimap icons; Yuumi's icon disappears when attached. These are **known limitations** of minimap-based tracking (per maknee's blog)
 
-### Avenue D: VLM-Powered Game Analysis
-**Feasibility**: MEDIUM | **Impressiveness**: VERY HIGH
+### Research Questions (Revised)
 
-Use modern multimodal AI to generate tactical insights:
-1. Sample key frames from replays at regular intervals
-2. Feed to a VLM (Claude Vision / GPT-4V) with structured prompts
-3. Extract high-level tactical assessments: positioning quality, vision control, objective prioritization
-4. Compare VLM assessments against match outcomes
-5. Validate whether VLM-generated insights correlate with winning
+1. *"Which CV-extracted spatial features (zone transitions, team grouping near objectives) have the strongest correlation with match outcomes in professional LoL matches?"*
+2. *"How do modern minimap detection models (YOLOv8 vs YOLOv11) compare in accuracy and inference speed for champion tracking on tournament broadcast footage?"*
+3. *"Can a purely CV-based pipeline extract sufficient game-state information from tournament VODs — where no API data exists — to predict match outcomes?"*
 
-**Why it's cutting-edge**: This is genuinely novel research territory. No existing papers do this comprehensively for LoL.
+### Known Limitations
 
-### Avenue E: Automated Event Timeline from VODs
-**Feasibility**: MEDIUM-HIGH | **Impressiveness**: HIGH
-
-Create a system that watches a full game VOD and produces a structured event timeline:
-1. Detect key events: kills, objectives, tower falls, teamfights
-2. Timestamp each event with game time
-3. Extract context: which champions involved, gold state, map position
-4. Produce a narrative summary of the game
-5. Compare with Riot API event data for validation
-
-**Why it connects**: Directly extends the reference paper's sequence-of-events analysis but extracts from video rather than API, capturing events the API might miss.
-
-### Avenue F: Hybrid CV + API Approach (Recommended)
-**Feasibility**: HIGH | **Impressiveness**: VERY HIGH
-
-Combine the strengths of both data sources:
-1. Use pyLoL/CV for spatial data (positions, movements, visual events)
-2. Use Riot API for structured data (gold, XP, items, match outcomes)
-3. Fuse both into a rich event timeline
-4. Apply ML to identify performance-predictive patterns
-5. Show that CV-derived features add predictive value beyond API data alone
-
-**Why this is the winner**: It demonstrates you understand both data sources, shows technical depth in CV, and produces a compelling comparison story. The report can directly argue that CV provides insights the API cannot.
+1. **Clone champions**: LeBlanc, Wukong, Neeko, and Shaco create duplicate minimap icons that the detector cannot distinguish from real champions. These matches may need to be flagged or excluded.
+2. **Yuumi**: Her icon disappears from the minimap when attached to an ally. The detector cannot track what is not visible.
+3. **Fog of war**: In spectator mode with fog of war enabled, champion icons may be hidden. Tournament broadcasts typically use full-vision spectator mode, mitigating this.
+4. **OCR accuracy**: HUD text extraction depends on video resolution and compression quality. Tournament broadcasts at 1080p should be reliable.
+5. **Detection thresholds**: No single confidence threshold perfectly balances true detections vs false positives (per maknee's work). Threshold tuning via precision-recall curves will be documented.
 
 ---
 
@@ -190,11 +169,13 @@ Combine the strengths of both data sources:
 | Dataset | Domain | Contents |
 |---------|--------|----------|
 | DeepLeague labeled images | LoL minimap | 100k+ labeled champion positions |
-| Roboflow LoL Minimap | LoL minimap | Community-labeled detection dataset |
+| Roboflow LoL Minimap | LoL minimap | Community-labeled detection dataset (4,468 images) |
+| boboyes/leagueoflegends-minimap | LoL minimap | HuggingFace dataset for YOLOv11 training (Feb 2026) |
+| League Minimap Dataset (Kaggle) | LoL minimap | Champion minimap icon dataset |
+| TLoL | LoL replays | ~2,488 early-game replays at 4 frames/sec |
 | ESTA | CS:GO | 1,558 pro matches with trajectories/actions |
-| CEPAV | CS:GO | 3,000+ matches with physiological data |
 | CS-lol | LoL broadcasts | Pro matches with scene annotations |
-| SC2EGSet | StarCraft II | Replays with game-state annotations |
+| 2026 First Stand VODs | LoL tournament | **Primary data source** — spectator-mode broadcasts |
 
 ---
 
@@ -216,13 +197,17 @@ Combine the strengths of both data sources:
 11. "Round Outcome Prediction in VALORANT" (IEEE, 2024) - TimeSformer on minimap
 12. PandaSkill (2025) - Player performance evaluation
 
+### Minimap Detection (Added April 2)
+13. boboyes/leagueoflegends-minimap-detection (HuggingFace, Feb 2026) - YOLOv11, 5 model variants, CC-BY-NC-4.0
+14. jparedesDS/lol-map-tracking-object-detection (HuggingFace) - YOLOv11m, mAP@50 99.3%, precision 97.8%
+15. Henry Zhu / maknee (2021) - "ML with LoL Minimap Detection" blog series: synthetic data generation, Faster R-CNN, discussion of Yuumi/clone edge cases
+16. PandaScore (2018) - Two-stage approach: champion-agnostic detection + classifier
+
 ### Methodology
-13. YOLOv10 (Tsinghua University) - Latest real-time object detection
-14. RT-DETR (CVPR 2024) - Transformer-based real-time detection
-15. Segment Anything Model (Meta) - Zero-shot segmentation
-16. VideoMAE - Self-supervised video pre-training
-17. TimeSformer (Meta) - Video understanding transformer
-18. PaddleOCR (Baidu) - Lightweight OCR toolkit
+17. YOLOv11 (Ultralytics) - Current real-time object detection
+18. RT-DETR (CVPR 2024) - Transformer-based real-time detection
+19. PaddleOCR (Baidu) - Lightweight OCR toolkit
+20. Gemini Flash / Gemini Embedding (Google) - VLM analysis and multimodal embeddings
 
 ---
 
@@ -362,19 +347,13 @@ Combine the strengths of both data sources:
 
 ---
 
-## 9. Suggested SMART Research Questions
+## 9. Research Questions (Final — April 2)
 
-Based on the landscape, here are potential research questions for your project:
+1. *"Which CV-extracted spatial features (zone transitions, team grouping near objectives) have the strongest correlation with match outcomes in professional LoL matches?"*
 
-1. "To what extent can computer vision techniques extract accurate game state information (champion positions, objectives, kills) from League of Legends replay footage, compared to Riot API data?"
+2. *"How do modern minimap detection models (YOLOv8 vs YOLOv11) compare in accuracy and inference speed for champion tracking on tournament broadcast footage?"*
 
-2. "Can minimap tracking data derived from computer vision predict match outcomes with comparable accuracy to API-derived features?"
-
-3. "What additional performance insights can be gained from CV-extracted spatial data (movement patterns, positioning) that are not available through the Riot API?"
-
-4. "How effectively can modern object detection models (YOLOv10) detect and classify champion positions on the LoL minimap across different game phases?"
-
-5. "Can a multimodal pipeline combining minimap tracking, OCR, and event detection produce a more comprehensive game analysis than any single technique alone?"
+3. *"Can a purely CV-based pipeline extract sufficient game-state information from tournament VODs — where no API data exists — to predict match outcomes?"*
 
 ---
 
@@ -444,37 +423,12 @@ results = model.predict("minimap_frame.png", conf=0.4)
 
 ---
 
-## 12. Riot API Access for Research (Added March 28)
+## 12. Riot API — Descoped to Optional Utility (Updated April 2)
 
-### 12.1 Access Tiers
+The Riot API client remains in the codebase (`extraction/api.py`) as an optional utility for future work or validation against ranked solo queue matches. However, it is **not part of the core pipeline** because:
 
-| Tier | Expiry | Rate Limit | Best For |
-|------|--------|------------|----------|
-| **Development** | Every 24 hours | 20 req/s, 100 req/2min | Prototyping |
-| **Personal** | Never | Same as dev | **University projects** (Riot's recommendation) |
-| **Production** | Never | ~300 req/s | Public-facing apps (requires hosted app + ToS) |
+1. **Tournament realm matches have no API data** — the 2026 First Stand VODs are our primary data source, and the tournament realm is a completely separate server with no public API access.
+2. **CV-only is a stronger research angle** — it demonstrates that structured performance data can be extracted purely from video, which is the core CV&IC contribution.
+3. **Simpler project scope** — removes the need for API key management, rate limiting, and data fusion complexity.
 
-**Recommendation**: Apply for a **Personal key** immediately — it takes 10-20 business days to approve but doesn't expire. Use a Development key in the meantime.
-
-### 12.2 Available Endpoints
-
-All standard endpoints are available with a dev/personal key:
-- `match-v5`: Full match data + timelines (1-minute interval position/gold/XP snapshots)
-- `summoner-v4`: Summoner profile lookup
-- `account-v1`: PUUID lookup by Riot ID
-- `league-v4`: Ranked standings
-
-**Only the Tournaments API** is gated behind production keys.
-
-### 12.3 API vs CV Data Comparison
-
-| Data Point | Riot API | CV Pipeline |
-|-----------|----------|-------------|
-| Champion positions | Every 60 seconds | Every 1 second (60× more granular) |
-| Gold/XP | Per-minute snapshots | Per-frame OCR (sub-second possible) |
-| Kill events | Timestamped | Timestamped + visual context |
-| Ability usage | ❌ Not available | Detectable from game footage |
-| Item builds | Post-game snapshot | Per-frame tracking of item progression |
-| Teamfight dynamics | ❌ Kill events only | Full spatial movement during fights |
-
-This comparison is the **core argument** for why CV adds value beyond the API.
+The API could be revisited as a bonus for validating CV accuracy against ranked matches where both data sources are available.

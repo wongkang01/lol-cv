@@ -1,8 +1,10 @@
 """
-Riot API client for supplementary match data.
+Riot API client — OPTIONAL utility, not part of the core CV pipeline.
 
-Used to enrich CV-extracted data with gold/XP timelines,
-match outcomes, and event logs that the API provides.
+The primary data source is tournament VODs (2026 First Stand), which are
+played on the tournament realm and have NO API data available. This client
+is retained for potential future use (e.g. validating CV accuracy against
+ranked solo queue matches where both data sources exist).
 
 Access tiers:
     - Development key: 20 req/s, 100 req/2min — expires every 24h.

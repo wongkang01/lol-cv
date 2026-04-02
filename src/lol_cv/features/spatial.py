@@ -1,9 +1,15 @@
 """
 Spatial feature engineering from champion position data.
 
-Converts raw (x, y, timestamp) tracking data into meaningful
-features like movement speed, grouping distance, zone control,
-heatmaps, and objective approach patterns.
+Converts raw (x, y, timestamp) tracking data into features focused on:
+- Zone transitions and rotation patterns
+- Team grouping near objectives (combined with objective timers)
+- Positional heatmaps
+- Objective approach timing and convergence
+
+NOTE: Movement speed is intentionally excluded — minimap icons move in
+discrete steps rather than smoothly, making per-second speed unreliable.
+Zone transitions capture the same macro-movement information more robustly.
 
 All coordinates are normalised to [0, 1] relative to minimap size
 (as output by MinimapTracker). Zone boundaries use these normalised coords.
@@ -58,46 +64,15 @@ class SpatialFeatures:
     MinimapTracker.positions_to_dataframe().
     """
 
-    def __init__(self, grouping_threshold: float = 0.15, speed_window: int = 5):
+    def __init__(self, grouping_threshold: float = 0.15):
         """
         Args:
             grouping_threshold: Max normalised distance to consider champions
                                 as "grouped" together (default 0.15 ≈ 200px on 512 minimap).
-            speed_window: Number of seconds for speed calculation sliding window.
         """
         self.grouping_threshold = grouping_threshold
-        self.speed_window = speed_window
 
-    # ── Per-Champion Features ────────────────────────────────────────
-
-    def movement_speed(self, df: pd.DataFrame, champion: str) -> pd.DataFrame:
-        """Calculate movement speed of a champion over time.
-
-        Speed = euclidean distance between consecutive positions / time delta.
-
-        Returns:
-            DataFrame with columns [timestamp, speed].
-        """
-        champ_df = df[df["champion"] == champion].sort_values("timestamp").copy()
-        if len(champ_df) < 2:
-            return pd.DataFrame(columns=["timestamp", "speed"])
-
-        dx = champ_df["x"].diff()
-        dy = champ_df["y"].diff()
-        dt = champ_df["timestamp"].diff()
-        dist = np.sqrt(dx**2 + dy**2)
-        speed = dist / dt.replace(0, np.nan)
-
-        result = pd.DataFrame({
-            "timestamp": champ_df["timestamp"],
-            "speed": speed,
-        }).dropna().reset_index(drop=True)
-        return result
-
-    def average_speed(self, df: pd.DataFrame, champion: str) -> float:
-        """Average movement speed for a champion across the entire game."""
-        speeds = self.movement_speed(df, champion)
-        return speeds["speed"].mean() if not speeds.empty else 0.0
+    # ── Zone Classification & Transitions ────────────────────────────
 
     def classify_zone(self, x: float, y: float) -> str:
         """Determine which map zone a position falls in.
@@ -124,12 +99,51 @@ class SpatialFeatures:
         counts = zones.value_counts(normalize=True)
         return {z: counts.get(z, 0.0) for z in list(ZONES.keys()) + ["unknown"]}
 
-    # ── Team-Level Features ──────────────────────────────────────────
+    def zone_transitions(self, df: pd.DataFrame, champion: str) -> pd.DataFrame:
+        """Detect zone-to-zone transitions (rotations) for a champion.
+
+        Returns:
+            DataFrame with columns [timestamp, from_zone, to_zone].
+        """
+        champ_df = df[df["champion"] == champion].sort_values("timestamp").copy()
+        if len(champ_df) < 2:
+            return pd.DataFrame(columns=["timestamp", "from_zone", "to_zone"])
+
+        champ_df["zone"] = champ_df.apply(
+            lambda r: self.classify_zone(r["x"], r["y"]), axis=1
+        )
+        prev_zone = champ_df["zone"].iloc[0]
+        transitions = []
+        for _, row in champ_df.iloc[1:].iterrows():
+            if row["zone"] != prev_zone:
+                transitions.append({
+                    "timestamp": row["timestamp"],
+                    "from_zone": prev_zone,
+                    "to_zone": row["zone"],
+                })
+                prev_zone = row["zone"]
+
+        return pd.DataFrame(transitions)
+
+    def transition_count(self, df: pd.DataFrame, champion: str) -> int:
+        """Total number of zone transitions for a champion."""
+        return len(self.zone_transitions(df, champion))
+
+    def unique_zones_visited(self, df: pd.DataFrame, champion: str) -> int:
+        """Number of unique zones a champion visited during the game."""
+        champ_df = df[df["champion"] == champion]
+        if champ_df.empty:
+            return 0
+        zones = champ_df.apply(lambda r: self.classify_zone(r["x"], r["y"]), axis=1)
+        return zones.nunique()
+
+    # ── Team Grouping ────────────────────────────────────────────────
 
     def team_grouping_distance(self, df: pd.DataFrame, champions: list[str], timestamp: float) -> float:
         """Mean pairwise distance between team members at a given timestamp.
 
-        Lower values indicate tighter grouping (e.g. during teamfights).
+        Lower values indicate tighter grouping (e.g. during teamfights
+        or objective setups).
 
         Args:
             champions: List of champion names on the same team.
@@ -165,6 +179,55 @@ class SpatialFeatures:
             })
         return pd.DataFrame(rows)
 
+    def grouping_near_objective(
+        self,
+        df: pd.DataFrame,
+        champions: list[str],
+        objective: str,
+        proximity_threshold: float = 0.2,
+    ) -> pd.DataFrame:
+        """Track how many team members are grouped near an objective over time.
+
+        Combines team grouping with objective proximity — the key feature
+        for correlating with objective timers and gold differences.
+
+        Args:
+            champions: Team champion list.
+            objective: Objective name (e.g. 'dragon', 'baron').
+            proximity_threshold: Max distance from objective to be "near" it.
+
+        Returns:
+            DataFrame with columns [timestamp, near_count, team_near_pct, grouped_near].
+        """
+        if objective not in OBJECTIVES:
+            raise ValueError(f"Unknown objective: {objective}")
+
+        ox, oy = OBJECTIVES[objective]
+        timestamps = sorted(df["timestamp"].unique())
+        rows = []
+
+        for ts in timestamps:
+            snap = df[(df["timestamp"] == ts) & (df["champion"].isin(champions))]
+            if snap.empty:
+                rows.append({"timestamp": ts, "near_count": 0, "team_near_pct": 0.0, "grouped_near": False})
+                continue
+
+            dists = np.sqrt((snap["x"] - ox) ** 2 + (snap["y"] - oy) ** 2)
+            near_count = int((dists < proximity_threshold).sum())
+            team_near_pct = near_count / len(champions)
+
+            # "Grouped near" = 3+ members within proximity of objective
+            grouped_near = near_count >= 3
+
+            rows.append({
+                "timestamp": ts,
+                "near_count": near_count,
+                "team_near_pct": team_near_pct,
+                "grouped_near": grouped_near,
+            })
+
+        return pd.DataFrame(rows)
+
     # ── Heatmaps ─────────────────────────────────────────────────────
 
     def generate_heatmap(
@@ -184,7 +247,6 @@ class SpatialFeatures:
         if subset.empty:
             return np.zeros((resolution, resolution))
 
-        # Bin x/y into grid cells
         x_bins = np.clip((subset["x"] * resolution).astype(int), 0, resolution - 1)
         y_bins = np.clip((subset["y"] * resolution).astype(int), 0, resolution - 1)
 
@@ -209,7 +271,8 @@ class SpatialFeatures:
         """Track team distance to an objective over time.
 
         Useful for detecting when a team starts converging toward
-        dragon, baron, etc.
+        dragon, baron, etc. — especially when combined with OCR-extracted
+        objective timers.
 
         Returns:
             DataFrame with columns [timestamp, mean_distance, approaching].
@@ -243,19 +306,32 @@ class SpatialFeatures:
     ) -> dict:
         """Compute a full spatial feature vector for a game.
 
+        Focuses on zone transitions, team grouping, and objective proximity —
+        the features most likely to correlate with match outcome.
+
         Returns a flat dict suitable for use as a single row in an ML dataset.
         """
         features = {}
 
         for side, team in [("blue", blue_team), ("red", red_team)]:
-            # Per-champion averages
-            speeds = [self.average_speed(df, c) for c in team]
-            features[f"{side}_avg_speed"] = np.mean(speeds)
+            # Zone transitions (rotations)
+            transitions = [self.transition_count(df, c) for c in team]
+            features[f"{side}_total_transitions"] = int(np.sum(transitions))
+            features[f"{side}_avg_transitions"] = float(np.mean(transitions))
+
+            unique_zones = [self.unique_zones_visited(df, c) for c in team]
+            features[f"{side}_avg_zones_visited"] = float(np.mean(unique_zones))
 
             # Team grouping
             grouping = self.grouping_over_time(df, team)
             features[f"{side}_avg_grouping_dist"] = grouping["mean_distance"].mean()
             features[f"{side}_grouped_pct"] = grouping["is_grouped"].mean()
+
+            # Grouping near major objectives
+            for obj in ["dragon", "baron"]:
+                obj_grouping = self.grouping_near_objective(df, team, obj)
+                features[f"{side}_{obj}_grouped_near_pct"] = obj_grouping["grouped_near"].mean()
+                features[f"{side}_{obj}_avg_near_count"] = obj_grouping["near_count"].mean()
 
             # Zone occupancy (averaged across team)
             zone_totals = {z: 0.0 for z in ZONES}
