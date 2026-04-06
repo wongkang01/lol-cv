@@ -15,6 +15,7 @@ Output:
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -147,6 +148,16 @@ def kill_events_from_ocr(ocr_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Compute spatial+temporal features for processed games")
+    parser.add_argument("--t-min", type=int, default=0,
+                        help="Lower bound (inclusive) for the per-game time window in seconds")
+    parser.add_argument("--t-max", type=int, default=None,
+                        help="Upper bound (exclusive) for the per-game time window in seconds. "
+                             "If unset, the full game is used.")
+    parser.add_argument("--output", type=str, default="features.csv",
+                        help="Output filename (written into data/processed/)")
+    args = parser.parse_args()
+
     if not PICKS_PATH.exists():
         sys.exit(f"Missing {PICKS_PATH}")
     if not WINNERS_PATH.exists():
@@ -169,6 +180,7 @@ def main() -> None:
         if d.is_dir() and game_pattern.search(d.name)
     )
     logger.info("Found %d processed game directories", len(game_dirs))
+    logger.info("Window: t_min=%d, t_max=%s, output=%s", args.t_min, args.t_max, args.output)
 
     for game_dir in game_dirs:
         match_id = game_dir.name
@@ -187,8 +199,50 @@ def main() -> None:
             logger.warning("[skip] %s — empty positions", match_id)
             continue
 
+        # ── Make timestamps zero-based per game ──
+        # positions.csv timestamps are absolute VOD frame indices that
+        # accumulate across consecutive games in the same broadcast video.
+        # Subtract the per-game minimum so each game starts at t=0.
+        positions_df["timestamp"] = positions_df["timestamp"] - positions_df["timestamp"].min()
+
+        # ── Apply early-window slicing if requested ──
+        if args.t_max is not None:
+            positions_df = positions_df[
+                (positions_df["timestamp"] >= args.t_min)
+                & (positions_df["timestamp"] < args.t_max)
+            ].reset_index(drop=True)
+            if positions_df.empty:
+                logger.warning(
+                    "[empty-window] %s — no positions in [%d, %d)",
+                    match_id, args.t_min, args.t_max,
+                )
+
         blue_team = picks[match_id]["blue_champions"]
         red_team = picks[match_id]["red_champions"]
+
+        # ── Role-based lookups for early-game features ──
+        blue_picks_full = picks[match_id].get("blue_team", [])
+        red_picks_full = picks[match_id].get("red_team", [])
+        blue_jungler = next(
+            (p["champion"] for p in blue_picks_full if p.get("role") == "jungle"),
+            None,
+        )
+        red_jungler = next(
+            (p["champion"] for p in red_picks_full if p.get("role") == "jungle"),
+            None,
+        )
+        blue_mid = next(
+            (p["champion"] for p in blue_picks_full if p.get("role") == "mid"),
+            None,
+        )
+        red_mid = next(
+            (p["champion"] for p in red_picks_full if p.get("role") == "mid"),
+            None,
+        )
+        if blue_jungler is None or red_jungler is None:
+            logger.warning("[roles] %s — missing jungler assignment", match_id)
+        if blue_mid is None or red_mid is None:
+            logger.warning("[roles] %s — missing mid assignment", match_id)
 
         feats: dict = {"match_id": match_id}
 
@@ -199,13 +253,34 @@ def main() -> None:
                 feats[f"sp_{k}"] = v
         except Exception:
             logger.exception("Spatial failed for %s", match_id)
-            continue
+            # Don't skip — keep the row so meta stays aligned across windows.
+
+        # ── Bespoke early-game spatial features ──
+        try:
+            early_feats = spatial.compute_early_features(
+                positions_df,
+                blue_team,
+                red_team,
+                blue_jungler,
+                red_jungler,
+                blue_mid,
+                red_mid,
+            )
+            for k, v in early_feats.items():
+                feats[f"sp_early_{k}"] = v
+        except Exception:
+            logger.exception("Early-game spatial failed for %s", match_id)
 
         # ── OCR-derived features (best effort) ──
         ocr_smoothed = pd.DataFrame()
         if ocr_path.exists():
             ocr_df = pd.read_csv(ocr_path)
             ocr_smoothed = smooth_ocr(ocr_df)
+            if args.t_max is not None and not ocr_smoothed.empty:
+                ocr_smoothed = ocr_smoothed[
+                    (ocr_smoothed["game_time_seconds"] >= args.t_min)
+                    & (ocr_smoothed["game_time_seconds"] < args.t_max)
+                ].reset_index(drop=True)
             agg = ocr_aggregate_features(ocr_smoothed)
             for k, v in agg.items():
                 feats[f"ocr_{k}"] = v
@@ -254,11 +329,13 @@ def main() -> None:
     meta_df = pd.DataFrame(meta_rows).set_index("match_id")
 
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    feat_df.to_csv(PROCESSED_DIR / "features.csv")
+    feat_df.to_csv(PROCESSED_DIR / args.output)
+    # features_meta.csv is window-independent — always write the same shared file.
     meta_df.to_csv(PROCESSED_DIR / "features_meta.csv")
 
     logger.info(
-        "Wrote features.csv: %d games × %d features", feat_df.shape[0], feat_df.shape[1]
+        "Wrote %s: %d games × %d features",
+        args.output, feat_df.shape[0], feat_df.shape[1],
     )
     logger.info("Wrote features_meta.csv: %d rows", meta_df.shape[0])
 

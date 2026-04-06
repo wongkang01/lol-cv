@@ -354,6 +354,225 @@ class SpatialFeatures:
 
         return pd.DataFrame(rows)
 
+    # ── Bespoke Early-Game Features ──────────────────────────────────
+
+    def compute_early_features(
+        self,
+        df: pd.DataFrame,
+        blue_team: list[str],
+        red_team: list[str],
+        blue_jungler: str | None,
+        red_jungler: str | None,
+        blue_mid: str | None,
+        red_mid: str | None,
+    ) -> dict:
+        """Compute bespoke early-game (first ~5-10 min) rare-event features.
+
+        Independent of :meth:`compute_all` — built to produce high-information
+        signals in the early window where generic zone-occupancy features
+        collapse to baseline.
+
+        Features computed:
+            * Jungler commit side (top/mid/bot) in the 1:00-3:20 window
+              and a "vertical jungling" indicator.
+            * First-scuttle proximity counts and earliest arrival latencies
+              per side, per crab, around 3:15.
+            * Mid-laner first roam time and the side they roamed to.
+            * Level-1 invade frames per side in [0, 90].
+
+        Gracefully returns NaN for any feature whose required input data
+        (role assignment, time window) is missing.
+
+        Args:
+            df: Position DataFrame with columns [timestamp, champion, x, y].
+            blue_team: Full list of blue-side champion names.
+            red_team: Full list of red-side champion names.
+            blue_jungler: Blue jungler champion name (or None).
+            red_jungler: Red jungler champion name (or None).
+            blue_mid: Blue mid-laner champion name (or None).
+            red_mid: Red mid-laner champion name (or None).
+
+        Returns:
+            Flat dict of feature_name -> value (numeric or NaN). The caller
+            is expected to prefix the keys with ``sp_early_`` when writing
+            into the feature matrix.
+        """
+        features: dict = {}
+
+        # ── Feature 1: Jungler commit side ─────────────────────────────
+        def _jgl_commit_side(jungler: str | None) -> float:
+            if jungler is None:
+                return float("nan")
+            sub = df[
+                (df["champion"] == jungler)
+                & (df["timestamp"] >= 60)
+                & (df["timestamp"] <= 200)
+            ]
+            if sub.empty:
+                return float("nan")
+            mean_y = float(sub["y"].mean())
+            if mean_y < 0.4:
+                return 0.0  # top
+            if mean_y <= 0.6:
+                return 1.0  # mid
+            return 2.0  # bot
+
+        blue_side = _jgl_commit_side(blue_jungler)
+        red_side = _jgl_commit_side(red_jungler)
+        features["blue_jgl_commit_side"] = blue_side
+        features["red_jgl_commit_side"] = red_side
+
+        # Vertical jungling: opposite top/bot sides (0 vs 2 or 2 vs 0)
+        if np.isnan(blue_side) or np.isnan(red_side):
+            features["vertical_jungling"] = float("nan")
+        else:
+            features["vertical_jungling"] = float(
+                {blue_side, red_side} == {0.0, 2.0}
+            )
+
+        # ── Feature 2: First scuttle proximity at 3:15 ─────────────────
+        top_crab = (0.38, 0.22)
+        bot_crab = (0.62, 0.78)
+        scuttle_radius = 0.12
+
+        def _scuttle_counts_max(team: list[str], crab: tuple[float, float]) -> float:
+            win = df[
+                (df["champion"].isin(team))
+                & (df["timestamp"] >= 185)
+                & (df["timestamp"] <= 215)
+            ]
+            if win.empty:
+                return float("nan")
+            cx, cy = crab
+            dists = np.sqrt((win["x"] - cx) ** 2 + (win["y"] - cy) ** 2)
+            win = win.assign(_d=dists.values)
+            near = win[win["_d"] < scuttle_radius]
+            if near.empty:
+                return 0.0
+            return float(near.groupby("timestamp").size().max())
+
+        def _scuttle_arrival(team: list[str], crab: tuple[float, float]) -> float:
+            win = df[
+                (df["champion"].isin(team))
+                & (df["timestamp"] >= 180)
+                & (df["timestamp"] <= 240)
+            ]
+            if win.empty:
+                return float("nan")
+            cx, cy = crab
+            dists = np.sqrt((win["x"] - cx) ** 2 + (win["y"] - cy) ** 2)
+            near = win[dists.values < scuttle_radius]
+            if near.empty:
+                return float("nan")
+            return float(near["timestamp"].min())
+
+        features["blue_top_scuttle_count"] = _scuttle_counts_max(blue_team, top_crab)
+        features["red_top_scuttle_count"] = _scuttle_counts_max(red_team, top_crab)
+        features["blue_bot_scuttle_count"] = _scuttle_counts_max(blue_team, bot_crab)
+        features["red_bot_scuttle_count"] = _scuttle_counts_max(red_team, bot_crab)
+
+        features["blue_top_scuttle_arrival"] = _scuttle_arrival(blue_team, top_crab)
+        features["red_top_scuttle_arrival"] = _scuttle_arrival(red_team, top_crab)
+        features["blue_bot_scuttle_arrival"] = _scuttle_arrival(blue_team, bot_crab)
+        features["red_bot_scuttle_arrival"] = _scuttle_arrival(red_team, bot_crab)
+
+        # ── Feature 3: Mid laner first roam timing ─────────────────────
+        # Mid lane axis: diagonal from (0.18, 0.82) -> (0.82, 0.18).
+        # This is the line y = -x + 1, i.e. x + y - 1 = 0.
+        # Perpendicular distance = |x + y - 1| / sqrt(2).
+        def _mid_roam(mid: str | None) -> tuple[float, float]:
+            if mid is None:
+                return float("nan"), float("nan")
+            sub = df[
+                (df["champion"] == mid)
+                & (df["timestamp"] < 450)
+            ].sort_values("timestamp").reset_index(drop=True)
+            if sub.empty:
+                return float("nan"), float("nan")
+
+            dists = np.abs(sub["x"].values + sub["y"].values - 1.0) / np.sqrt(2.0)
+            timestamps = sub["timestamp"].values
+            ys = sub["y"].values
+
+            # Find first contiguous window of >= 15 consecutive seconds
+            # where distance > 0.15. "Consecutive" means successive rows
+            # have adjacent timestamps (gap <= 1s tolerance, since upstream
+            # samples at 1 Hz).
+            in_run = False
+            run_start_idx = 0
+            run_start_ts = 0.0
+            last_ts = 0.0
+            for i, (ts, d) in enumerate(zip(timestamps, dists)):
+                if d > 0.15:
+                    if not in_run:
+                        in_run = True
+                        run_start_idx = i
+                        run_start_ts = float(ts)
+                    elif ts - last_ts > 2.0:
+                        # Gap in samples — reset the run
+                        run_start_idx = i
+                        run_start_ts = float(ts)
+                    if ts - run_start_ts >= 15.0:
+                        # Found it. roam_target based on y within run.
+                        run_y = ys[run_start_idx : i + 1]
+                        mean_y = float(np.mean(run_y))
+                        target = 0.0 if mean_y < 0.5 else 1.0
+                        return run_start_ts, target
+                    last_ts = float(ts)
+                else:
+                    in_run = False
+
+            return float("nan"), float("nan")
+
+        blue_mid_time, blue_mid_target = _mid_roam(blue_mid)
+        red_mid_time, red_mid_target = _mid_roam(red_mid)
+        features["blue_mid_first_roam_time"] = blue_mid_time
+        features["blue_mid_roam_target"] = blue_mid_target
+        features["red_mid_first_roam_time"] = red_mid_time
+        features["red_mid_roam_target"] = red_mid_target
+
+        # ── Feature 4: Level-1 invade frames ───────────────────────────
+        blue_jungle_zones = ("bot_jungle_blue", "top_jungle_blue")
+        red_jungle_zones = ("bot_jungle_red", "top_jungle_red")
+
+        def _in_any_zone(x: float, y: float, zone_names: tuple[str, ...]) -> bool:
+            for zn in zone_names:
+                x_min, y_min, x_max, y_max = ZONES[zn]
+                if x_min <= x <= x_max and y_min <= y <= y_max:
+                    return True
+            return False
+
+        lvl1 = df[(df["timestamp"] >= 0) & (df["timestamp"] <= 90)]
+        if lvl1.empty:
+            features["blue_lvl1_invade_frames"] = float("nan")
+            features["red_lvl1_invade_frames"] = float("nan")
+        else:
+            blue_rows = lvl1[lvl1["champion"].isin(blue_team)]
+            red_rows = lvl1[lvl1["champion"].isin(red_team)]
+
+            def _invade_frame_count(team_rows: pd.DataFrame, enemy_zones: tuple[str, ...]) -> int:
+                if team_rows.empty:
+                    return 0
+                in_enemy = team_rows.apply(
+                    lambda r: _in_any_zone(r["x"], r["y"], enemy_zones), axis=1
+                )
+                if in_enemy.empty:
+                    return 0
+                counts = (
+                    team_rows[in_enemy].groupby("timestamp").size()
+                )
+                return int((counts >= 3).sum())
+
+            features["blue_lvl1_invade_frames"] = float(
+                _invade_frame_count(blue_rows, red_jungle_zones)
+            )
+            features["red_lvl1_invade_frames"] = float(
+                _invade_frame_count(red_rows, blue_jungle_zones)
+            )
+
+        logger.info("Computed %d early-game spatial features", len(features))
+        return features
+
     # ── Aggregated Feature Vector ────────────────────────────────────
 
     def compute_all(

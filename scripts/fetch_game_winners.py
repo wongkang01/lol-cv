@@ -28,15 +28,39 @@ Output: ``data/game_winners.json``::
 from __future__ import annotations
 
 import json
+import logging
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+logger = logging.getLogger("fetch_game_winners")
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 META_PATH = REPO_ROOT / "data" / "match_metadata.json"
 OUT_PATH = REPO_ROOT / "data" / "game_winners.json"
+
+# NOTE on authoritative winner source:
+# The lolesports `getEventDetails` / `getGames` endpoints expose per-game
+# `state: "completed"` but NO per-game winner field. The match-level
+# `teams[].result.gameWins` only aggregates the series score. Similarly the
+# livestats `window/{gameId}` feed's last frame only contains team stats
+# (inhibitors, kills, gold) — there is no `winningTeam` flag.
+#
+# Because no authoritative field exists, we derive the winner heuristically
+# from end-of-game team stats, ordered by reliability:
+#   1. Inhibitors destroyed — effectively authoritative in LoL: a team can
+#      only win by breaking the enemy nexus, which requires ≥1 inhibitor
+#      down. If inhibitor counts differ, confidence = HIGH.
+#   2. Total kills — strong proxy, used only when inhibs are tied (rare,
+#      e.g. early surrender). confidence = MEDIUM.
+#   3. Total gold — weakest tiebreaker, confidence = LOW. Logged as a
+#      warning because it should essentially never fire in finished games.
 
 API_KEY = "0TvQnueqKa5mxJntVWt0w4LpLfEkrV1Ta8rQBb9Z"
 HEADERS = {"x-api-key": API_KEY}
@@ -84,9 +108,34 @@ def fetch_game_end_state(game_id: str, date: str) -> dict | None:
 
 
 def determine_winner(end_state: dict) -> str | None:
-    """Decide winner from end-of-game stats. Returns 'blue', 'red', or None."""
+    """Decide winner from end-of-game stats. Returns 'blue', 'red', or None.
+
+    Uses a cascade of tiebreakers: inhibitors > kills > gold. See
+    ``determine_winner_with_confidence`` for the same result annotated
+    with a confidence label (HIGH / MEDIUM / LOW).
+    """
+    winner, _ = determine_winner_with_confidence(end_state)
+    return winner
+
+
+def determine_winner_with_confidence(
+    end_state: dict, game_match_id: str | None = None
+) -> tuple[str | None, str | None]:
+    """Decide winner from end-of-game stats and attach a confidence label.
+
+    Returns:
+        Tuple ``(winner_side, confidence)`` where ``winner_side`` is
+        ``'blue'``, ``'red'``, or ``None`` and ``confidence`` is ``'HIGH'``,
+        ``'MEDIUM'``, ``'LOW'``, or ``None``.
+
+        - HIGH   — inhibitor counts differ (the loser had at least one
+                   inhibitor destroyed, which is effectively required to
+                   break the nexus)
+        - MEDIUM — inhibs tied but kill diff > 5
+        - LOW    — all other ties, falling back to gold (should be rare)
+    """
     if not end_state:
-        return None
+        return None, None
     bi = end_state["blue"].get("inhibitors") or 0
     ri = end_state["red"].get("inhibitors") or 0
     bk = end_state["blue"].get("totalKills") or 0
@@ -95,14 +144,31 @@ def determine_winner(end_state: dict) -> str | None:
     rg = end_state["red"].get("totalGold") or 0
 
     if bi != ri:
-        return "blue" if bi > ri else "red"
-    # Tiebreaker 1: kills
+        return ("blue" if bi > ri else "red"), "HIGH"
+
+    # Tiebreaker 1: kills — medium confidence if the diff is > 5
     if bk != rk:
-        return "blue" if bk > rk else "red"
-    # Tiebreaker 2: gold
+        confidence = "MEDIUM" if abs(bk - rk) > 5 else "LOW"
+        if confidence == "LOW":
+            logger.warning(
+                "[low-conf] %s — inhibs tied (%d=%d), small kill diff %d-%d",
+                game_match_id or "?", bi, ri, bk, rk,
+            )
+        return ("blue" if bk > rk else "red"), confidence
+
+    # Tiebreaker 2: gold-only (should almost never fire for finished games)
     if bg != rg:
-        return "blue" if bg > rg else "red"
-    return None
+        logger.warning(
+            "[low-conf] %s — falling back to gold-only tiebreaker "
+            "(inhibs=%d/%d kills=%d/%d gold=%d/%d)",
+            game_match_id or "?", bi, ri, bk, rk, bg, rg,
+        )
+        return ("blue" if bg > rg else "red"), "LOW"
+
+    logger.warning(
+        "[no-winner] %s — all tiebreakers tied", game_match_id or "?"
+    )
+    return None, None
 
 
 def main() -> None:
@@ -178,12 +244,15 @@ def main() -> None:
             if end_state["gameState"] != "finished":
                 print(f"[warn] {game_match_id} — gameState={end_state['gameState']}")
 
-            winner_side = determine_winner(end_state)
+            winner_side, confidence = determine_winner_with_confidence(
+                end_state, game_match_id
+            )
             winner_code = blue_code if winner_side == "blue" else red_code if winner_side == "red" else "?"
 
             out[game_match_id] = {
                 "winner_side": winner_side,
                 "winner_team_code": winner_code,
+                "winner_confidence": confidence,
                 "blue_team_code": blue_code,
                 "red_team_code": red_code,
                 "blue_kills": end_state["blue"].get("totalKills"),
@@ -197,7 +266,8 @@ def main() -> None:
             }
             print(
                 f"[ok]   {game_match_id}  {blue_code} (blue) vs {red_code} (red) "
-                f"→ {winner_code}  ({end_state['blue'].get('totalKills')}-{end_state['red'].get('totalKills')})"
+                f"→ {winner_code} [{confidence}]  "
+                f"({end_state['blue'].get('totalKills')}-{end_state['red'].get('totalKills')})"
             )
 
     OUT_PATH.write_text(json.dumps(out, indent=2))

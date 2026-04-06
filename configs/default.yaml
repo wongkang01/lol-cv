@@ -9,7 +9,8 @@ extraction:
     fps: 1  # Extract 1 frame per second
 
   ocr:
-    engine: "paddleocr"
+    engine: "easyocr"
+    fps: 1  # Frames per second to sample for OCR extraction
     regions:
       # HUD regions for LoL Esports broadcast (reference resolution 1920x1080)
       # These scale automatically to 720p and other resolutions at runtime.
@@ -35,7 +36,10 @@ extraction:
 features:
   spatial:
     zone_grid_size: 16  # 16x16 grid for zone analysis
-    grouping_threshold: 200  # pixels for "grouped" detection
+    # Grouping threshold in NORMALISED minimap coordinates [0, 1].
+    # 0.15 ≈ 200 px on a 512-px minimap. SpatialFeatures operates entirely
+    # in normalised space, so this is passed through unchanged.
+    grouping_threshold: 0.15
     convergence_target_count: 3  # members needed near objective for convergence
 
   temporal:

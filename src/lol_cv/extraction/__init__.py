@@ -2,7 +2,8 @@
 Data extraction modules.
 
 - minimap: Champion position tracking via YOLO (pyLoL weights) on minimap frames
-- ocr: HUD data extraction (gold, KDA, items, timers) via PaddleOCR
+- ocr: HUD data extraction (gold, KDA, items, timers) via easyocr
+        (legacy paddleocr-based HudExtractor retained with a lazy import)
 - api: Riot API client for supplementary match data
 - vlm: Vision-Language Model analysis via Gemini (Flash + Embedding)
 - vod_processor: VOD download, frame extraction, and region cropping pipeline

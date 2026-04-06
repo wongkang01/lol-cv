@@ -34,7 +34,7 @@ class Pipeline:
     """Orchestrate all stages of the LoL CV analysis pipeline.
 
     Components are initialised lazily on first use to avoid importing
-    heavy dependencies (ultralytics, paddleocr, google-genai) until
+    heavy dependencies (ultralytics, easyocr, google-genai) until
     they are actually needed.
     """
 
@@ -75,7 +75,7 @@ class Pipeline:
             from lol_cv.extraction.ocr import HudExtractor
 
             cfg = self.config.get("extraction", {}).get("ocr", {})
-            self._ocr = HudExtractor(engine=cfg.get("engine", "paddleocr"))
+            self._ocr = HudExtractor(engine=cfg.get("engine", "easyocr"))
         return self._ocr
 
     @property
@@ -99,10 +99,12 @@ class Pipeline:
             from lol_cv.features.spatial import SpatialFeatures
 
             cfg = self.config.get("features", {}).get("spatial", {})
-            threshold = cfg.get("grouping_threshold", 200)
-            # Config value is in pixels (512-grid); convert to normalised [0,1]
+            # grouping_threshold is stored in normalised minimap coords
+            # [0, 1] (e.g. 0.15 ≈ 200 px on a 512-px minimap) and passed
+            # through unchanged — SpatialFeatures operates in normalised
+            # space.
             self._spatial = SpatialFeatures(
-                grouping_threshold=threshold / 512 if threshold > 1 else threshold,
+                grouping_threshold=cfg.get("grouping_threshold", 0.15),
             )
         return self._spatial
 
@@ -220,8 +222,8 @@ class Pipeline:
     ) -> pd.DataFrame:
         """Stage 2: Extract HUD data from a spectator-mode video.
 
-        Runs PaddleOCR on sampled frames to extract game timer, kill
-        score, and gold values.
+        Runs the configured OCR engine (easyocr by default) on sampled
+        frames to extract the game timer, kill score, and gold values.
 
         Args:
             video_path: Path to the spectator-mode video.
@@ -231,8 +233,14 @@ class Pipeline:
             DataFrame with columns derived from
             ``HudExtractor.extract_all`` — one row per sampled frame.
         """
-        cfg = self.config.get("extraction", {}).get("minimap", {})
-        fps = cfg.get("fps", 1)
+        # Resolve sampling fps with a clear fallback chain:
+        #   1. extraction.ocr.fps   (preferred, OCR-specific sampling rate)
+        #   2. extraction.minimap.fps (legacy fallback so older configs keep working)
+        #   3. 1 Hz (default)
+        extraction_cfg = self.config.get("extraction", {})
+        ocr_cfg = extraction_cfg.get("ocr", {})
+        minimap_cfg = extraction_cfg.get("minimap", {})
+        fps = ocr_cfg.get("fps", minimap_cfg.get("fps", 1))
 
         logger.info("Stage 2 [OCR] — %s", video_path)
 
@@ -287,10 +295,16 @@ class Pipeline:
 
         prompt = None
         if ocr_context:
+            # Import the default tactical prompt from the vlm module so the
+            # OCR-enriched prompt keeps the full analysis instructions. The
+            # previous lookup (`self.vlm.__class__.__dict__.get('_default_prompt')`)
+            # silently returned an empty string because no such attribute exists.
+            from lol_cv.extraction.vlm import DEFAULT_ANALYSIS_PROMPT
+
             context_str = json.dumps(ocr_context, indent=2)
             prompt = (
                 f"Additional context from OCR extraction:\n{context_str}\n\n"
-                f"{self.vlm.__class__.__dict__.get('_default_prompt', '')}"
+                f"{DEFAULT_ANALYSIS_PROMPT}"
             )
 
         responses = self.vlm.analyze_frames_batch(frame_paths, prompt=prompt)
@@ -349,11 +363,27 @@ class Pipeline:
         # "kill" events; gold swings become a continuous feature.
         events_df = self._ocr_to_events(ocr_df)
         if not events_df.empty:
+            # Build a lightweight gold_diff column so TemporalFeatures can
+            # compute gold_diff_slope_* features (matches the calling
+            # convention in scripts/run_features.py).
+            ocr_for_temporal = None
+            if (
+                ocr_df is not None
+                and not ocr_df.empty
+                and "blue_gold" in ocr_df.columns
+                and "red_gold" in ocr_df.columns
+            ):
+                ocr_for_temporal = ocr_df.copy()
+                ocr_for_temporal["gold_diff"] = (
+                    ocr_for_temporal["blue_gold"] - ocr_for_temporal["red_gold"]
+                )
+
             temporal_feats = self.temporal.compute_all(
                 events_df,
                 positions=positions_df if not positions_df.empty else None,
                 blue_team=blue_team,
                 red_team=red_team,
+                ocr_df=ocr_for_temporal,
             )
             features.update(temporal_feats)
 

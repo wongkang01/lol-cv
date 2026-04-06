@@ -2,7 +2,16 @@
 OCR-based HUD data extraction from game screenshots.
 
 Extracts gold counts, KDA, CS, levels, items, and timers from the
-League of Legends spectator mode HUD using PaddleOCR.
+League of Legends spectator mode HUD.
+
+NOTE: This module contains a legacy PaddleOCR-based ``HudExtractor``.
+The active OCR pipeline is ``scripts/run_ocr.py``, which uses easyocr.
+PaddleOCR is no longer a project dependency — the import is loaded
+lazily inside ``HudExtractor._get_ocr`` so that this module can still
+be imported (for tests and downstream imports) without paddleocr
+installed. Instantiating ``HudExtractor(engine='paddleocr')`` will
+raise ``ImportError`` with a helpful message directing users to
+``scripts/run_ocr.py`` or to install paddleocr explicitly.
 
 Spectator mode HUD layout (1920x1080, 2026 First Stand broadcast):
     - Top bar: team scores, gold, turrets (y: 0-80, full width)
@@ -17,12 +26,15 @@ ROI coordinates must be adjusted for different resolutions.
 """
 
 import re
+from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
-from paddleocr import PaddleOCR
 
 from lol_cv.utils import setup_logger
+
+if TYPE_CHECKING:
+    from paddleocr import PaddleOCR
 
 logger = setup_logger("lol_cv.extraction.ocr")
 
@@ -58,9 +70,23 @@ class HudExtractor:
         self._ocr = None
         self._lang = lang
 
-    def _get_ocr(self) -> PaddleOCR:
-        """Lazy-load PaddleOCR engine."""
+    def _get_ocr(self) -> "PaddleOCR":
+        """Lazy-load PaddleOCR engine.
+
+        Importing paddleocr is deferred until the first OCR call so the
+        rest of this module can be imported in environments without
+        paddleocr installed (e.g. the test suite).
+        """
         if self._ocr is None:
+            try:
+                from paddleocr import PaddleOCR  # noqa: WPS433 (late import)
+            except ImportError as exc:
+                raise ImportError(
+                    "paddleocr is not installed. The active OCR pipeline uses "
+                    "easyocr via scripts/run_ocr.py. Install paddleocr "
+                    "explicitly (`pip install paddleocr paddlepaddle`) if you "
+                    "need this legacy HudExtractor."
+                ) from exc
             logger.info("Initializing PaddleOCR engine")
             self._ocr = PaddleOCR(use_angle_cls=True, lang=self._lang, show_log=False)
         return self._ocr

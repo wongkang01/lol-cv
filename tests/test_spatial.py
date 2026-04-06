@@ -236,3 +236,213 @@ class TestConvergenceSpeed:
         })
         result = spatial.convergence_speed(df, ["A", "B", "C"], "dragon")
         assert result == 5.0
+
+
+# ── Bespoke Early-Game Features ─────────────────────────────────────
+
+
+def _base_df(rows: list[dict]) -> pd.DataFrame:
+    """Build a positions DataFrame with the standard column schema."""
+    df = pd.DataFrame(rows)
+    if "confidence" not in df.columns:
+        df["confidence"] = 0.9
+    return df[["timestamp", "champion", "x", "y", "confidence"]]
+
+
+class TestJunglerCommitSide:
+    """Feature 1: Jungler commit side (top/mid/bot) + vertical jungling."""
+
+    def _jgl_df(self, blue_y: float, red_y: float) -> pd.DataFrame:
+        rows = []
+        # Sample the [60, 200] window at 1 Hz.
+        for t in range(60, 201):
+            rows.append({"timestamp": t, "champion": "BlueJgl", "x": 0.5, "y": blue_y})
+            rows.append({"timestamp": t, "champion": "RedJgl", "x": 0.5, "y": red_y})
+        return _base_df(rows)
+
+    def test_commit_top(self, spatial):
+        df = self._jgl_df(blue_y=0.2, red_y=0.2)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BlueJgl"], red_team=["RedJgl"],
+            blue_jungler="BlueJgl", red_jungler="RedJgl",
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_jgl_commit_side"] == 0  # top
+        assert out["red_jgl_commit_side"] == 0
+        assert out["vertical_jungling"] == 0
+
+    def test_commit_mid(self, spatial):
+        df = self._jgl_df(blue_y=0.5, red_y=0.5)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BlueJgl"], red_team=["RedJgl"],
+            blue_jungler="BlueJgl", red_jungler="RedJgl",
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_jgl_commit_side"] == 1
+        assert out["red_jgl_commit_side"] == 1
+        assert out["vertical_jungling"] == 0
+
+    def test_commit_bot(self, spatial):
+        df = self._jgl_df(blue_y=0.85, red_y=0.85)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BlueJgl"], red_team=["RedJgl"],
+            blue_jungler="BlueJgl", red_jungler="RedJgl",
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_jgl_commit_side"] == 2
+        assert out["red_jgl_commit_side"] == 2
+        assert out["vertical_jungling"] == 0
+
+    def test_vertical_jungling_flag(self, spatial):
+        """Blue top + red bot == vertical jungling."""
+        df = self._jgl_df(blue_y=0.2, red_y=0.85)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BlueJgl"], red_team=["RedJgl"],
+            blue_jungler="BlueJgl", red_jungler="RedJgl",
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_jgl_commit_side"] == 0
+        assert out["red_jgl_commit_side"] == 2
+        assert out["vertical_jungling"] == 1
+
+    def test_missing_jungler_is_nan(self, spatial):
+        df = _base_df([{"timestamp": 100, "champion": "X", "x": 0.5, "y": 0.5}])
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["X"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert np.isnan(out["blue_jgl_commit_side"])
+        assert np.isnan(out["red_jgl_commit_side"])
+        assert np.isnan(out["vertical_jungling"])
+
+
+class TestScuttleProximity:
+    """Feature 2: Scuttle-crab proximity counts and arrival latencies."""
+
+    def test_three_blue_near_top_crab(self, spatial):
+        # Three blue champions parked at the top crab at t=200, plus some
+        # filler rows outside the window so we exercise the full windowing.
+        rows = []
+        for champ in ["B1", "B2", "B3"]:
+            rows.append({"timestamp": 200, "champion": champ, "x": 0.38, "y": 0.22})
+        # Red players far away
+        rows.append({"timestamp": 200, "champion": "R1", "x": 0.9, "y": 0.9})
+        df = _base_df(rows)
+
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["B1", "B2", "B3"], red_team=["R1"],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_top_scuttle_count"] == 3
+        assert out["red_top_scuttle_count"] == 0
+        assert out["blue_top_scuttle_arrival"] == pytest.approx(200.0)
+        assert np.isnan(out["red_top_scuttle_arrival"])
+
+    def test_no_data_returns_nan(self, spatial):
+        # All timestamps outside the scuttle window.
+        rows = [
+            {"timestamp": 10, "champion": "B1", "x": 0.38, "y": 0.22},
+        ]
+        df = _base_df(rows)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["B1"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert np.isnan(out["blue_top_scuttle_count"])
+        assert np.isnan(out["blue_top_scuttle_arrival"])
+
+
+class TestMidRoam:
+    """Feature 3: mid laner first roam time + target."""
+
+    def test_mid_roams_top_at_300(self, spatial):
+        # Mid lane axis: y = -x + 1. Sitting at (0.5, 0.5) -> dist 0.
+        # From t=300 onwards, jump to (0.2, 0.1) (very low y, far from axis).
+        rows = []
+        for t in range(0, 300):
+            rows.append({"timestamp": t, "champion": "BMid", "x": 0.5, "y": 0.5})
+        for t in range(300, 335):
+            rows.append({"timestamp": t, "champion": "BMid", "x": 0.2, "y": 0.1})
+        df = _base_df(rows)
+
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BMid"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid="BMid", red_mid=None,
+        )
+        assert out["blue_mid_first_roam_time"] == pytest.approx(300.0)
+        assert out["blue_mid_roam_target"] == 0  # top half (y < 0.5)
+
+    def test_mid_never_roams(self, spatial):
+        rows = [{"timestamp": t, "champion": "BMid", "x": 0.5, "y": 0.5} for t in range(0, 450)]
+        df = _base_df(rows)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["BMid"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid="BMid", red_mid=None,
+        )
+        assert np.isnan(out["blue_mid_first_roam_time"])
+        assert np.isnan(out["blue_mid_roam_target"])
+
+    def test_missing_mid_returns_nan(self, spatial):
+        df = _base_df([{"timestamp": 100, "champion": "X", "x": 0.5, "y": 0.5}])
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["X"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert np.isnan(out["blue_mid_first_roam_time"])
+        assert np.isnan(out["blue_mid_roam_target"])
+
+
+class TestLevel1Invade:
+    """Feature 4: level-1 invade frame counts."""
+
+    def test_blue_invades_red_bot_jungle(self, spatial):
+        # Place 3 blue champions inside bot_jungle_red zone
+        # (0.65, 0.35, 0.9, 0.65) -> use (0.7, 0.5) for 5 frames in [0, 90].
+        rows = []
+        for t in [10, 20, 30, 40, 50]:
+            rows.append({"timestamp": t, "champion": "B1", "x": 0.7, "y": 0.5})
+            rows.append({"timestamp": t, "champion": "B2", "x": 0.72, "y": 0.5})
+            rows.append({"timestamp": t, "champion": "B3", "x": 0.74, "y": 0.5})
+        # Red champions safely in their base
+        for t in [10, 20, 30, 40, 50]:
+            rows.append({"timestamp": t, "champion": "R1", "x": 0.9, "y": 0.1})
+        df = _base_df(rows)
+
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["B1", "B2", "B3"], red_team=["R1"],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_lvl1_invade_frames"] == 5
+        assert out["red_lvl1_invade_frames"] == 0
+
+    def test_no_invade_when_only_two(self, spatial):
+        rows = []
+        for t in [10, 20, 30]:
+            rows.append({"timestamp": t, "champion": "B1", "x": 0.7, "y": 0.5})
+            rows.append({"timestamp": t, "champion": "B2", "x": 0.72, "y": 0.5})
+        df = _base_df(rows)
+        out = spatial.compute_early_features(
+            df,
+            blue_team=["B1", "B2"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_mid=None, red_mid=None,
+        )
+        assert out["blue_lvl1_invade_frames"] == 0
