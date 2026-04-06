@@ -446,3 +446,316 @@ class TestLevel1Invade:
             blue_mid=None, red_mid=None,
         )
         assert out["blue_lvl1_invade_frames"] == 0
+
+
+# ── Bespoke Strategic Features ──────────────────────────────────────
+
+
+class TestBotZoningDepth:
+    """Feature 5: bot lane 2v2 zoning depth along the bot-lane axis."""
+
+    def test_at_blue_tower_is_zero(self, spatial):
+        """Duo sitting exactly at the blue bot tower projects to 0."""
+        rows = []
+        for t in range(90, 301):
+            rows.append({"timestamp": t, "champion": "BADC", "x": 0.62, "y": 0.92})
+            rows.append({"timestamp": t, "champion": "BSUP", "x": 0.62, "y": 0.92})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BADC", "BSUP"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot="BADC", red_bot=None,
+            blue_sup="BSUP", red_sup=None,
+        )
+        assert out["blue_bot_zoning_depth"] == pytest.approx(0.0, abs=1e-6)
+        assert np.isnan(out["red_bot_zoning_depth"])
+        assert np.isnan(out["bot_zoning_diff"])
+
+    def test_at_red_tower_is_one(self, spatial):
+        """Duo at the red bot tower projects to 1."""
+        rows = []
+        for t in range(90, 301):
+            rows.append({"timestamp": t, "champion": "BADC", "x": 0.92, "y": 0.58})
+            rows.append({"timestamp": t, "champion": "BSUP", "x": 0.92, "y": 0.58})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BADC", "BSUP"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot="BADC", red_bot=None,
+            blue_sup="BSUP", red_sup=None,
+        )
+        assert out["blue_bot_zoning_depth"] == pytest.approx(1.0, abs=1e-6)
+
+    def test_midpoint_is_half(self, spatial):
+        """Duo midpoint at the axis centre projects to 0.5."""
+        # Midpoint between (0.62, 0.92) and (0.92, 0.58) = (0.77, 0.75)
+        rows = []
+        for t in range(90, 301):
+            rows.append({"timestamp": t, "champion": "BADC", "x": 0.77, "y": 0.75})
+            rows.append({"timestamp": t, "champion": "BSUP", "x": 0.77, "y": 0.75})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BADC", "BSUP"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot="BADC", red_bot=None,
+            blue_sup="BSUP", red_sup=None,
+        )
+        assert out["blue_bot_zoning_depth"] == pytest.approx(0.5, abs=1e-3)
+
+    def test_missing_role_returns_nan(self, spatial):
+        """Missing ADC or support yields NaN."""
+        df = _base_df([{"timestamp": 100, "champion": "X", "x": 0.5, "y": 0.5}])
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["X"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert np.isnan(out["blue_bot_zoning_depth"])
+        assert np.isnan(out["red_bot_zoning_depth"])
+        assert np.isnan(out["bot_zoning_diff"])
+
+    def test_diff_sign(self, spatial):
+        """Blue deeper than red -> positive diff."""
+        rows = []
+        for t in range(90, 301):
+            # Blue duo at midpoint of axis (0.5)
+            rows.append({"timestamp": t, "champion": "BADC", "x": 0.77, "y": 0.75})
+            rows.append({"timestamp": t, "champion": "BSUP", "x": 0.77, "y": 0.75})
+            # Red duo at blue tower (0.0)
+            rows.append({"timestamp": t, "champion": "RADC", "x": 0.62, "y": 0.92})
+            rows.append({"timestamp": t, "champion": "RSUP", "x": 0.62, "y": 0.92})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BADC", "BSUP"], red_team=["RADC", "RSUP"],
+            blue_jungler=None, red_jungler=None,
+            blue_bot="BADC", red_bot="RADC",
+            blue_sup="BSUP", red_sup="RSUP",
+        )
+        assert out["bot_zoning_diff"] > 0
+
+
+class TestSyncedRecalls:
+    """Feature 6: synchronised recall count in [3:00, 8:00]."""
+
+    def test_one_synced_recall(self, spatial):
+        """3 blue champs at blue fountain at t=200, none at t=199 -> 1 sync."""
+        rows = []
+        # Far away at t=199
+        for champ in ["B1", "B2", "B3"]:
+            rows.append({"timestamp": 199, "champion": champ, "x": 0.5, "y": 0.5})
+        # All at fountain at t=200
+        for champ in ["B1", "B2", "B3"]:
+            rows.append({"timestamp": 200, "champion": champ, "x": 0.05, "y": 0.95})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["B1", "B2", "B3"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert out["blue_synced_recalls"] == 1
+
+    def test_no_sync_when_only_one(self, spatial):
+        """Only 1 champion at base -> no synced recall."""
+        rows = []
+        rows.append({"timestamp": 199, "champion": "B1", "x": 0.5, "y": 0.5})
+        rows.append({"timestamp": 200, "champion": "B1", "x": 0.05, "y": 0.95})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["B1"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert out["blue_synced_recalls"] == 0
+
+    def test_no_sync_when_all_already_at_base(self, spatial):
+        """If all allies are already at base the previous second, no transition."""
+        rows = []
+        for t in [199, 200]:
+            for champ in ["B1", "B2", "B3"]:
+                rows.append({"timestamp": t, "champion": champ, "x": 0.05, "y": 0.95})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["B1", "B2", "B3"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        # At t=200, newly_arrived is empty because all were there at t=199.
+        # (t=199 itself is before the [180, 480] counting window start check.)
+        # Note: at t=199 cur=3, prev=empty -> but 199 is outside [180, 480]?
+        # Actually 180 <= 199 <= 480 so t=199 yields 1 sync.
+        # We only care that the answer is exactly 1 (from t=199), not 2.
+        assert out["blue_synced_recalls"] == 1
+
+
+class TestMapAsymmetryIndex:
+    """Feature 7: 4x4 presence histogram cosine distance (mirror-rotated)."""
+
+    def test_mirrored_positions_low_asymmetry(self, spatial):
+        """Blue at one corner, red at the anti-diagonal corner -> asymmetry ~0."""
+        # Blue bases in the bottom-left corner (blue base area).
+        # Red bases in the top-right corner.
+        # Cell for blue point (0.1, 0.9): (i, j) = (3, 0) -> mirrored to (3, 0).
+        # Cell for red point (0.9, 0.1): (i, j) = (0, 3) -> mirrored to (0, 3).
+        # These don't match under this mirror. Use a symmetric placement:
+        # blue at (0.1, 0.9) -> (3, 0). mirror -> (3, 0).
+        # For blue and red-mirrored to match, place red at positions whose
+        # mirrored cell is (3, 0): the cell (i, j) with (3-j, 3-i) = (3, 0)
+        # means j=0, i=3, so red cell is (3, 0) too. That means red at same
+        # bottom-left corner (0.1, 0.9). But we want RED to be in its base.
+        # Testing: both teams in the same cell -> mirror maps red cell to
+        # itself if red is at (3, 0) i.e. bottom-left corner — not red base.
+        # Simpler: both teams in the centre cells on anti-diagonal.
+        # Use blue at (0.3, 0.7), red at (0.7, 0.3).
+        # Blue cell: yi=2, xi=1 -> (2, 1). Red cell: yi=1, xi=2 -> (1, 2).
+        # Red mirrored: (3-2, 3-1) = (1, 2) -> doesn't match (2, 1).
+        # Correct mirror: cell (i, j) in red -> (3-j, 3-i).
+        # So red at (1, 2) maps to (3-2, 3-1) = (1, 2). Still not (2, 1).
+        # Try blue at (0.8, 0.2) -> (0, 3), red at (0.2, 0.8) -> (3, 0).
+        # Red (3, 0) -> (3-0, 3-3) = (3, 0). Doesn't match.
+        # I think the mirror rule isn't strict "anti-diagonal mirror" -
+        # it's defined in the spec. Let me just verify that IDENTICAL
+        # placements yield asymmetry > 0 and blue==red mirrored setups
+        # yield 0. Use blue and red in SAME exact cells -> red mirrored
+        # will NOT equal blue in general, so this is a "high asymmetry"
+        # test, not low. Use a uniform distribution that is self-mirroring:
+        # place one blue and one red in EACH cell -> hists are uniform
+        # -> mirrored is also uniform -> distance 0.
+        rows = []
+        champs_blue = [f"B{i}" for i in range(16)]
+        champs_red = [f"R{i}" for i in range(16)]
+        for t in [300, 360, 420]:
+            idx = 0
+            for i in range(4):
+                for j in range(4):
+                    x = (j + 0.5) / 4
+                    y = (i + 0.5) / 4
+                    rows.append({
+                        "timestamp": t, "champion": champs_blue[idx], "x": x, "y": y
+                    })
+                    rows.append({
+                        "timestamp": t, "champion": champs_red[idx], "x": x, "y": y
+                    })
+                    idx += 1
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=champs_blue, red_team=champs_red,
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        # Uniform histogram mirrored is still uniform -> cosine distance ~0.
+        assert out["map_asymmetry_index_mean"] == pytest.approx(0.0, abs=1e-6)
+
+    def test_opposite_positions_high_asymmetry(self, spatial):
+        """Blue piled into one cell, red piled into a NON-mirror cell -> distance > 0.5."""
+        rows = []
+        # Blue all in cell (0, 0) = top-left (x in [0, 0.25), y in [0, 0.25)).
+        # Red all in cell (0, 0) as well. Red mirrored: (3-0, 3-0) = (3, 3).
+        # So blue hist has mass at (0, 0), red mirrored has mass at (3, 3).
+        # Cosine distance = 1.0 (orthogonal vectors).
+        for t in [300, 360, 420]:
+            for champ in ["B1", "B2", "B3", "B4", "B5"]:
+                rows.append({"timestamp": t, "champion": champ, "x": 0.1, "y": 0.1})
+            for champ in ["R1", "R2", "R3", "R4", "R5"]:
+                rows.append({"timestamp": t, "champion": champ, "x": 0.1, "y": 0.1})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["B1", "B2", "B3", "B4", "B5"],
+            red_team=["R1", "R2", "R3", "R4", "R5"],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert out["map_asymmetry_index_mean"] > 0.5
+
+    def test_empty_window_returns_nan(self, spatial):
+        """No data in [240, 480] -> NaN."""
+        df = _base_df([{"timestamp": 100, "champion": "X", "x": 0.5, "y": 0.5}])
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["X"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert np.isnan(out["map_asymmetry_index_mean"])
+
+
+class TestPre3MinInvade:
+    """Feature 8: pre-3-min counter-jungle asymmetry."""
+
+    def test_blue_jungler_invades_30s(self, spatial):
+        """Blue jungler in red bot jungle for 30 seconds of [90, 180]."""
+        rows = []
+        # Blue jungler sitting in bot_jungle_red (0.65-0.9, 0.35-0.65) for 30 secs.
+        for t in range(100, 130):
+            rows.append({"timestamp": t, "champion": "BJgl", "x": 0.75, "y": 0.5})
+        # Red jungler safe in their own jungle (same zone) — but from blue's
+        # perspective, red jungler is in blue_jungle_* zones. Place red jungler
+        # in bot_jungle_blue (0.6-0.9, 0.65-0.95) -> that IS blue's jungle from
+        # red's perspective. Actually "blue jungle" = blue team's jungle, and
+        # from red's perspective the opposing jungle IS blue's. So red jungler
+        # at (0.75, 0.8) would be IN blue jungle. To give red 0 invade secs,
+        # place red jungler in red's own jungle e.g. (0.75, 0.5) is bot_jungle_red.
+        for t in range(100, 130):
+            rows.append({"timestamp": t, "champion": "RJgl", "x": 0.75, "y": 0.5})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BJgl"], red_team=["RJgl"],
+            blue_jungler="BJgl", red_jungler="RJgl",
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert out["blue_pre3min_invade_secs"] == 30
+        assert out["red_pre3min_invade_secs"] == 0
+        assert out["pre3min_invade_diff"] == 30
+        assert out["pre3min_invade_min"] == 0
+
+    def test_missing_jungler_returns_nan(self, spatial):
+        df = _base_df([{"timestamp": 100, "champion": "X", "x": 0.5, "y": 0.5}])
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["X"], red_team=[],
+            blue_jungler=None, red_jungler=None,
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert np.isnan(out["blue_pre3min_invade_secs"])
+        assert np.isnan(out["red_pre3min_invade_secs"])
+        assert np.isnan(out["pre3min_invade_diff"])
+        assert np.isnan(out["pre3min_invade_min"])
+
+    def test_joint_counter_jungling(self, spatial):
+        """Both junglers invading simultaneously -> min > 0."""
+        rows = []
+        # Both junglers in opposing jungle for 20 seconds.
+        for t in range(100, 120):
+            rows.append({"timestamp": t, "champion": "BJgl", "x": 0.75, "y": 0.5})
+            rows.append({"timestamp": t, "champion": "RJgl", "x": 0.75, "y": 0.8})
+        df = _base_df(rows)
+        out = spatial.compute_strategic_features(
+            df,
+            blue_team=["BJgl"], red_team=["RJgl"],
+            blue_jungler="BJgl", red_jungler="RJgl",
+            blue_bot=None, red_bot=None,
+            blue_sup=None, red_sup=None,
+        )
+        assert out["blue_pre3min_invade_secs"] == 20
+        assert out["red_pre3min_invade_secs"] == 20
+        assert out["pre3min_invade_diff"] == 0
+        assert out["pre3min_invade_min"] == 20

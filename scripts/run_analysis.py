@@ -56,8 +56,55 @@ def load_data(features_filename: str) -> tuple[pd.DataFrame, pd.Series, pd.DataF
     y = (meta["winner_side"] == "blue").astype(int)
     y.name = "blue_wins"
 
-    # Drop entirely-NaN columns and fill rest with 0 (safe for trees)
-    feats = feats.dropna(axis=1, how="all").fillna(0.0)
+    # Drop entirely-NaN columns first.
+    feats = feats.dropna(axis=1, how="all")
+
+    # ── Smarter NaN handling for rare-event features ──
+    #
+    # Rare-event features (``sp_early_*`` / ``sp_strat_*``) have meaningful
+    # missingness: a NaN means "the event never happened" (e.g. the mid laner
+    # never roamed), which is NOT the same as "the event happened at t=0".
+    # Filling these with 0 would tell the model "roamed instantly" instead of
+    # "never roamed" — destroying signal for rare events.
+    #
+    # Strategy:
+    #   1. For each rare-event column, add a parallel ``<col>_missing`` int
+    #      indicator column BEFORE filling, so tree models can split on
+    #      presence/absence directly.
+    #   2. Fill continuous features (timestamps, distances, arrival times,
+    #      encoded categoricals) with a sentinel ``-1`` — tree models can
+    #      learn a split at >-0.5 to separate "real value" from "missing".
+    #   3. Fill count features (``_count``/``_frames``/``_secs``/``_recalls``)
+    #      with 0 — here 0 is the semantically correct "no invade / no
+    #      recall happened" value.
+    #   4. Existing full-game ``sp_*`` (zone occupancy) and ``tp_*`` (temporal)
+    #      features do NOT have rare-event semantics, so they keep the old
+    #      ``fillna(0.0)`` behaviour.
+    rare_event_cols = [
+        c for c in feats.columns
+        if c.startswith("sp_early_") or c.startswith("sp_strat_")
+    ]
+
+    missing_indicators_added = 0
+    for col in rare_event_cols:
+        indicator = feats[col].isna().astype(int)
+        feats[f"{col}_missing"] = indicator
+        missing_indicators_added += 1
+
+        # Heuristic: counts use 0, everything else uses -1 sentinel.
+        if any(s in col for s in ["_count", "_frames", "_secs", "_recalls"]):
+            fill_value: float = 0
+        else:
+            fill_value = -1
+        feats[col] = feats[col].fillna(fill_value)
+
+    logger.info(
+        "Added %d missingness indicators for rare-event sp_early_*/sp_strat_* columns",
+        missing_indicators_added,
+    )
+
+    # For everything else (full-game sp_*, tp_*, ocr_*, meta), use legacy 0-fill.
+    feats = feats.fillna(0.0)
 
     logger.info("Loaded %d games × %d features", *feats.shape)
     logger.info("Class balance: blue_wins=%d red_wins=%d", int(y.sum()), int((1 - y).sum()))
@@ -129,6 +176,147 @@ def run_ablation(X: pd.DataFrame, y: pd.Series, groups: dict[str, pd.DataFrame],
                 "accuracy": m["accuracy"], "f1": m["f1"], "roc_auc": m["roc_auc"],
             })
     return pd.DataFrame(rows)
+
+
+# ── Strategic category ablation ──
+#
+# Maps each category to a predicate over column names. A column may match more
+# than one category (e.g. a jungle-lane positioning column) — that's expected
+# and fine: it just shows up in both ablations. The two rare-event categories
+# (``early_strategy``/``strategic_decisions``) are deliberately mutually
+# exclusive with the three pattern-based full-game categories.
+CATEGORIES = {
+    "jungle_invasion": lambda c: (
+        "jungle" in c
+        and c.startswith("sp_")
+        and not c.startswith("sp_early_")
+        and not c.startswith("sp_strat_")
+    ),
+    "objective_control": lambda c: (
+        any(o in c for o in ["baron", "dragon", "herald", "_pit"])
+        and c.startswith("sp_")
+    ),
+    "lane_positioning": lambda c: (
+        any(l in c for l in ["_lane", "_river_", "_base"])
+        and c.startswith("sp_")
+        and "jungle" not in c
+    ),
+    "team_coordination": lambda c: (
+        any(g in c for g in ["grouping", "convergence", "synced_recalls", "asymmetry"])
+        and c.startswith("sp_")
+    ),
+    "early_strategy": lambda c: c.startswith("sp_early_"),
+    "strategic_decisions": lambda c: c.startswith("sp_strat_"),
+    "temporal_dynamics": lambda c: c.startswith("tp_"),
+    "ocr_state": lambda c: c.startswith("ocr_"),
+}
+
+
+def category_ablation(
+    X: pd.DataFrame, y: pd.Series, cv_folds: int = 5
+) -> pd.DataFrame:
+    """Rank strategic categories by predictive contribution.
+
+    For each category defined in ``CATEGORIES`` above, build the subset
+    ``X_cat = X[matching columns]`` and train RF / GBM / SVM with
+    stratified ``cv_folds``-fold CV. Records one row per (category, model)
+    with accuracy, f1, roc_auc and the feature count.
+
+    Empty categories (no columns match in the current matrix) are skipped
+    with a warning so the function stays backward compatible while new
+    feature families (e.g. ``sp_strat_*``) are still being added.
+
+    Returns a DataFrame sorted by ``roc_auc`` descending.
+    """
+    rows: list[dict] = []
+    for cat_name, predicate in CATEGORIES.items():
+        cols = [c for c in X.columns if predicate(c)]
+        if not cols:
+            logger.warning(
+                "category_ablation: category %s is empty — skipping", cat_name
+            )
+            continue
+
+        X_cat = X[cols]
+        logger.info(
+            "category_ablation: %-22s %3d features", cat_name, X_cat.shape[1]
+        )
+
+        for model in ["random_forest", "gradient_boosting", "svm"]:
+            pred = WinPredictor(
+                models=[model], cv_folds=cv_folds, random_state=42
+            )
+            metrics = pred.train_and_evaluate(X_cat, y)[model]
+            rows.append({
+                "category": cat_name,
+                "model": model,
+                "accuracy": metrics["accuracy"],
+                "f1": metrics["f1"],
+                "roc_auc": metrics["roc_auc"],
+                "n_features": int(X_cat.shape[1]),
+            })
+
+    df = pd.DataFrame(rows)
+    if df.empty:
+        logger.warning("category_ablation: no non-empty categories — returning empty frame")
+        return df
+    return df.sort_values("roc_auc", ascending=False).reset_index(drop=True)
+
+
+def plot_category_ablation(cat_df: pd.DataFrame, out_path: Path) -> None:
+    """Bar-plot category_ablation: categories on x-axis, AUC on y-axis,
+    grouped by model. Feature counts annotated above each bar.
+
+    Styled to match ``plot_ablation`` for visual consistency.
+    """
+    if cat_df.empty:
+        logger.warning("plot_category_ablation: frame is empty — skipping plot")
+        return
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    pivot_auc = cat_df.pivot(index="category", columns="model", values="roc_auc")
+    pivot_n = cat_df.pivot(index="category", columns="model", values="n_features")
+
+    # Order categories by best AUC across models (descending) so the plot
+    # mirrors the CSV's "most predictive category first" ordering.
+    ordering = pivot_auc.max(axis=1).sort_values(ascending=False).index
+    pivot_auc = pivot_auc.loc[ordering]
+    pivot_n = pivot_n.loc[ordering]
+
+    pivot_auc.plot(kind="bar", ax=ax)
+    ax.set_ylim(0, 1.15)
+    ax.set_ylabel("ROC-AUC (CV mean)")
+    ax.set_title("Per-category ablation: strategic component contribution")
+    ax.legend(title="Model")
+    ax.grid(axis="y", alpha=0.3)
+    plt.setp(ax.get_xticklabels(), rotation=25, ha="right")
+
+    # Annotate each bar with the feature count for its (category, model).
+    # ``matplotlib`` renders bars model-by-model; we iterate in the same
+    # order so the labels line up.
+    n_cats = pivot_auc.shape[0]
+    n_models = pivot_auc.shape[1]
+    for m_idx, model_name in enumerate(pivot_auc.columns):
+        container = ax.containers[m_idx]
+        for c_idx, bar in enumerate(container):
+            n_feat = pivot_n.iloc[c_idx, m_idx]
+            if pd.isna(n_feat):
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + 0.01,
+                f"n={int(n_feat)}",
+                ha="center",
+                va="bottom",
+                fontsize=7,
+                rotation=0,
+            )
+        # Use n_models just to silence unused-variable lint in case of future edits.
+        _ = n_cats, n_models
+
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
 
 
 def feature_importance_table(
@@ -280,6 +468,22 @@ def main() -> None:
     ab_df.to_csv(analysis_dir / "ablation.csv", index=False)
     plot_ablation(ab_df, plots_dir / "ablation.png")
     logger.info("\n%s", ab_df.to_string())
+
+    # ── 2b. Per-category ablation ──
+    logger.info("\n=== Per-category ablation ===")
+    cat_df = category_ablation(X, y, cv_folds=cv_folds)
+    cat_df.to_csv(analysis_dir / "category_ablation.csv", index=False)
+    plot_category_ablation(cat_df, plots_dir / "category_ablation.png")
+    if not cat_df.empty:
+        logger.info("\n%s", cat_df.to_string())
+        # Rank categories by best AUC across models.
+        best_per_cat = (
+            cat_df.groupby("category")["roc_auc"].max().sort_values(ascending=False)
+        )
+        logger.info("\nCategory ranking (best AUC per category):\n%s",
+                    best_per_cat.to_string())
+    else:
+        logger.warning("Per-category ablation produced an empty frame")
 
     # ── 3. Feature importance (GBM trained on combined) ──
     logger.info("\n=== Feature importance (gradient boosting) ===")

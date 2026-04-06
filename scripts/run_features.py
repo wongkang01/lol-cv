@@ -239,10 +239,28 @@ def main() -> None:
             (p["champion"] for p in red_picks_full if p.get("role") == "mid"),
             None,
         )
+        blue_bot = next(
+            (p["champion"] for p in blue_picks_full if p.get("role") == "bottom"),
+            None,
+        )
+        red_bot = next(
+            (p["champion"] for p in red_picks_full if p.get("role") == "bottom"),
+            None,
+        )
+        blue_sup = next(
+            (p["champion"] for p in blue_picks_full if p.get("role") == "support"),
+            None,
+        )
+        red_sup = next(
+            (p["champion"] for p in red_picks_full if p.get("role") == "support"),
+            None,
+        )
         if blue_jungler is None or red_jungler is None:
             logger.warning("[roles] %s — missing jungler assignment", match_id)
         if blue_mid is None or red_mid is None:
             logger.warning("[roles] %s — missing mid assignment", match_id)
+        if blue_bot is None or red_bot is None or blue_sup is None or red_sup is None:
+            logger.warning("[roles] %s — missing bot/support assignment", match_id)
 
         feats: dict = {"match_id": match_id}
 
@@ -270,6 +288,24 @@ def main() -> None:
                 feats[f"sp_early_{k}"] = v
         except Exception:
             logger.exception("Early-game spatial failed for %s", match_id)
+
+        # ── Bespoke strategic (non-jungle-proximity) features ──
+        try:
+            strat_feats = spatial.compute_strategic_features(
+                positions_df,
+                blue_team,
+                red_team,
+                blue_jungler,
+                red_jungler,
+                blue_bot,
+                red_bot,
+                blue_sup,
+                red_sup,
+            )
+            for k, v in strat_feats.items():
+                feats[f"sp_strat_{k}"] = v
+        except Exception:
+            logger.exception("Strategic spatial failed for %s", match_id)
 
         # ── OCR-derived features (best effort) ──
         ocr_smoothed = pd.DataFrame()

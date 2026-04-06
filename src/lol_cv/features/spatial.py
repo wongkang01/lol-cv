@@ -573,6 +573,245 @@ class SpatialFeatures:
         logger.info("Computed %d early-game spatial features", len(features))
         return features
 
+    # ── Bespoke Strategic (non-jungle-proximity) Features ────────────
+
+    def compute_strategic_features(
+        self,
+        df: pd.DataFrame,
+        blue_team: list[str],
+        red_team: list[str],
+        blue_jungler: str | None,
+        red_jungler: str | None,
+        blue_bot: str | None,
+        red_bot: str | None,
+        blue_sup: str | None,
+        red_sup: str | None,
+    ) -> dict:
+        """Compute non-jungle-proximity strategic features.
+
+        These complement :meth:`compute_early_features` (which is focused on
+        jungle proximity) by measuring distinct strategic dimensions:
+
+            * Feature 5 — Bot lane 2v2 zoning depth: how far the ADC+support
+              duo pushes along the bot-lane axis in [1:30, 5:00].
+            * Feature 6 — Synchronised recall count: simultaneous base
+              returns (2+ allies at fountain, with at least one arriving
+              this second) in [3:00, 8:00]. Measures team tempo.
+            * Feature 7 — Map presence asymmetry index: cosine distance
+              between blue's 4×4 presence histogram and the mirrored red
+              histogram, averaged over [4:00, 8:00]. Sign-agnostic — a
+              single number per game.
+            * Feature 8 — Pre-3-min counter-jungle: seconds each jungler
+              spends in the opposing jungle in [1:30, 3:00], plus diff and
+              min (joint counter-jungling).
+
+        Gracefully returns NaN for any feature whose required input data
+        (role assignments, time window) is missing.
+
+        Returns:
+            Flat dict of feature_name -> value. The caller is expected to
+            prefix the keys with ``sp_strat_`` when writing into the
+            feature matrix.
+        """
+        features: dict = {}
+
+        # ── Feature 5: Bot lane 2v2 zoning depth ──────────────────────
+        # Axis: blue bot tower (0.62, 0.92) -> red bot tower (0.92, 0.58).
+        # Project midpoint(ADC, sup) onto the axis as scalar in [0, 1].
+        bot_axis_start = np.array([0.62, 0.92])
+        bot_axis_end = np.array([0.92, 0.58])
+        axis_vec = bot_axis_end - bot_axis_start
+        axis_len_sq = float(np.dot(axis_vec, axis_vec))
+
+        def _bot_zoning_depth(adc: str | None, sup: str | None) -> float:
+            if adc is None or sup is None or axis_len_sq == 0.0:
+                return float("nan")
+            win = df[
+                (df["champion"].isin([adc, sup]))
+                & (df["timestamp"] >= 90)
+                & (df["timestamp"] <= 300)
+            ]
+            if win.empty:
+                return float("nan")
+
+            # For each timestamp with BOTH ADC and sup present, compute the
+            # midpoint and project it onto the bot-lane axis.
+            grouped = win.groupby("timestamp")
+            projections: list[float] = []
+            for _, snap in grouped:
+                if snap["champion"].nunique() < 2:
+                    continue
+                adc_row = snap[snap["champion"] == adc]
+                sup_row = snap[snap["champion"] == sup]
+                if adc_row.empty or sup_row.empty:
+                    continue
+                mid = np.array([
+                    (float(adc_row["x"].iloc[0]) + float(sup_row["x"].iloc[0])) / 2.0,
+                    (float(adc_row["y"].iloc[0]) + float(sup_row["y"].iloc[0])) / 2.0,
+                ])
+                rel = mid - bot_axis_start
+                t = float(np.dot(rel, axis_vec) / axis_len_sq)
+                t = max(0.0, min(1.0, t))
+                projections.append(t)
+
+            if not projections:
+                return float("nan")
+            return float(np.mean(projections))
+
+        blue_bot_depth = _bot_zoning_depth(blue_bot, blue_sup)
+        red_bot_depth = _bot_zoning_depth(red_bot, red_sup)
+        features["blue_bot_zoning_depth"] = blue_bot_depth
+        features["red_bot_zoning_depth"] = red_bot_depth
+        if np.isnan(blue_bot_depth) or np.isnan(red_bot_depth):
+            features["bot_zoning_diff"] = float("nan")
+        else:
+            features["bot_zoning_diff"] = blue_bot_depth - red_bot_depth
+
+        # ── Feature 6: Synchronised recall count ──────────────────────
+        blue_fountain = (0.05, 0.95)
+        red_fountain = (0.95, 0.05)
+        fountain_radius = 0.10
+
+        def _at_base_per_second(team: list[str], fountain: tuple[float, float]) -> dict[int, set]:
+            """Return dict: timestamp -> set of champions currently at base."""
+            fx, fy = fountain
+            win = df[
+                (df["champion"].isin(team))
+                & (df["timestamp"] >= 179)  # need t=179 to test transitions at t=180
+                & (df["timestamp"] <= 480)
+            ]
+            if win.empty:
+                return {}
+            dists = np.sqrt((win["x"] - fx) ** 2 + (win["y"] - fy) ** 2)
+            at_base = win[dists.values < fountain_radius]
+            out: dict[int, set] = {}
+            for ts, grp in at_base.groupby("timestamp"):
+                out[int(ts)] = set(grp["champion"].unique())
+            return out
+
+        def _synced_recalls(team: list[str], fountain: tuple[float, float]) -> float:
+            if not team:
+                return float("nan")
+            win_check = df[
+                (df["champion"].isin(team))
+                & (df["timestamp"] >= 179)
+                & (df["timestamp"] <= 480)
+            ]
+            if win_check.empty:
+                return float("nan")
+            at_base = _at_base_per_second(team, fountain)
+            count = 0
+            for t in range(180, 481):
+                cur = at_base.get(t, set())
+                prev = at_base.get(t - 1, set())
+                newly_arrived = cur - prev
+                if len(cur) >= 2 and len(newly_arrived) >= 1:
+                    count += 1
+            return float(count)
+
+        features["blue_synced_recalls"] = _synced_recalls(blue_team, blue_fountain)
+        features["red_synced_recalls"] = _synced_recalls(red_team, red_fountain)
+
+        # ── Feature 7: Map presence asymmetry index ───────────────────
+        # 4x4 grid histogram per side per timestamp, then cosine distance
+        # between blue hist and the MIRROR-ROTATED red hist.
+        def _hist_4x4(snap: pd.DataFrame) -> np.ndarray:
+            h = np.zeros((4, 4), dtype=float)
+            if snap.empty:
+                return h.flatten()
+            xi = np.clip((snap["x"].values * 4).astype(int), 0, 3)
+            yi = np.clip((snap["y"].values * 4).astype(int), 0, 3)
+            for i, j in zip(yi, xi):
+                h[i, j] += 1.0
+            return h.flatten()
+
+        def _mirror_rotate(flat_hist: np.ndarray) -> np.ndarray:
+            """Mirror across the anti-diagonal: cell (i, j) -> (3-j, 3-i)."""
+            h = flat_hist.reshape(4, 4)
+            rotated = np.zeros_like(h)
+            for i in range(4):
+                for j in range(4):
+                    rotated[3 - j, 3 - i] = h[i, j]
+            return rotated.flatten()
+
+        def _cosine_distance(a: np.ndarray, b: np.ndarray) -> float:
+            na = float(np.linalg.norm(a))
+            nb = float(np.linalg.norm(b))
+            if na == 0.0 or nb == 0.0:
+                return float("nan")
+            cos_sim = float(np.dot(a, b) / (na * nb))
+            return 1.0 - cos_sim
+
+        asym_window = df[
+            (df["timestamp"] >= 240) & (df["timestamp"] <= 480)
+        ]
+        if asym_window.empty:
+            features["map_asymmetry_index_mean"] = float("nan")
+        else:
+            distances: list[float] = []
+            for ts, snap in asym_window.groupby("timestamp"):
+                blue_snap = snap[snap["champion"].isin(blue_team)]
+                red_snap = snap[snap["champion"].isin(red_team)]
+                if blue_snap.empty or red_snap.empty:
+                    continue
+                blue_hist = _hist_4x4(blue_snap)
+                red_hist = _hist_4x4(red_snap)
+                red_mirrored = _mirror_rotate(red_hist)
+                d = _cosine_distance(blue_hist, red_mirrored)
+                if not np.isnan(d):
+                    distances.append(d)
+            features["map_asymmetry_index_mean"] = (
+                float(np.mean(distances)) if distances else float("nan")
+            )
+
+        # ── Feature 8: Pre-3-min counter-jungle asymmetry ─────────────
+        # Jungler seconds inside the OPPOSING team's jungle in [90, 180].
+        def _in_any_zone(x: float, y: float, zone_names: tuple[str, ...]) -> bool:
+            for zn in zone_names:
+                x_min, y_min, x_max, y_max = ZONES[zn]
+                if x_min <= x <= x_max and y_min <= y <= y_max:
+                    return True
+            return False
+
+        blue_jungle_zones = ("bot_jungle_blue", "top_jungle_blue")
+        red_jungle_zones = ("bot_jungle_red", "top_jungle_red")
+
+        def _pre3min_invade(jungler: str | None, enemy_zones: tuple[str, ...]) -> float:
+            if jungler is None:
+                return float("nan")
+            sub = df[
+                (df["champion"] == jungler)
+                & (df["timestamp"] >= 90)
+                & (df["timestamp"] <= 180)
+            ]
+            if sub.empty:
+                return float("nan")
+            # Count unique timestamps where the jungler is inside the enemy jungle.
+            in_enemy = sub.apply(
+                lambda r: _in_any_zone(float(r["x"]), float(r["y"]), enemy_zones),
+                axis=1,
+            )
+            if in_enemy.empty:
+                return 0.0
+            invade_rows = sub[in_enemy]
+            if invade_rows.empty:
+                return 0.0
+            return float(invade_rows["timestamp"].nunique())
+
+        blue_invade_secs = _pre3min_invade(blue_jungler, red_jungle_zones)
+        red_invade_secs = _pre3min_invade(red_jungler, blue_jungle_zones)
+        features["blue_pre3min_invade_secs"] = blue_invade_secs
+        features["red_pre3min_invade_secs"] = red_invade_secs
+        if np.isnan(blue_invade_secs) or np.isnan(red_invade_secs):
+            features["pre3min_invade_diff"] = float("nan")
+            features["pre3min_invade_min"] = float("nan")
+        else:
+            features["pre3min_invade_diff"] = blue_invade_secs - red_invade_secs
+            features["pre3min_invade_min"] = float(min(blue_invade_secs, red_invade_secs))
+
+        logger.info("Computed %d strategic spatial features", len(features))
+        return features
+
     # ── Aggregated Feature Vector ────────────────────────────────────
 
     def compute_all(

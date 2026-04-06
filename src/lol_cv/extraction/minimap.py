@@ -10,6 +10,29 @@ to data/models/yolov12.pt before use. Alternatively, the model can be loaded
 from the Roboflow project 'lolpago-multi-tracking-service' (version 18).
 
 Weights download: https://drive.google.com/uc?export=download&id=1ymd7Thcz1XdejEW94LjSFDl3zDqYH0qq
+
+Known weight limitations (yolov11m.pt, 170 classes)
+---------------------------------------------------
+- ``XinZhao`` is a class in the model but its visual detector is broken:
+  across the 34 games in our dataset the sprite fires 0-7 times per game,
+  with *zero* firings in the first ~5 minutes at any confidence threshold
+  down to 0.01. The class name itself matches what the lolesports picks API
+  returns exactly, so this is NOT a name-normalisation issue — it is a pure
+  weight limitation. Features that depend on early-game jungler tracking
+  (e.g. ``sp_early_blue_jgl_commit_side``) will be NaN whenever either
+  jungler is XinZhao. Fixing this requires new / retrained weights.
+
+- ``Zaahen`` and ``Yunara`` (post-training release champions) are not in the
+  model's class vocabulary at all. Any game featuring these champions will
+  have no detections for them. No normalisation can recover this; new weights
+  are the only fix.
+
+The ``detect_frame_filtered`` method uses a normalised-name comparison
+(case-insensitive, whitespace/punctuation-stripped) so future name-casing
+mismatches between picks data and model classes are tolerated automatically.
+A warning is logged at detect time when a game's valid-champion set contains
+names the model does not know, making this class of failure noisy instead of
+silent.
 """
 
 import cv2
@@ -29,6 +52,22 @@ logger = setup_logger("lol_cv.extraction.minimap")
 MINIMAP_SIZE = 512
 
 
+def _normalise_champion_name(name: str) -> str:
+    """Normalise a champion name for robust cross-source matching.
+
+    Strips whitespace, underscores, apostrophes and hyphens and lower-cases
+    the result so that ``"Xin Zhao"``, ``"Xin_Zhao"``, ``"XinZhao"`` and
+    ``"xinzhao"`` all collapse to the same key.
+    """
+    return (
+        name.replace(" ", "")
+        .replace("_", "")
+        .replace("'", "")
+        .replace("-", "")
+        .lower()
+    )
+
+
 class MinimapTracker:
     """Track champion positions on the minimap using YOLO."""
 
@@ -44,6 +83,11 @@ class MinimapTracker:
         self.confidence = confidence
         self.overlap = overlap
         self.model = None
+        # Map from normalised-name -> canonical class name (populated in load_model).
+        self._normalised_class_names: dict[str, str] = {}
+        # Per-instance set of valid-champion names already warned about, to
+        # avoid spamming the log on every frame.
+        self._unknown_warned: set[str] = set()
 
     def load_model(self) -> YOLO:
         """Load the YOLO detection model from weights file.
@@ -53,6 +97,12 @@ class MinimapTracker:
         """
         logger.info("Loading YOLO model from %s", self.model_path)
         self.model = YOLO(self.model_path)
+        # Build a normalised lookup so callers can match champion names without
+        # worrying about case / whitespace / punctuation differences between
+        # data sources.
+        self._normalised_class_names = {
+            _normalise_champion_name(n): n for n in self.model.names.values()
+        }
         logger.info(
             "Model loaded — %d classes: %s",
             len(self.model.names),
@@ -101,6 +151,18 @@ class MinimapTracker:
         When multiple detections map to the same champion, the highest
         confidence one is kept.
 
+        Names are compared after normalisation (case-insensitive, with
+        whitespace/underscores/apostrophes/hyphens stripped). Matched
+        detections are relabelled with the caller-supplied canonical name
+        from ``valid_champions`` so that downstream feature engineering
+        always sees the picks-API spelling.
+
+        The first call on a given ``MinimapTracker`` instance also logs a
+        warning listing any names in ``valid_champions`` that do not exist
+        in the model's class vocabulary (e.g. post-training release champs
+        like ``Zaahen``/``Yunara``) — those champions will never be
+        detected no matter how many frames are processed.
+
         Args:
             frame: BGR image of the minimap region.
             valid_champions: Set of champion names actually in this game
@@ -109,10 +171,41 @@ class MinimapTracker:
         Returns:
             Filtered list of detections (max 10 — one per champion).
         """
+        if self.model is None:
+            self.load_model()
+
+        # Build normalised-key -> canonical caller-side name lookup.
+        canonical_by_norm: dict[str, str] = {
+            _normalise_champion_name(c): c for c in valid_champions
+        }
+
+        # Warn once per instance about champions the model doesn't know.
+        unknown = {
+            canonical_by_norm[k]
+            for k in canonical_by_norm
+            if k not in self._normalised_class_names
+        }
+        new_unknown = unknown - self._unknown_warned
+        if new_unknown:
+            logger.warning(
+                "Valid champions not present in model vocabulary "
+                "(will never be detected): %s",
+                sorted(new_unknown),
+            )
+            self._unknown_warned.update(new_unknown)
+
         raw = self.detect_frame(frame)
 
-        # Keep only valid champions
-        filtered = [d for d in raw if d["champion"] in valid_champions]
+        # Keep only valid champions, relabelled to the caller's canonical name.
+        filtered: list[dict] = []
+        for d in raw:
+            key = _normalise_champion_name(d["champion"])
+            canonical = canonical_by_norm.get(key)
+            if canonical is None:
+                continue
+            if canonical != d["champion"]:
+                d = {**d, "champion": canonical}
+            filtered.append(d)
 
         # Deduplicate: keep highest confidence per champion
         best: dict[str, dict] = {}
