@@ -1,0 +1,2264 @@
+{
+  "fs_GEN_vs_BFX_finals_2026-03-01_g1": {
+    "esports_game_id": "115604876650946536",
+    "patch": "16.3.745.7600",
+    "blue_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BFX Clear",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "BFX Raptor",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "BFX VicLa",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "BFX Diable",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "BFX Kellin",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_GEN_vs_BFX_finals_2026-03-01_g2": {
+    "esports_game_id": "115604876650946537",
+    "patch": "16.3.745.7600",
+    "blue_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "Ambessa",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Galio",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BFX Clear",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "BFX Raptor",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "BFX VicLa",
+        "champion": "Orianna",
+        "role": "mid"
+      },
+      {
+        "player": "BFX Diable",
+        "champion": "Kalista",
+        "role": "bottom"
+      },
+      {
+        "player": "BFX Kellin",
+        "champion": "Renata",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_GEN_vs_BFX_finals_2026-03-01_g3": {
+    "esports_game_id": "115604876650946538",
+    "patch": "16.3.745.7600",
+    "blue_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Aatrox",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BFX Clear",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "BFX Raptor",
+        "champion": "DrMundo",
+        "role": "jungle"
+      },
+      {
+        "player": "BFX VicLa",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "BFX Diable",
+        "champion": "Lucian",
+        "role": "bottom"
+      },
+      {
+        "player": "BFX Kellin",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LOUD_vs_RED_finals_2026-03-01_g1": {
+    "esports_game_id": "115565621821672128",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "LOUD Xyno",
+        "champion": "RekSai",
+        "role": "top"
+      },
+      {
+        "player": "LOUD YoungJae",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "LOUD Envy",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "LOUD Bull",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "LOUD RedBert",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LOUD_vs_RED_finals_2026-03-01_g2": {
+    "esports_game_id": "115565621821672129",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Akali",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "LOUD Xyno",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "LOUD YoungJae",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "LOUD Envy",
+        "champion": "Orianna",
+        "role": "mid"
+      },
+      {
+        "player": "LOUD Bull",
+        "champion": "Xayah",
+        "role": "bottom"
+      },
+      {
+        "player": "LOUD RedBert",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LOUD_vs_RED_finals_2026-03-01_g3": {
+    "esports_game_id": "115565621821672130",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Trundle",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Kaisa",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Leona",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "LOUD Xyno",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "LOUD YoungJae",
+        "champion": "Malphite",
+        "role": "jungle"
+      },
+      {
+        "player": "LOUD Envy",
+        "champion": "Cassiopeia",
+        "role": "mid"
+      },
+      {
+        "player": "LOUD Bull",
+        "champion": "Jhin",
+        "role": "bottom"
+      },
+      {
+        "player": "LOUD RedBert",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LYON_vs_C9_finals_2026-03-01_g1": {
+    "esports_game_id": "115564689066973287",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "LYON Dhokla",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "LYON Inspired",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "LYON Saint",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "LYON Berserker",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "LYON Isles",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Malphite",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Orianna",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LYON_vs_C9_finals_2026-03-01_g2": {
+    "esports_game_id": "115564689066973288",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Nautilus",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "LYON Dhokla",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "LYON Inspired",
+        "champion": "Aatrox",
+        "role": "jungle"
+      },
+      {
+        "player": "LYON Saint",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "LYON Berserker",
+        "champion": "Aphelios",
+        "role": "bottom"
+      },
+      {
+        "player": "LYON Isles",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LYON_vs_C9_finals_2026-03-01_g3": {
+    "esports_game_id": "115564689066973289",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "LYON Dhokla",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "LYON Inspired",
+        "champion": "Trundle",
+        "role": "jungle"
+      },
+      {
+        "player": "LYON Saint",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "LYON Berserker",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "LYON Isles",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Mel",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_LYON_vs_C9_finals_2026-03-01_g4": {
+    "esports_game_id": "115564689066973290",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "LYON Dhokla",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "LYON Inspired",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "LYON Saint",
+        "champion": "Cassiopeia",
+        "role": "mid"
+      },
+      {
+        "player": "LYON Berserker",
+        "champion": "Kaisa",
+        "role": "bottom"
+      },
+      {
+        "player": "LYON Isles",
+        "champion": "Poppy",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "RekSai",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Smolder",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_FUR_knockouts_2026-03-04_g1": {
+    "esports_game_id": "116096609391810174",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Volibear",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Syndra",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_FUR_knockouts_2026-03-04_g2": {
+    "esports_game_id": "116096609391810175",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Leona",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "Malphite",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Yasuo",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_SEN_vs_RED_knockouts_2026-03-05_g1": {
+    "esports_game_id": "116096609391810178",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Yone",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Jhin",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_SEN_vs_RED_knockouts_2026-03-05_g2": {
+    "esports_game_id": "116096609391810179",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Kennen",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Leblanc",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_RED_knockouts_2026-03-05_g1": {
+    "esports_game_id": "116096609391875724",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Jhin",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_RED_knockouts_2026-03-05_g2": {
+    "esports_game_id": "116096609391875725",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Galio",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Yone",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_RED_knockouts_2026-03-05_g3": {
+    "esports_game_id": "116096609391875726",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Trundle",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Kennen",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Malphite",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Tristana",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_RED_knockouts_2026-03-05_g4": {
+    "esports_game_id": "116096609391875727",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Yorick",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Ivern",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Zoe",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Jinx",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Leona",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "DrMundo",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Aphelios",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Thresh",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_RED_knockouts_2026-03-05_g5": {
+    "esports_game_id": "116096609391941264",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "RED fNb",
+        "champion": "Gragas",
+        "role": "top"
+      },
+      {
+        "player": "RED Curse",
+        "champion": "Maokai",
+        "role": "jungle"
+      },
+      {
+        "player": "RED Kaze",
+        "champion": "Zeri",
+        "role": "mid"
+      },
+      {
+        "player": "RED Rabelo",
+        "champion": "Draven",
+        "role": "bottom"
+      },
+      {
+        "player": "RED frosty",
+        "champion": "Nautilus",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Sejuani",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Kalista",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Renata",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_SEN_vs_FUR_knockouts_2026-03-06_g1": {
+    "esports_game_id": "116096609391810182",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Veigar",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Ornn",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_SEN_vs_FUR_knockouts_2026-03-06_g2": {
+    "esports_game_id": "116096609391875719",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Jhin",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "Skarner",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Akali",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_SEN_vs_FUR_knockouts_2026-03-06_g3": {
+    "esports_game_id": "116096609391875720",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "Sejuani",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Yone",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Xayah",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Rell",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "Aatrox",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "TwistedFate",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Kaisa",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_SEN_knockouts_2026-03-07_g1": {
+    "esports_game_id": "116096609391941266",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_SEN_knockouts_2026-03-07_g2": {
+    "esports_game_id": "116096609391941267",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "AurelionSol",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "Skarner",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_SEN_knockouts_2026-03-07_g3": {
+    "esports_game_id": "116096609391941268",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Syndra",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_SEN_knockouts_2026-03-07_g4": {
+    "esports_game_id": "116096609391941269",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Khazix",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Kalista",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Renata",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "SEN Impact",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "SEN HamBak",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "SEN DARKWINGS",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "SEN Rahel",
+        "champion": "MissFortune",
+        "role": "bottom"
+      },
+      {
+        "player": "SEN huhi",
+        "champion": "Nautilus",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_FUR_finals_2026-03-08_g1": {
+    "esports_game_id": "116096609391941272",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Malphite",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Ryze",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Volibear",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Akali",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_FUR_finals_2026-03-08_g2": {
+    "esports_game_id": "116096609391941273",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Rumble",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Orianna",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Galio",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_C9_vs_FUR_finals_2026-03-08_g3": {
+    "esports_game_id": "116096609391941274",
+    "patch": "16.4.748.2902",
+    "blue_side": [
+      {
+        "player": "C9 Thanatos",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "C9 Blaber",
+        "champion": "Sejuani",
+        "role": "jungle"
+      },
+      {
+        "player": "C9 APA",
+        "champion": "Taliyah",
+        "role": "mid"
+      },
+      {
+        "player": "C9 Zven",
+        "champion": "Aphelios",
+        "role": "bottom"
+      },
+      {
+        "player": "C9 Vulcan",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "FUR Guigo",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "FUR Tatu",
+        "champion": "Zaahen",
+        "role": "jungle"
+      },
+      {
+        "player": "FUR Tutsz",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "FUR Ayu",
+        "champion": "Sion",
+        "role": "bottom"
+      },
+      {
+        "player": "FUR JoJo",
+        "champion": "Senna",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g1": {
+    "esports_game_id": "115570888977308430",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "MissFortune",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Nautilus",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Galio",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g2": {
+    "esports_game_id": "115570888977308431",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "Zaahen",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Braum",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Vayne",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g3": {
+    "esports_game_id": "115570888977308432",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "Shen",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Akali",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "KogMaw",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "GEN Kiin",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "GEN Canyon",
+        "champion": "Ambessa",
+        "role": "jungle"
+      },
+      {
+        "player": "GEN Chovy",
+        "champion": "Azir",
+        "role": "mid"
+      },
+      {
+        "player": "GEN Ruler",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "GEN Duro",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g1": {
+    "esports_game_id": "115570888977308424",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "JDG Xiaoxu",
+        "champion": "Ambessa",
+        "role": "top"
+      },
+      {
+        "player": "JDG JunJia",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "JDG HongQ",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "JDG GALA",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "JDG Vampire",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "Nocturne",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Orianna",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g2": {
+    "esports_game_id": "115570888977308425",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "Poppy",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Mel",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Neeko",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "JDG Xiaoxu",
+        "champion": "Renekton",
+        "role": "top"
+      },
+      {
+        "player": "JDG JunJia",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "JDG HongQ",
+        "champion": "Ahri",
+        "role": "mid"
+      },
+      {
+        "player": "JDG GALA",
+        "champion": "Caitlyn",
+        "role": "bottom"
+      },
+      {
+        "player": "JDG Vampire",
+        "champion": "Lux",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g3": {
+    "esports_game_id": "115570888977308426",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Yorick",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Anivia",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "JDG Xiaoxu",
+        "champion": "Tryndamere",
+        "role": "top"
+      },
+      {
+        "player": "JDG JunJia",
+        "champion": "Olaf",
+        "role": "jungle"
+      },
+      {
+        "player": "JDG HongQ",
+        "champion": "Hwei",
+        "role": "mid"
+      },
+      {
+        "player": "JDG GALA",
+        "champion": "Senna",
+        "role": "bottom"
+      },
+      {
+        "player": "JDG Vampire",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g1": {
+    "esports_game_id": "115570888977308436",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "Yorick",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "JarvanIV",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Aurora",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "Yunara",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Nami",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Gnar",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "Poppy",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Annie",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Sivir",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Lulu",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g2": {
+    "esports_game_id": "115570888977308437",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "Zaahen",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "DrMundo",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Leblanc",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "Corki",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Bard",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Gwen",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "Pantheon",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Galio",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Ezreal",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Shen",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g3": {
+    "esports_game_id": "115570888977308438",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Jax",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "XinZhao",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Mel",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Ashe",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Seraphine",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "Sion",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "Aatrox",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Anivia",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "Varus",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Karma",
+        "role": "support"
+      }
+    ]
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g4": {
+    "esports_game_id": "115570888977308439",
+    "patch": "16.5.751.985",
+    "blue_side": [
+      {
+        "player": "BLG Bin",
+        "champion": "Camille",
+        "role": "top"
+      },
+      {
+        "player": "BLG Xun",
+        "champion": "Vi",
+        "role": "jungle"
+      },
+      {
+        "player": "BLG Knight",
+        "champion": "Cassiopeia",
+        "role": "mid"
+      },
+      {
+        "player": "BLG Viper",
+        "champion": "Xayah",
+        "role": "bottom"
+      },
+      {
+        "player": "BLG ON",
+        "champion": "Alistar",
+        "role": "support"
+      }
+    ],
+    "red_side": [
+      {
+        "player": "G2 BrokenBlade",
+        "champion": "KSante",
+        "role": "top"
+      },
+      {
+        "player": "G2 SkewMond",
+        "champion": "MonkeyKing",
+        "role": "jungle"
+      },
+      {
+        "player": "G2 Caps",
+        "champion": "Viktor",
+        "role": "mid"
+      },
+      {
+        "player": "G2 Hans Sama",
+        "champion": "Kaisa",
+        "role": "bottom"
+      },
+      {
+        "player": "G2 Labrov",
+        "champion": "Rakan",
+        "role": "support"
+      }
+    ]
+  }
+}

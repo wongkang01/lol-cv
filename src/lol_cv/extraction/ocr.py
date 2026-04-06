@@ -4,10 +4,13 @@ OCR-based HUD data extraction from game screenshots.
 Extracts gold counts, KDA, CS, levels, items, and timers from the
 League of Legends spectator mode HUD using PaddleOCR.
 
-Spectator mode HUD layout (1920x1080 resolution):
+Spectator mode HUD layout (1920x1080, 2026 First Stand broadcast):
     - Top bar: team scores, gold, turrets (y: 0-80, full width)
-    - Game timer: center top (x: 920-1000, y: 0-30)
-    - Scoreboard panels: left/right sides with champion stats
+    - Game timer: center below scoreboard (x: 925-995, y: 55-78)
+    - Kill score: center top (x: 895-1025, y: 0-28)
+    - Gold: blue (x: 750-850), red (x: 1070-1170), y: 0-28
+    - Turrets: blue (x: 700-740), red (x: 1180-1220), y: 0-28
+    - Player scorecards: blue (x: 195-730), red (x: 1190-1640), y: 818-1015
     - Minimap: bottom-right corner (x: 1650-1920, y: 790-1080)
 
 ROI coordinates must be adjusted for different resolutions.
@@ -26,16 +29,19 @@ logger = setup_logger("lol_cv.extraction.ocr")
 # Default ROI regions for 1920x1080 spectator mode.
 # Format: (x1, y1, x2, y2) — top-left and bottom-right corners.
 DEFAULT_REGIONS = {
-    "timer": (910, 0, 1010, 35),
+    "timer": (892, 72, 1035, 112),
     "scoreboard_top": (0, 0, 1920, 80),
-    # Blue side player stats (left panel when Tab is pressed)
-    "blue_stats": (200, 100, 700, 600),
-    # Red side player stats (right panel when Tab is pressed)
-    "red_stats": (1220, 100, 1720, 600),
-    # Kill score at top center
-    "kill_score": (870, 0, 1050, 40),
-    # Gold count indicators
-    "gold_display": (750, 0, 870, 30),
+    # Kill score at top center (blue kills left, red kills right)
+    "kill_score": (877, 7, 1050, 52),
+    # Individual gold displays
+    "blue_gold": (712, 7, 862, 52),
+    "red_gold": (1065, 7, 1215, 52),
+    # Turret counts
+    "blue_turrets": (645, 7, 712, 52),
+    "red_turrets": (1215, 7, 1282, 52),
+    # Player scorecards (bottom panel)
+    "blue_scorecards": (195, 818, 730, 1015),
+    "red_scorecards": (1190, 818, 1640, 1015),
 }
 
 

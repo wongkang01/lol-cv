@@ -236,11 +236,57 @@ def plot_grouping_timeline(
     return fig
 
 
+# Additional model colors beyond blue/red for multi-model plots
+MODEL_COLORS = [BLUE_COLOR, RED_COLOR, "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#6366F1"]
+
+
+def plot_precision_recall_curves(
+    pr_data: dict,
+    title: str = "Precision-Recall Curves",
+    save_path: str = None,
+) -> plt.Figure:
+    """Plot precision-recall curves for multiple models.
+
+    Used for the detection benchmark (RQ2) to compare champion detection
+    models at different operating points.
+
+    Args:
+        pr_data: Dict of {model_name: {"precision": [...], "recall": [...]}}.
+        title: Plot title.
+        save_path: Optional path to save the figure.
+
+    Returns:
+        Matplotlib Figure.
+    """
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    for i, (model_name, curves) in enumerate(pr_data.items()):
+        color = MODEL_COLORS[i % len(MODEL_COLORS)]
+        precision = curves["precision"]
+        recall = curves["recall"]
+        ax.plot(recall, precision, color=color, linewidth=2, label=model_name)
+
+    ax.set_xlim(0, 1.05)
+    ax.set_ylim(0, 1.05)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title(title)
+    ax.legend(loc="lower left", fontsize=9)
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+
+    if save_path:
+        fig.savefig(save_path, dpi=150, bbox_inches="tight")
+        logger.info("Saved PR curve plot to %s", save_path)
+
+    return fig
+
+
 def plot_ablation_comparison(
     ablation_results: dict[str, dict],
-    title: str = "CV vs API Feature Ablation Study",
+    title: str = "Spatial vs OCR Feature Ablation Study",
 ) -> plt.Figure:
-    """Bar chart comparing CV-only, API-only, and combined feature sets.
+    """Bar chart comparing spatial-only, OCR-only, and combined feature sets.
 
     Args:
         ablation_results: Output from WinPredictor.ablation_study().
@@ -249,7 +295,7 @@ def plot_ablation_comparison(
         Matplotlib Figure.
     """
     df = pd.DataFrame(ablation_results).T
-    colors = {"cv_only": "#6366F1", "api_only": "#F59E0B", "combined": "#10B981"}
+    colors = {"spatial_only": "#6366F1", "ocr_only": "#F59E0B", "combined": "#10B981"}
 
     fig, ax = plt.subplots(figsize=(8, 5))
     bar_colors = [colors.get(idx, "#888") for idx in df.index]

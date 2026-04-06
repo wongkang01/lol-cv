@@ -1,5 +1,6 @@
 """Unit tests for temporal feature engineering."""
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -113,3 +114,126 @@ class TestEventTempo:
         events = pd.DataFrame(columns=["timestamp", "event_type", "team"])
         tempo = temporal.event_tempo(events)
         assert len(tempo) == 0
+
+
+# ── Gold Diff Slope ────────────────────────────────────────────────
+
+
+class TestGoldDiffSlope:
+    """Tests for TemporalFeatures.gold_diff_slope."""
+
+    def test_positive_slope(self, temporal):
+        """Blue gaining gold over time -> positive slope."""
+        ocr_df = pd.DataFrame({
+            "timestamp": [100, 200, 300, 400, 500],
+            "gold_diff": [0, 100, 200, 300, 400],
+        })
+        slope = temporal.gold_diff_slope(ocr_df)
+        assert slope > 0
+
+    def test_negative_slope(self, temporal):
+        """Red gaining gold over time -> negative slope."""
+        ocr_df = pd.DataFrame({
+            "timestamp": [100, 200, 300, 400, 500],
+            "gold_diff": [400, 300, 200, 100, 0],
+        })
+        slope = temporal.gold_diff_slope(ocr_df)
+        assert slope < 0
+
+    def test_flat_slope(self, temporal):
+        """Constant gold diff -> slope near zero."""
+        ocr_df = pd.DataFrame({
+            "timestamp": [100, 200, 300, 400],
+            "gold_diff": [500, 500, 500, 500],
+        })
+        slope = temporal.gold_diff_slope(ocr_df)
+        assert slope == pytest.approx(0.0, abs=1e-6)
+
+    def test_insufficient_data(self, temporal):
+        """Fewer than 2 rows -> NaN."""
+        ocr_df = pd.DataFrame({
+            "timestamp": [100],
+            "gold_diff": [500],
+        })
+        slope = temporal.gold_diff_slope(ocr_df)
+        assert np.isnan(slope)
+
+    def test_phase_filtering(self, temporal):
+        """Only data in the specified phase should be used for the fit."""
+        # Early phase is 0-900. Include data spanning early and mid.
+        # Early data: positive trend. Mid data: negative trend.
+        ocr_df = pd.DataFrame({
+            "timestamp": [100, 200, 300, 400, 1000, 1100, 1200],
+            "gold_diff": [0, 100, 200, 300, 300, 200, 100],
+        })
+        early_slope = temporal.gold_diff_slope(ocr_df, phase="early")
+        assert early_slope > 0
+        mid_slope = temporal.gold_diff_slope(ocr_df, phase="mid")
+        assert mid_slope < 0
+
+    def test_invalid_phase(self, temporal):
+        """Unknown phase name raises ValueError."""
+        ocr_df = pd.DataFrame({
+            "timestamp": [100, 200],
+            "gold_diff": [0, 100],
+        })
+        with pytest.raises(ValueError, match="Unknown phase"):
+            temporal.gold_diff_slope(ocr_df, phase="super_late")
+
+
+# ── Lane Assignment Stability ─────────────────────────────────────
+
+
+class TestLaneAssignmentStability:
+    """Tests for TemporalFeatures.lane_assignment_stability."""
+
+    def test_always_in_zone(self, temporal):
+        """Champion always in expected zone -> 1.0."""
+        # mid_lane zone is (0.3, 0.3, 0.7, 0.7). Place champion squarely inside.
+        df = pd.DataFrame({
+            "timestamp": [0, 1, 2, 3, 4],
+            "champion": ["Ahri"] * 5,
+            "x": [0.5, 0.5, 0.5, 0.5, 0.5],
+            "y": [0.5, 0.5, 0.5, 0.5, 0.5],
+            "confidence": [0.9] * 5,
+        })
+        stability = temporal.lane_assignment_stability(df, "Ahri", "mid_lane")
+        assert stability == pytest.approx(1.0)
+
+    def test_never_in_zone(self, temporal):
+        """Champion never in expected zone -> 0.0."""
+        # Place champion in blue_base (0.0-0.2, 0.8-1.0), expect mid_lane.
+        df = pd.DataFrame({
+            "timestamp": [0, 1, 2],
+            "champion": ["Ahri"] * 3,
+            "x": [0.1, 0.1, 0.1],
+            "y": [0.9, 0.9, 0.9],
+            "confidence": [0.9] * 3,
+        })
+        stability = temporal.lane_assignment_stability(df, "Ahri", "mid_lane")
+        assert stability == pytest.approx(0.0)
+
+    def test_half_in_zone(self, temporal):
+        """Champion in zone half the time -> 0.5."""
+        # 2 timestamps in mid_lane (0.5, 0.5), 2 timestamps in blue_base (0.1, 0.9).
+        df = pd.DataFrame({
+            "timestamp": [0, 1, 2, 3],
+            "champion": ["Ahri"] * 4,
+            "x": [0.5, 0.5, 0.1, 0.1],
+            "y": [0.5, 0.5, 0.9, 0.9],
+            "confidence": [0.9] * 4,
+        })
+        stability = temporal.lane_assignment_stability(df, "Ahri", "mid_lane")
+        assert stability == pytest.approx(0.5)
+
+    def test_missing_champion(self, temporal):
+        """Champion not found in data -> NaN."""
+        df = pd.DataFrame({
+            "timestamp": [0, 1],
+            "champion": ["Jinx", "Jinx"],
+            "x": [0.5, 0.5],
+            "y": [0.5, 0.5],
+            "confidence": [0.9, 0.9],
+        })
+        stability = temporal.lane_assignment_stability(df, "Ahri", "mid_lane")
+        assert np.isnan(stability)

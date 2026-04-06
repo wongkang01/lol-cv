@@ -1,0 +1,4502 @@
+{
+  "fs_BFX_vs_BLG_groups_2026-03-16_g1": {
+    "blue_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 2
+      },
+      {
+        "champion": "Taliyah",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 3
+      },
+      {
+        "champion": "Kaisa",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 4
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Jax",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ryze",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ambessa",
+      "Vi",
+      "Taliyah",
+      "Kaisa",
+      "Neeko"
+    ],
+    "red_champions": [
+      "Jax",
+      "JarvanIV",
+      "Ryze",
+      "Varus",
+      "Alistar"
+    ],
+    "all_champions": [
+      "Ambessa",
+      "Vi",
+      "Taliyah",
+      "Kaisa",
+      "Neeko",
+      "Jax",
+      "JarvanIV",
+      "Ryze",
+      "Varus",
+      "Alistar"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 1
+    }
+  },
+  "fs_BFX_vs_BLG_groups_2026-03-16_g2": {
+    "blue_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "Naafiri",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Jinx",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Karma",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Sion",
+      "Pantheon",
+      "Aurora",
+      "Ezreal",
+      "Nami"
+    ],
+    "red_champions": [
+      "Renekton",
+      "Naafiri",
+      "Annie",
+      "Jinx",
+      "Karma"
+    ],
+    "all_champions": [
+      "Sion",
+      "Pantheon",
+      "Aurora",
+      "Ezreal",
+      "Nami",
+      "Renekton",
+      "Naafiri",
+      "Annie",
+      "Jinx",
+      "Karma"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 2
+    }
+  },
+  "fs_BFX_vs_BLG_groups_2026-03-16_g3": {
+    "blue_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 1
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 2
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 4
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Zeri",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Yuumi",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "KSante",
+      "Nocturne",
+      "Mel",
+      "Ashe",
+      "Seraphine"
+    ],
+    "red_champions": [
+      "Rumble",
+      "MonkeyKing",
+      "Ahri",
+      "Zeri",
+      "Yuumi"
+    ],
+    "all_champions": [
+      "KSante",
+      "Nocturne",
+      "Mel",
+      "Ashe",
+      "Seraphine",
+      "Rumble",
+      "MonkeyKing",
+      "Ahri",
+      "Zeri",
+      "Yuumi"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 3
+    }
+  },
+  "fs_BFX_vs_BLG_groups_2026-03-16_g4": {
+    "blue_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 1
+      },
+      {
+        "champion": "Trundle",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 2
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 4
+      },
+      {
+        "champion": "Renata",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Yorick",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Maokai",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gnar",
+      "Trundle",
+      "Galio",
+      "Yunara",
+      "Renata"
+    ],
+    "red_champions": [
+      "Yorick",
+      "Maokai",
+      "Leblanc",
+      "Sivir",
+      "Lulu"
+    ],
+    "all_champions": [
+      "Gnar",
+      "Trundle",
+      "Galio",
+      "Yunara",
+      "Renata",
+      "Yorick",
+      "Maokai",
+      "Leblanc",
+      "Sivir",
+      "Lulu"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 4
+    }
+  },
+  "fs_BFX_vs_BLG_groups_2026-03-16_g5": {
+    "blue_team": [
+      {
+        "champion": "Jayce",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Poppy",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Morgana",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Camille",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Kennen",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "LeeSin",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Zoe",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Jhin",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Jayce",
+      "Poppy",
+      "Morgana",
+      "Caitlyn",
+      "Camille"
+    ],
+    "red_champions": [
+      "Kennen",
+      "LeeSin",
+      "Zoe",
+      "Jhin",
+      "Rakan"
+    ],
+    "all_champions": [
+      "Jayce",
+      "Poppy",
+      "Morgana",
+      "Caitlyn",
+      "Camille",
+      "Kennen",
+      "LeeSin",
+      "Zoe",
+      "Jhin",
+      "Rakan"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 5
+    }
+  },
+  "fs_TSW_vs_G2_groups_2026-03-16_g1": {
+    "blue_team": [
+      {
+        "champion": "Ornn",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 1
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 4
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Bard",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ornn",
+      "JarvanIV",
+      "Aurora",
+      "Corki",
+      "Rakan"
+    ],
+    "red_champions": [
+      "Rumble",
+      "Vi",
+      "Ahri",
+      "Ezreal",
+      "Bard"
+    ],
+    "all_champions": [
+      "Ornn",
+      "JarvanIV",
+      "Aurora",
+      "Corki",
+      "Rakan",
+      "Rumble",
+      "Vi",
+      "Ahri",
+      "Ezreal",
+      "Bard"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 1
+    }
+  },
+  "fs_TSW_vs_G2_groups_2026-03-16_g2": {
+    "blue_team": [
+      {
+        "champion": "Kled",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "Aatrox",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Braum",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Olaf",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 6
+      },
+      {
+        "champion": "Naafiri",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 7
+      },
+      {
+        "champion": "Akali",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 8
+      },
+      {
+        "champion": "MissFortune",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Kled",
+      "Aatrox",
+      "Galio",
+      "Ashe",
+      "Braum"
+    ],
+    "red_champions": [
+      "Olaf",
+      "Naafiri",
+      "Akali",
+      "MissFortune",
+      "Nautilus"
+    ],
+    "all_champions": [
+      "Kled",
+      "Aatrox",
+      "Galio",
+      "Ashe",
+      "Braum",
+      "Olaf",
+      "Naafiri",
+      "Akali",
+      "MissFortune",
+      "Nautilus"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 2
+    }
+  },
+  "fs_TSW_vs_G2_groups_2026-03-16_g3": {
+    "blue_team": [
+      {
+        "champion": "Shen",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "Trundle",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Azir",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Jax",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 6
+      },
+      {
+        "champion": "DrMundo",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 7
+      },
+      {
+        "champion": "Sylas",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 8
+      },
+      {
+        "champion": "Aphelios",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 9
+      },
+      {
+        "champion": "Thresh",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Shen",
+      "Trundle",
+      "Azir",
+      "Yunara",
+      "Lulu"
+    ],
+    "red_champions": [
+      "Jax",
+      "DrMundo",
+      "Sylas",
+      "Aphelios",
+      "Thresh"
+    ],
+    "all_champions": [
+      "Shen",
+      "Trundle",
+      "Azir",
+      "Yunara",
+      "Lulu",
+      "Jax",
+      "DrMundo",
+      "Sylas",
+      "Aphelios",
+      "Thresh"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "game_number": 3
+    }
+  },
+  "fs_JDG_vs_GEN_groups_2026-03-17_g1": {
+    "blue_team": [
+      {
+        "champion": "Ornn",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 7
+      },
+      {
+        "champion": "TwistedFate",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 9
+      },
+      {
+        "champion": "Bard",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ornn",
+      "XinZhao",
+      "Aurora",
+      "Ezreal",
+      "Seraphine"
+    ],
+    "red_champions": [
+      "Rumble",
+      "Pantheon",
+      "TwistedFate",
+      "Caitlyn",
+      "Bard"
+    ],
+    "all_champions": [
+      "Ornn",
+      "XinZhao",
+      "Aurora",
+      "Ezreal",
+      "Seraphine",
+      "Rumble",
+      "Pantheon",
+      "TwistedFate",
+      "Caitlyn",
+      "Bard"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 1
+    }
+  },
+  "fs_JDG_vs_GEN_groups_2026-03-17_g2": {
+    "blue_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 4
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 6
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 7
+      },
+      {
+        "champion": "Veigar",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 8
+      },
+      {
+        "champion": "Jinx",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 9
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gnar",
+      "Vi",
+      "Ahri",
+      "Yunara",
+      "Rakan"
+    ],
+    "red_champions": [
+      "Renekton",
+      "JarvanIV",
+      "Veigar",
+      "Jinx",
+      "Lulu"
+    ],
+    "all_champions": [
+      "Gnar",
+      "Vi",
+      "Ahri",
+      "Yunara",
+      "Rakan",
+      "Renekton",
+      "JarvanIV",
+      "Veigar",
+      "Jinx",
+      "Lulu"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 2
+    }
+  },
+  "fs_JDG_vs_GEN_groups_2026-03-17_g3": {
+    "blue_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 2
+      },
+      {
+        "champion": "Hwei",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 3
+      },
+      {
+        "champion": "Jhin",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Zaahen",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 6
+      },
+      {
+        "champion": "Maokai",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 8
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ambessa",
+      "Nocturne",
+      "Hwei",
+      "Jhin",
+      "Alistar"
+    ],
+    "red_champions": [
+      "Zaahen",
+      "Maokai",
+      "Annie",
+      "Corki",
+      "Nami"
+    ],
+    "all_champions": [
+      "Ambessa",
+      "Nocturne",
+      "Hwei",
+      "Jhin",
+      "Alistar",
+      "Zaahen",
+      "Maokai",
+      "Annie",
+      "Corki",
+      "Nami"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 3
+    }
+  },
+  "fs_LYON_vs_LOUD_groups_2026-03-17_g1": {
+    "blue_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gnar",
+      "Pantheon",
+      "Ahri",
+      "Yunara",
+      "Lulu"
+    ],
+    "red_champions": [
+      "Renekton",
+      "JarvanIV",
+      "Mel",
+      "Ezreal",
+      "Neeko"
+    ],
+    "all_champions": [
+      "Gnar",
+      "Pantheon",
+      "Ahri",
+      "Yunara",
+      "Lulu",
+      "Renekton",
+      "JarvanIV",
+      "Mel",
+      "Ezreal",
+      "Neeko"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 1
+    }
+  },
+  "fs_LYON_vs_LOUD_groups_2026-03-17_g2": {
+    "blue_team": [
+      {
+        "champion": "Vayne",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "DrMundo",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Cassiopeia",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Aatrox",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ryze",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Kalista",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Renata",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Vayne",
+      "DrMundo",
+      "Cassiopeia",
+      "Ashe",
+      "Seraphine"
+    ],
+    "red_champions": [
+      "Sion",
+      "Aatrox",
+      "Ryze",
+      "Kalista",
+      "Renata"
+    ],
+    "all_champions": [
+      "Vayne",
+      "DrMundo",
+      "Cassiopeia",
+      "Ashe",
+      "Seraphine",
+      "Sion",
+      "Aatrox",
+      "Ryze",
+      "Kalista",
+      "Renata"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 2
+    }
+  },
+  "fs_LYON_vs_LOUD_groups_2026-03-17_g3": {
+    "blue_team": [
+      {
+        "champion": "Garen",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Lucian",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Braum",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Qiyana",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Garen",
+      "MonkeyKing",
+      "Leblanc",
+      "Lucian",
+      "Braum"
+    ],
+    "red_champions": [
+      "KSante",
+      "Qiyana",
+      "Aurora",
+      "Sivir",
+      "Alistar"
+    ],
+    "all_champions": [
+      "Garen",
+      "MonkeyKing",
+      "Leblanc",
+      "Lucian",
+      "Braum",
+      "KSante",
+      "Qiyana",
+      "Aurora",
+      "Sivir",
+      "Alistar"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 3
+    }
+  },
+  "fs_LYON_vs_LOUD_groups_2026-03-17_g4": {
+    "blue_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "Maokai",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Jayce",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Jhin",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Poppy",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Ornn",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Akali",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "MissFortune",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Leona",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Rumble",
+      "Maokai",
+      "Jayce",
+      "Jhin",
+      "Poppy"
+    ],
+    "red_champions": [
+      "Ornn",
+      "Nocturne",
+      "Akali",
+      "MissFortune",
+      "Leona"
+    ],
+    "all_champions": [
+      "Rumble",
+      "Maokai",
+      "Jayce",
+      "Jhin",
+      "Poppy",
+      "Ornn",
+      "Nocturne",
+      "Akali",
+      "MissFortune",
+      "Leona"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 4
+    }
+  },
+  "fs_LYON_vs_LOUD_groups_2026-03-17_g5": {
+    "blue_team": [
+      {
+        "champion": "Jax",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Viktor",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Zaahen",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Vex",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Jax",
+      "XinZhao",
+      "Viktor",
+      "Corki",
+      "Rakan"
+    ],
+    "red_champions": [
+      "Ambessa",
+      "Zaahen",
+      "Vex",
+      "Caitlyn",
+      "Nami"
+    ],
+    "all_champions": [
+      "Jax",
+      "XinZhao",
+      "Viktor",
+      "Corki",
+      "Rakan",
+      "Ambessa",
+      "Zaahen",
+      "Vex",
+      "Caitlyn",
+      "Nami"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "game_number": 5
+    }
+  },
+  "fs_BLG_vs_G2_groups_2026-03-18_g1": {
+    "blue_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Shen",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Poppy",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Senna",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ambessa",
+      "XinZhao",
+      "Galio",
+      "Ashe",
+      "Shen"
+    ],
+    "red_champions": [
+      "Poppy",
+      "Vi",
+      "Annie",
+      "Senna",
+      "Nautilus"
+    ],
+    "all_champions": [
+      "Ambessa",
+      "XinZhao",
+      "Galio",
+      "Ashe",
+      "Shen",
+      "Poppy",
+      "Vi",
+      "Annie",
+      "Senna",
+      "Nautilus"
+    ],
+    "match_info": {
+      "team1": "BLG",
+      "team2": "G2",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 1
+    }
+  },
+  "fs_BLG_vs_G2_groups_2026-03-18_g2": {
+    "blue_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Syndra",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "DrMundo",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gnar",
+      "Pantheon",
+      "Syndra",
+      "Sivir",
+      "Alistar"
+    ],
+    "red_champions": [
+      "Sion",
+      "DrMundo",
+      "Aurora",
+      "Varus",
+      "Neeko"
+    ],
+    "all_champions": [
+      "Gnar",
+      "Pantheon",
+      "Syndra",
+      "Sivir",
+      "Alistar",
+      "Sion",
+      "DrMundo",
+      "Aurora",
+      "Varus",
+      "Neeko"
+    ],
+    "match_info": {
+      "team1": "BLG",
+      "team2": "G2",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 2
+    }
+  },
+  "fs_BLG_vs_G2_groups_2026-03-18_g3": {
+    "blue_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Akali",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "Trundle",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Milio",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Renekton",
+      "MonkeyKing",
+      "Akali",
+      "Yunara",
+      "Lulu"
+    ],
+    "red_champions": [
+      "KSante",
+      "Trundle",
+      "Ahri",
+      "Caitlyn",
+      "Milio"
+    ],
+    "all_champions": [
+      "Renekton",
+      "MonkeyKing",
+      "Akali",
+      "Yunara",
+      "Lulu",
+      "KSante",
+      "Trundle",
+      "Ahri",
+      "Caitlyn",
+      "Milio"
+    ],
+    "match_info": {
+      "team1": "BLG",
+      "team2": "G2",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 3
+    }
+  },
+  "fs_TSW_vs_BFX_groups_2026-03-18_g1": {
+    "blue_team": [
+      {
+        "champion": "Gwen",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 3
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 4
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Karma",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gwen",
+      "Vi",
+      "Ahri",
+      "Varus",
+      "Rakan"
+    ],
+    "red_champions": [
+      "Renekton",
+      "XinZhao",
+      "Annie",
+      "Ezreal",
+      "Karma"
+    ],
+    "all_champions": [
+      "Gwen",
+      "Vi",
+      "Ahri",
+      "Varus",
+      "Rakan",
+      "Renekton",
+      "XinZhao",
+      "Annie",
+      "Ezreal",
+      "Karma"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "BFX",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 1
+    }
+  },
+  "fs_TSW_vs_BFX_groups_2026-03-18_g2": {
+    "blue_team": [
+      {
+        "champion": "Volibear",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 1
+      },
+      {
+        "champion": "Naafiri",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 2
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Orianna",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Kalista",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Renata",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Volibear",
+      "Naafiri",
+      "Galio",
+      "Corki",
+      "Nautilus"
+    ],
+    "red_champions": [
+      "Ambessa",
+      "Nocturne",
+      "Orianna",
+      "Kalista",
+      "Renata"
+    ],
+    "all_champions": [
+      "Volibear",
+      "Naafiri",
+      "Galio",
+      "Corki",
+      "Nautilus",
+      "Ambessa",
+      "Nocturne",
+      "Orianna",
+      "Kalista",
+      "Renata"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "BFX",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 2
+    }
+  },
+  "fs_TSW_vs_BFX_groups_2026-03-18_g3": {
+    "blue_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 4
+      },
+      {
+        "champion": "Milio",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Ornn",
+        "role": "top",
+        "player": "TSW Pun",
+        "participant_id": 6
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "TSW Hizto",
+        "participant_id": 7
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "TSW Dire",
+        "participant_id": 8
+      },
+      {
+        "champion": "Aphelios",
+        "role": "bottom",
+        "player": "TSW Eddie",
+        "participant_id": 9
+      },
+      {
+        "champion": "Thresh",
+        "role": "support",
+        "player": "TSW Bie",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Rumble",
+      "Pantheon",
+      "Aurora",
+      "Yunara",
+      "Milio"
+    ],
+    "red_champions": [
+      "Ornn",
+      "JarvanIV",
+      "Leblanc",
+      "Aphelios",
+      "Thresh"
+    ],
+    "all_champions": [
+      "Rumble",
+      "Pantheon",
+      "Aurora",
+      "Yunara",
+      "Milio",
+      "Ornn",
+      "JarvanIV",
+      "Leblanc",
+      "Aphelios",
+      "Thresh"
+    ],
+    "match_info": {
+      "team1": "TSW",
+      "team2": "BFX",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "game_number": 3
+    }
+  },
+  "fs_LYON_vs_GEN_groups_2026-03-19_g1": {
+    "blue_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Sylas",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 6
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 7
+      },
+      {
+        "champion": "Orianna",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 8
+      },
+      {
+        "champion": "MissFortune",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 9
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "KSante",
+      "XinZhao",
+      "Sylas",
+      "Ashe",
+      "Lulu"
+    ],
+    "red_champions": [
+      "Renekton",
+      "JarvanIV",
+      "Orianna",
+      "MissFortune",
+      "Seraphine"
+    ],
+    "all_champions": [
+      "KSante",
+      "XinZhao",
+      "Sylas",
+      "Ashe",
+      "Lulu",
+      "Renekton",
+      "JarvanIV",
+      "Orianna",
+      "MissFortune",
+      "Seraphine"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 1
+    }
+  },
+  "fs_LYON_vs_GEN_groups_2026-03-19_g2": {
+    "blue_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 2
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 4
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Aurora",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 6
+      },
+      {
+        "champion": "Viego",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 8
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ambessa",
+      "Vi",
+      "Galio",
+      "Corki",
+      "Rakan"
+    ],
+    "red_champions": [
+      "Aurora",
+      "Viego",
+      "Ahri",
+      "Yunara",
+      "Nautilus"
+    ],
+    "all_champions": [
+      "Ambessa",
+      "Vi",
+      "Galio",
+      "Corki",
+      "Rakan",
+      "Aurora",
+      "Viego",
+      "Ahri",
+      "Yunara",
+      "Nautilus"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 2
+    }
+  },
+  "fs_LYON_vs_GEN_groups_2026-03-19_g3": {
+    "blue_team": [
+      {
+        "champion": "Jayce",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 2
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 3
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 4
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Irelia",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 6
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 7
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 8
+      },
+      {
+        "champion": "Lucian",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Jayce",
+      "Pantheon",
+      "Mel",
+      "Caitlyn",
+      "Neeko"
+    ],
+    "red_champions": [
+      "Irelia",
+      "MonkeyKing",
+      "Leblanc",
+      "Lucian",
+      "Nami"
+    ],
+    "all_champions": [
+      "Jayce",
+      "Pantheon",
+      "Mel",
+      "Caitlyn",
+      "Neeko",
+      "Irelia",
+      "MonkeyKing",
+      "Leblanc",
+      "Lucian",
+      "Nami"
+    ],
+    "match_info": {
+      "team1": "LYON",
+      "team2": "GEN",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 3
+    }
+  },
+  "fs_JDG_vs_LOUD_groups_2026-03-19_g1": {
+    "blue_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "TwistedFate",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Karma",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Rumble",
+      "Vi",
+      "TwistedFate",
+      "Ezreal",
+      "Karma"
+    ],
+    "red_champions": [
+      "Sion",
+      "Nocturne",
+      "Aurora",
+      "Ashe",
+      "Seraphine"
+    ],
+    "all_champions": [
+      "Rumble",
+      "Vi",
+      "TwistedFate",
+      "Ezreal",
+      "Karma",
+      "Sion",
+      "Nocturne",
+      "Aurora",
+      "Ashe",
+      "Seraphine"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 1
+    }
+  },
+  "fs_JDG_vs_LOUD_groups_2026-03-19_g2": {
+    "blue_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Aatrox",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Syndra",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Zeri",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Renekton",
+      "XinZhao",
+      "Ahri",
+      "Yunara",
+      "Neeko"
+    ],
+    "red_champions": [
+      "KSante",
+      "Aatrox",
+      "Syndra",
+      "Zeri",
+      "Lulu"
+    ],
+    "all_champions": [
+      "Renekton",
+      "XinZhao",
+      "Ahri",
+      "Yunara",
+      "Neeko",
+      "KSante",
+      "Aatrox",
+      "Syndra",
+      "Zeri",
+      "Lulu"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 2
+    }
+  },
+  "fs_JDG_vs_LOUD_groups_2026-03-19_g3": {
+    "blue_team": [
+      {
+        "champion": "Jax",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "Poppy",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Hwei",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "LOUD Xyno",
+        "participant_id": 6
+      },
+      {
+        "champion": "Viego",
+        "role": "jungle",
+        "player": "LOUD YoungJae",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "LOUD Envy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Kalista",
+        "role": "bottom",
+        "player": "LOUD Bull",
+        "participant_id": 9
+      },
+      {
+        "champion": "Renata",
+        "role": "support",
+        "player": "LOUD RedBert",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Jax",
+      "Poppy",
+      "Hwei",
+      "Corki",
+      "Nami"
+    ],
+    "red_champions": [
+      "Ambessa",
+      "Viego",
+      "Annie",
+      "Kalista",
+      "Renata"
+    ],
+    "all_champions": [
+      "Jax",
+      "Poppy",
+      "Hwei",
+      "Corki",
+      "Nami",
+      "Ambessa",
+      "Viego",
+      "Annie",
+      "Kalista",
+      "Renata"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LOUD",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "game_number": 3
+    }
+  },
+  "fs_BFX_vs_G2_groups_2026-03-20_g1": {
+    "blue_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 4
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Gnar",
+      "Vi",
+      "Ahri",
+      "Yunara",
+      "Neeko"
+    ],
+    "red_champions": [
+      "KSante",
+      "XinZhao",
+      "Leblanc",
+      "Ashe",
+      "Seraphine"
+    ],
+    "all_champions": [
+      "Gnar",
+      "Vi",
+      "Ahri",
+      "Yunara",
+      "Neeko",
+      "KSante",
+      "XinZhao",
+      "Leblanc",
+      "Ashe",
+      "Seraphine"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 1
+    }
+  },
+  "fs_BFX_vs_G2_groups_2026-03-20_g2": {
+    "blue_team": [
+      {
+        "champion": "Ornn",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Azir",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Kaisa",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ornn",
+      "JarvanIV",
+      "Azir",
+      "Corki",
+      "Nami"
+    ],
+    "red_champions": [
+      "Rumble",
+      "Nocturne",
+      "Mel",
+      "Kaisa",
+      "Rakan"
+    ],
+    "all_champions": [
+      "Ornn",
+      "JarvanIV",
+      "Azir",
+      "Corki",
+      "Nami",
+      "Rumble",
+      "Nocturne",
+      "Mel",
+      "Kaisa",
+      "Rakan"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 2
+    }
+  },
+  "fs_BFX_vs_G2_groups_2026-03-20_g3": {
+    "blue_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Zoe",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Jayce",
+        "role": "top",
+        "player": "BFX Clear",
+        "participant_id": 6
+      },
+      {
+        "champion": "Maokai",
+        "role": "jungle",
+        "player": "BFX Raptor",
+        "participant_id": 7
+      },
+      {
+        "champion": "Syndra",
+        "role": "mid",
+        "player": "BFX VicLa",
+        "participant_id": 8
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "BFX Diable",
+        "participant_id": 9
+      },
+      {
+        "champion": "Poppy",
+        "role": "support",
+        "player": "BFX Kellin",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Sion",
+      "Pantheon",
+      "Zoe",
+      "Sivir",
+      "Alistar"
+    ],
+    "red_champions": [
+      "Jayce",
+      "Maokai",
+      "Syndra",
+      "Varus",
+      "Poppy"
+    ],
+    "all_champions": [
+      "Sion",
+      "Pantheon",
+      "Zoe",
+      "Sivir",
+      "Alistar",
+      "Jayce",
+      "Maokai",
+      "Syndra",
+      "Varus",
+      "Poppy"
+    ],
+    "match_info": {
+      "team1": "BFX",
+      "team2": "G2",
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 3
+    }
+  },
+  "fs_JDG_vs_LYON_groups_2026-03-20_g1": {
+    "blue_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Orianna",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Karma",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 7
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 8
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 9
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Renekton",
+      "XinZhao",
+      "Orianna",
+      "Yunara",
+      "Karma"
+    ],
+    "red_champions": [
+      "Gnar",
+      "Nocturne",
+      "Galio",
+      "Varus",
+      "Neeko"
+    ],
+    "all_champions": [
+      "Renekton",
+      "XinZhao",
+      "Orianna",
+      "Yunara",
+      "Karma",
+      "Gnar",
+      "Nocturne",
+      "Galio",
+      "Varus",
+      "Neeko"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LYON",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 1
+    }
+  },
+  "fs_JDG_vs_LYON_groups_2026-03-20_g2": {
+    "blue_team": [
+      {
+        "champion": "Rumble",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Jhin",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 6
+      },
+      {
+        "champion": "Malphite",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 7
+      },
+      {
+        "champion": "Viktor",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 8
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Rumble",
+      "MonkeyKing",
+      "Annie",
+      "Jhin",
+      "Alistar"
+    ],
+    "red_champions": [
+      "KSante",
+      "Malphite",
+      "Viktor",
+      "Corki",
+      "Nami"
+    ],
+    "all_champions": [
+      "Rumble",
+      "MonkeyKing",
+      "Annie",
+      "Jhin",
+      "Alistar",
+      "KSante",
+      "Malphite",
+      "Viktor",
+      "Corki",
+      "Nami"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LYON",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 2
+    }
+  },
+  "fs_JDG_vs_LYON_groups_2026-03-20_g3": {
+    "blue_team": [
+      {
+        "champion": "Aurora",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 1
+      },
+      {
+        "champion": "Ambessa",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 2
+      },
+      {
+        "champion": "Ryze",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 4
+      },
+      {
+        "champion": "Leona",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Zaahen",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 6
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 8
+      },
+      {
+        "champion": "Xayah",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 9
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Aurora",
+      "Ambessa",
+      "Ryze",
+      "Ezreal",
+      "Leona"
+    ],
+    "red_champions": [
+      "Zaahen",
+      "Vi",
+      "Ahri",
+      "Xayah",
+      "Rakan"
+    ],
+    "all_champions": [
+      "Aurora",
+      "Ambessa",
+      "Ryze",
+      "Ezreal",
+      "Leona",
+      "Zaahen",
+      "Vi",
+      "Ahri",
+      "Xayah",
+      "Rakan"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LYON",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 3
+    }
+  },
+  "fs_JDG_vs_LYON_groups_2026-03-20_g4": {
+    "blue_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "Poppy",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Jinx",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Thresh",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Aatrox",
+        "role": "top",
+        "player": "LYON Dhokla",
+        "participant_id": 6
+      },
+      {
+        "champion": "Sejuani",
+        "role": "jungle",
+        "player": "LYON Inspired",
+        "participant_id": 7
+      },
+      {
+        "champion": "Azir",
+        "role": "mid",
+        "player": "LYON Saint",
+        "participant_id": 8
+      },
+      {
+        "champion": "Aphelios",
+        "role": "bottom",
+        "player": "LYON Berserker",
+        "participant_id": 9
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "LYON Isles",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Sion",
+      "Poppy",
+      "Mel",
+      "Jinx",
+      "Thresh"
+    ],
+    "red_champions": [
+      "Aatrox",
+      "Sejuani",
+      "Azir",
+      "Aphelios",
+      "Nautilus"
+    ],
+    "all_champions": [
+      "Sion",
+      "Poppy",
+      "Mel",
+      "Jinx",
+      "Thresh",
+      "Aatrox",
+      "Sejuani",
+      "Azir",
+      "Aphelios",
+      "Nautilus"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "LYON",
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "game_number": 4
+    }
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g1": {
+    "blue_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "MissFortune",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nautilus",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 6
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 7
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 9
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Sion",
+      "Pantheon",
+      "Aurora",
+      "MissFortune",
+      "Nautilus"
+    ],
+    "red_champions": [
+      "Renekton",
+      "XinZhao",
+      "Galio",
+      "Ashe",
+      "Seraphine"
+    ],
+    "all_champions": [
+      "Sion",
+      "Pantheon",
+      "Aurora",
+      "MissFortune",
+      "Nautilus",
+      "Renekton",
+      "XinZhao",
+      "Galio",
+      "Ashe",
+      "Seraphine"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "GEN",
+      "winner": "team1",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 1
+    }
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g2": {
+    "blue_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "Zaahen",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Viktor",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Braum",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Vayne",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 9
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "KSante",
+      "Zaahen",
+      "Viktor",
+      "Varus",
+      "Braum"
+    ],
+    "red_champions": [
+      "Vayne",
+      "Vi",
+      "Ahri",
+      "Sivir",
+      "Alistar"
+    ],
+    "all_champions": [
+      "KSante",
+      "Zaahen",
+      "Viktor",
+      "Varus",
+      "Braum",
+      "Vayne",
+      "Vi",
+      "Ahri",
+      "Sivir",
+      "Alistar"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "GEN",
+      "winner": "team1",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 2
+    }
+  },
+  "fs_G2_vs_GEN_semifinals_2026-03-21_g3": {
+    "blue_team": [
+      {
+        "champion": "Shen",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Akali",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "KogMaw",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Gwen",
+        "role": "top",
+        "player": "GEN Kiin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Ambessa",
+        "role": "jungle",
+        "player": "GEN Canyon",
+        "participant_id": 7
+      },
+      {
+        "champion": "Azir",
+        "role": "mid",
+        "player": "GEN Chovy",
+        "participant_id": 8
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "GEN Ruler",
+        "participant_id": 9
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "GEN Duro",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Shen",
+      "JarvanIV",
+      "Akali",
+      "KogMaw",
+      "Lulu"
+    ],
+    "red_champions": [
+      "Gwen",
+      "Ambessa",
+      "Azir",
+      "Yunara",
+      "Neeko"
+    ],
+    "all_champions": [
+      "Shen",
+      "JarvanIV",
+      "Akali",
+      "KogMaw",
+      "Lulu",
+      "Gwen",
+      "Ambessa",
+      "Azir",
+      "Yunara",
+      "Neeko"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "GEN",
+      "winner": "team1",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 3
+    }
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g1": {
+    "blue_team": [
+      {
+        "champion": "Ambessa",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 1
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 2
+      },
+      {
+        "champion": "Viktor",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 3
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Nocturne",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Orianna",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Bard",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Ambessa",
+      "JarvanIV",
+      "Viktor",
+      "Varus",
+      "Alistar"
+    ],
+    "red_champions": [
+      "Gnar",
+      "Nocturne",
+      "Orianna",
+      "Corki",
+      "Bard"
+    ],
+    "all_champions": [
+      "Ambessa",
+      "JarvanIV",
+      "Viktor",
+      "Varus",
+      "Alistar",
+      "Gnar",
+      "Nocturne",
+      "Orianna",
+      "Corki",
+      "Bard"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 1
+    }
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g2": {
+    "blue_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Poppy",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Neeko",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Renekton",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 6
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 7
+      },
+      {
+        "champion": "Ahri",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 8
+      },
+      {
+        "champion": "Caitlyn",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 9
+      },
+      {
+        "champion": "Lux",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Sion",
+      "Poppy",
+      "Mel",
+      "Yunara",
+      "Neeko"
+    ],
+    "red_champions": [
+      "Renekton",
+      "Vi",
+      "Ahri",
+      "Caitlyn",
+      "Lux"
+    ],
+    "all_champions": [
+      "Sion",
+      "Poppy",
+      "Mel",
+      "Yunara",
+      "Neeko",
+      "Renekton",
+      "Vi",
+      "Ahri",
+      "Caitlyn",
+      "Lux"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 2
+    }
+  },
+  "fs_JDG_vs_BLG_semifinals_2026-03-21_g3": {
+    "blue_team": [
+      {
+        "champion": "Yorick",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Anivia",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Tryndamere",
+        "role": "top",
+        "player": "JDG Xiaoxu",
+        "participant_id": 6
+      },
+      {
+        "champion": "Olaf",
+        "role": "jungle",
+        "player": "JDG JunJia",
+        "participant_id": 7
+      },
+      {
+        "champion": "Hwei",
+        "role": "mid",
+        "player": "JDG HongQ",
+        "participant_id": 8
+      },
+      {
+        "champion": "Senna",
+        "role": "bottom",
+        "player": "JDG GALA",
+        "participant_id": 9
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "JDG Vampire",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Yorick",
+      "XinZhao",
+      "Aurora",
+      "Ashe",
+      "Anivia"
+    ],
+    "red_champions": [
+      "Tryndamere",
+      "Olaf",
+      "Hwei",
+      "Senna",
+      "Seraphine"
+    ],
+    "all_champions": [
+      "Yorick",
+      "XinZhao",
+      "Aurora",
+      "Ashe",
+      "Anivia",
+      "Tryndamere",
+      "Olaf",
+      "Hwei",
+      "Senna",
+      "Seraphine"
+    ],
+    "match_info": {
+      "team1": "JDG",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "game_number": 3
+    }
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g1": {
+    "blue_team": [
+      {
+        "champion": "Yorick",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "JarvanIV",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Aurora",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Yunara",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Nami",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Gnar",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Poppy",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Annie",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Sivir",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Lulu",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Yorick",
+      "JarvanIV",
+      "Aurora",
+      "Yunara",
+      "Nami"
+    ],
+    "red_champions": [
+      "Gnar",
+      "Poppy",
+      "Annie",
+      "Sivir",
+      "Lulu"
+    ],
+    "all_champions": [
+      "Yorick",
+      "JarvanIV",
+      "Aurora",
+      "Yunara",
+      "Nami",
+      "Gnar",
+      "Poppy",
+      "Annie",
+      "Sivir",
+      "Lulu"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Finals",
+      "date": "2026-03-22",
+      "game_number": 1
+    }
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g2": {
+    "blue_team": [
+      {
+        "champion": "Zaahen",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 1
+      },
+      {
+        "champion": "DrMundo",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 2
+      },
+      {
+        "champion": "Leblanc",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 3
+      },
+      {
+        "champion": "Corki",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 4
+      },
+      {
+        "champion": "Bard",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Gwen",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 6
+      },
+      {
+        "champion": "Pantheon",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 7
+      },
+      {
+        "champion": "Galio",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 8
+      },
+      {
+        "champion": "Ezreal",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 9
+      },
+      {
+        "champion": "Shen",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Zaahen",
+      "DrMundo",
+      "Leblanc",
+      "Corki",
+      "Bard"
+    ],
+    "red_champions": [
+      "Gwen",
+      "Pantheon",
+      "Galio",
+      "Ezreal",
+      "Shen"
+    ],
+    "all_champions": [
+      "Zaahen",
+      "DrMundo",
+      "Leblanc",
+      "Corki",
+      "Bard",
+      "Gwen",
+      "Pantheon",
+      "Galio",
+      "Ezreal",
+      "Shen"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Finals",
+      "date": "2026-03-22",
+      "game_number": 2
+    }
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g3": {
+    "blue_team": [
+      {
+        "champion": "Jax",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "XinZhao",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Mel",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Ashe",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Seraphine",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "Sion",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "Aatrox",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Anivia",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Varus",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Karma",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Jax",
+      "XinZhao",
+      "Mel",
+      "Ashe",
+      "Seraphine"
+    ],
+    "red_champions": [
+      "Sion",
+      "Aatrox",
+      "Anivia",
+      "Varus",
+      "Karma"
+    ],
+    "all_champions": [
+      "Jax",
+      "XinZhao",
+      "Mel",
+      "Ashe",
+      "Seraphine",
+      "Sion",
+      "Aatrox",
+      "Anivia",
+      "Varus",
+      "Karma"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Finals",
+      "date": "2026-03-22",
+      "game_number": 3
+    }
+  },
+  "fs_G2_vs_BLG_finals_2026-03-22_g4": {
+    "blue_team": [
+      {
+        "champion": "Camille",
+        "role": "top",
+        "player": "BLG Bin",
+        "participant_id": 1
+      },
+      {
+        "champion": "Vi",
+        "role": "jungle",
+        "player": "BLG Xun",
+        "participant_id": 2
+      },
+      {
+        "champion": "Cassiopeia",
+        "role": "mid",
+        "player": "BLG Knight",
+        "participant_id": 3
+      },
+      {
+        "champion": "Xayah",
+        "role": "bottom",
+        "player": "BLG Viper",
+        "participant_id": 4
+      },
+      {
+        "champion": "Alistar",
+        "role": "support",
+        "player": "BLG ON",
+        "participant_id": 5
+      }
+    ],
+    "red_team": [
+      {
+        "champion": "KSante",
+        "role": "top",
+        "player": "G2 BrokenBlade",
+        "participant_id": 6
+      },
+      {
+        "champion": "MonkeyKing",
+        "role": "jungle",
+        "player": "G2 SkewMond",
+        "participant_id": 7
+      },
+      {
+        "champion": "Viktor",
+        "role": "mid",
+        "player": "G2 Caps",
+        "participant_id": 8
+      },
+      {
+        "champion": "Kaisa",
+        "role": "bottom",
+        "player": "G2 Hans Sama",
+        "participant_id": 9
+      },
+      {
+        "champion": "Rakan",
+        "role": "support",
+        "player": "G2 Labrov",
+        "participant_id": 10
+      }
+    ],
+    "blue_champions": [
+      "Camille",
+      "Vi",
+      "Cassiopeia",
+      "Xayah",
+      "Alistar"
+    ],
+    "red_champions": [
+      "KSante",
+      "MonkeyKing",
+      "Viktor",
+      "Kaisa",
+      "Rakan"
+    ],
+    "all_champions": [
+      "Camille",
+      "Vi",
+      "Cassiopeia",
+      "Xayah",
+      "Alistar",
+      "KSante",
+      "MonkeyKing",
+      "Viktor",
+      "Kaisa",
+      "Rakan"
+    ],
+    "match_info": {
+      "team1": "G2",
+      "team2": "BLG",
+      "winner": "team2",
+      "block": "Finals",
+      "date": "2026-03-22",
+      "game_number": 4
+    }
+  }
+}

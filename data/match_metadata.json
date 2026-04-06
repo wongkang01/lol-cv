@@ -1,0 +1,658 @@
+{
+  "tournament": "First Stand 2026",
+  "stage": "Knockouts \u2192 Finals",
+  "matches": [
+    {
+      "match_id": "fs_BFX_vs_BLG_groups_2026-03-16",
+      "team1": {
+        "code": "BFX",
+        "name": "BNK FEARX",
+        "wins": 2
+      },
+      "team2": {
+        "code": "BLG",
+        "name": "BILIBILI GAMING",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308364",
+          "match_id": "fs_BFX_vs_BLG_groups_2026-03-16_g1",
+          "video_url": "https://www.youtube.com/watch?v=daMNjuX7_os",
+          "start_time": 464,
+          "end_time": 2224,
+          "duration_seconds": 1760
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308365",
+          "match_id": "fs_BFX_vs_BLG_groups_2026-03-16_g2",
+          "video_url": "https://www.youtube.com/watch?v=daMNjuX7_os",
+          "start_time": 3104,
+          "end_time": 4646,
+          "duration_seconds": 1542
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308366",
+          "match_id": "fs_BFX_vs_BLG_groups_2026-03-16_g3",
+          "video_url": "https://www.youtube.com/watch?v=daMNjuX7_os",
+          "start_time": 5098,
+          "end_time": 7053,
+          "duration_seconds": 1955
+        },
+        {
+          "game_number": 4,
+          "game_id": "115570888977308367",
+          "match_id": "fs_BFX_vs_BLG_groups_2026-03-16_g4",
+          "video_url": "https://www.youtube.com/watch?v=daMNjuX7_os",
+          "start_time": 7508,
+          "end_time": 9024,
+          "duration_seconds": 1516
+        },
+        {
+          "game_number": 5,
+          "game_id": "115570888977308368",
+          "match_id": "fs_BFX_vs_BLG_groups_2026-03-16_g5",
+          "video_url": "https://www.youtube.com/watch?v=daMNjuX7_os",
+          "start_time": 9519,
+          "end_time": 11552,
+          "duration_seconds": 2033
+        }
+      ]
+    },
+    {
+      "match_id": "fs_TSW_vs_G2_groups_2026-03-16",
+      "team1": {
+        "code": "TSW",
+        "name": "Team Secret Whales",
+        "wins": 0
+      },
+      "team2": {
+        "code": "G2",
+        "name": "G2 Esports",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-16",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308370",
+          "match_id": "fs_TSW_vs_G2_groups_2026-03-16_g1",
+          "video_url": "https://www.youtube.com/watch?v=KJ_Y9Y2Kc1o",
+          "start_time": 310,
+          "end_time": 2043,
+          "duration_seconds": 1733
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308371",
+          "match_id": "fs_TSW_vs_G2_groups_2026-03-16_g2",
+          "video_url": "https://www.youtube.com/watch?v=KJ_Y9Y2Kc1o",
+          "start_time": 2958,
+          "end_time": 4938,
+          "duration_seconds": 1980
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308372",
+          "match_id": "fs_TSW_vs_G2_groups_2026-03-16_g3",
+          "video_url": "https://www.youtube.com/watch?v=KJ_Y9Y2Kc1o",
+          "start_time": 5940,
+          "end_time": 7578,
+          "duration_seconds": 1638
+        }
+      ]
+    },
+    {
+      "match_id": "fs_JDG_vs_GEN_groups_2026-03-17",
+      "team1": {
+        "code": "JDG",
+        "name": "Beijing JDG Esports",
+        "wins": 0
+      },
+      "team2": {
+        "code": "GEN",
+        "name": "Gen.G Esports",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308394",
+          "match_id": "fs_JDG_vs_GEN_groups_2026-03-17_g1",
+          "video_url": "https://www.youtube.com/watch?v=GjSUFWnAVWg",
+          "start_time": 563,
+          "end_time": 1926,
+          "duration_seconds": 1363
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308395",
+          "match_id": "fs_JDG_vs_GEN_groups_2026-03-17_g2",
+          "video_url": "https://www.youtube.com/watch?v=GjSUFWnAVWg",
+          "start_time": 2518,
+          "end_time": 3961,
+          "duration_seconds": 1443
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308396",
+          "match_id": "fs_JDG_vs_GEN_groups_2026-03-17_g3",
+          "video_url": "https://www.youtube.com/watch?v=GjSUFWnAVWg",
+          "start_time": 4511,
+          "end_time": 6263,
+          "duration_seconds": 1752
+        }
+      ]
+    },
+    {
+      "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17",
+      "team1": {
+        "code": "LYON",
+        "name": "LYON",
+        "wins": 3
+      },
+      "team2": {
+        "code": "LOUD",
+        "name": "LOUD",
+        "wins": 2
+      },
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-17",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308400",
+          "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17_g1",
+          "video_url": "https://www.youtube.com/watch?v=NTUNkcig4ug",
+          "start_time": 221,
+          "end_time": 1826,
+          "duration_seconds": 1605
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308401",
+          "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17_g2",
+          "video_url": "https://www.youtube.com/watch?v=NTUNkcig4ug",
+          "start_time": 2671,
+          "end_time": 4812,
+          "duration_seconds": 2141
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308402",
+          "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17_g3",
+          "video_url": "https://www.youtube.com/watch?v=NTUNkcig4ug",
+          "start_time": 5785,
+          "end_time": 7590,
+          "duration_seconds": 1805
+        },
+        {
+          "game_number": 4,
+          "game_id": "115570888977308403",
+          "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17_g4",
+          "video_url": "https://www.youtube.com/watch?v=NTUNkcig4ug",
+          "start_time": 8427,
+          "end_time": 10268,
+          "duration_seconds": 1841
+        },
+        {
+          "game_number": 5,
+          "game_id": "115570888977308404",
+          "match_id": "fs_LYON_vs_LOUD_groups_2026-03-17_g5",
+          "video_url": "https://www.youtube.com/watch?v=NTUNkcig4ug",
+          "start_time": 11192,
+          "end_time": 13147,
+          "duration_seconds": 1955
+        }
+      ]
+    },
+    {
+      "match_id": "fs_BLG_vs_G2_groups_2026-03-18",
+      "team1": {
+        "code": "BLG",
+        "name": "BILIBILI GAMING",
+        "wins": 3
+      },
+      "team2": {
+        "code": "G2",
+        "name": "G2 Esports",
+        "wins": 0
+      },
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308376",
+          "match_id": "fs_BLG_vs_G2_groups_2026-03-18_g1",
+          "video_url": "https://www.youtube.com/watch?v=4UfsF6PKjOA",
+          "start_time": 2551,
+          "end_time": 4490,
+          "duration_seconds": 1939
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308377",
+          "match_id": "fs_BLG_vs_G2_groups_2026-03-18_g2",
+          "video_url": "https://www.youtube.com/watch?v=4UfsF6PKjOA",
+          "start_time": 5383,
+          "end_time": 7143,
+          "duration_seconds": 1760
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308378",
+          "match_id": "fs_BLG_vs_G2_groups_2026-03-18_g3",
+          "video_url": "https://www.youtube.com/watch?v=4UfsF6PKjOA",
+          "start_time": 8118,
+          "end_time": 9898,
+          "duration_seconds": 1780
+        }
+      ]
+    },
+    {
+      "match_id": "fs_TSW_vs_BFX_groups_2026-03-18",
+      "team1": {
+        "code": "TSW",
+        "name": "Team Secret Whales",
+        "wins": 0
+      },
+      "team2": {
+        "code": "BFX",
+        "name": "BNK FEARX",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-18",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115846976541941765",
+          "match_id": "fs_TSW_vs_BFX_groups_2026-03-18_g1",
+          "video_url": "https://www.youtube.com/watch?v=B5Hmb67-pRI",
+          "start_time": 606,
+          "end_time": 2220,
+          "duration_seconds": 1614
+        },
+        {
+          "game_number": 2,
+          "game_id": "115846976541941766",
+          "match_id": "fs_TSW_vs_BFX_groups_2026-03-18_g2",
+          "video_url": "https://www.youtube.com/watch?v=B5Hmb67-pRI",
+          "start_time": 3064,
+          "end_time": 4664,
+          "duration_seconds": 1600
+        },
+        {
+          "game_number": 3,
+          "game_id": "115846976541941767",
+          "match_id": "fs_TSW_vs_BFX_groups_2026-03-18_g3",
+          "video_url": "https://www.youtube.com/watch?v=B5Hmb67-pRI",
+          "start_time": 5918,
+          "end_time": 7618,
+          "duration_seconds": 1700
+        }
+      ]
+    },
+    {
+      "match_id": "fs_LYON_vs_GEN_groups_2026-03-19",
+      "team1": {
+        "code": "LYON",
+        "name": "LYON",
+        "wins": 0
+      },
+      "team2": {
+        "code": "GEN",
+        "name": "Gen.G Esports",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308406",
+          "match_id": "fs_LYON_vs_GEN_groups_2026-03-19_g1",
+          "video_url": "https://www.youtube.com/watch?v=XuKYbGN1pEk",
+          "start_time": 2576,
+          "end_time": 4079,
+          "duration_seconds": 1503
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308407",
+          "match_id": "fs_LYON_vs_GEN_groups_2026-03-19_g2",
+          "video_url": "https://www.youtube.com/watch?v=XuKYbGN1pEk",
+          "start_time": 5098,
+          "end_time": 6628,
+          "duration_seconds": 1530
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308408",
+          "match_id": "fs_LYON_vs_GEN_groups_2026-03-19_g3",
+          "video_url": "https://www.youtube.com/watch?v=XuKYbGN1pEk",
+          "start_time": 7639,
+          "end_time": 9124,
+          "duration_seconds": 1485
+        }
+      ]
+    },
+    {
+      "match_id": "fs_JDG_vs_LOUD_groups_2026-03-19",
+      "team1": {
+        "code": "JDG",
+        "name": "Beijing JDG Esports",
+        "wins": 3
+      },
+      "team2": {
+        "code": "LOUD",
+        "name": "LOUD",
+        "wins": 0
+      },
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-19",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115846976541941771",
+          "match_id": "fs_JDG_vs_LOUD_groups_2026-03-19_g1",
+          "video_url": "https://www.youtube.com/watch?v=GYFJBSyvT98",
+          "start_time": 620,
+          "end_time": 2355,
+          "duration_seconds": 1735
+        },
+        {
+          "game_number": 2,
+          "game_id": "115846976541941772",
+          "match_id": "fs_JDG_vs_LOUD_groups_2026-03-19_g2",
+          "video_url": "https://www.youtube.com/watch?v=GYFJBSyvT98",
+          "start_time": 3350,
+          "end_time": 4870,
+          "duration_seconds": 1520
+        },
+        {
+          "game_number": 3,
+          "game_id": "115846976541941773",
+          "match_id": "fs_JDG_vs_LOUD_groups_2026-03-19_g3",
+          "video_url": "https://www.youtube.com/watch?v=GYFJBSyvT98",
+          "start_time": 5770,
+          "end_time": 7005,
+          "duration_seconds": 1235
+        }
+      ]
+    },
+    {
+      "match_id": "fs_BFX_vs_G2_groups_2026-03-20",
+      "team1": {
+        "code": "BFX",
+        "name": "BNK FEARX",
+        "wins": 0
+      },
+      "team2": {
+        "code": "G2",
+        "name": "G2 Esports",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308388",
+          "match_id": "fs_BFX_vs_G2_groups_2026-03-20_g1",
+          "video_url": "https://www.youtube.com/watch?v=oryyKR0Em6Q",
+          "start_time": 7,
+          "end_time": 2257,
+          "duration_seconds": 2250
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308389",
+          "match_id": "fs_BFX_vs_G2_groups_2026-03-20_g2",
+          "video_url": "https://www.youtube.com/watch?v=oryyKR0Em6Q",
+          "start_time": 3120,
+          "end_time": 5685,
+          "duration_seconds": 2565
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308390",
+          "match_id": "fs_BFX_vs_G2_groups_2026-03-20_g3",
+          "video_url": "https://www.youtube.com/watch?v=oryyKR0Em6Q",
+          "start_time": 6420,
+          "end_time": 8580,
+          "duration_seconds": 2160
+        }
+      ]
+    },
+    {
+      "match_id": "fs_JDG_vs_LYON_groups_2026-03-20",
+      "team1": {
+        "code": "JDG",
+        "name": "Beijing JDG Esports",
+        "wins": 3
+      },
+      "team2": {
+        "code": "LYON",
+        "name": "LYON",
+        "wins": 1
+      },
+      "winner": "team1",
+      "block": "Groups",
+      "date": "2026-03-20",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308418",
+          "match_id": "fs_JDG_vs_LYON_groups_2026-03-20_g1",
+          "video_url": "https://www.youtube.com/watch?v=As88gGER5CY",
+          "start_time": 10,
+          "end_time": 2710,
+          "duration_seconds": 2700
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308419",
+          "match_id": "fs_JDG_vs_LYON_groups_2026-03-20_g2",
+          "video_url": "https://www.youtube.com/watch?v=As88gGER5CY",
+          "start_time": 2280,
+          "end_time": 5700,
+          "duration_seconds": 3420
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308420",
+          "match_id": "fs_JDG_vs_LYON_groups_2026-03-20_g3",
+          "video_url": "https://www.youtube.com/watch?v=As88gGER5CY",
+          "start_time": 5220,
+          "end_time": 7920,
+          "duration_seconds": 2700
+        },
+        {
+          "game_number": 4,
+          "game_id": "115570888977308421",
+          "match_id": "fs_JDG_vs_LYON_groups_2026-03-20_g4",
+          "video_url": "https://www.youtube.com/watch?v=As88gGER5CY",
+          "start_time": 7500,
+          "end_time": 11460,
+          "duration_seconds": 3960
+        }
+      ]
+    },
+    {
+      "match_id": "fs_G2_vs_GEN_semifinals_2026-03-21",
+      "team1": {
+        "code": "G2",
+        "name": "G2 Esports",
+        "wins": 3
+      },
+      "team2": {
+        "code": "GEN",
+        "name": "Gen.G Esports",
+        "wins": 0
+      },
+      "winner": "team1",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308430",
+          "match_id": "fs_G2_vs_GEN_semifinals_2026-03-21_g1",
+          "video_url": "https://www.youtube.com/watch?v=rdzerQ9TYpo",
+          "start_time": 4,
+          "end_time": 2379,
+          "duration_seconds": 2375
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308431",
+          "match_id": "fs_G2_vs_GEN_semifinals_2026-03-21_g2",
+          "video_url": "https://www.youtube.com/watch?v=rdzerQ9TYpo",
+          "start_time": 2400,
+          "end_time": 4805,
+          "duration_seconds": 2405
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308432",
+          "match_id": "fs_G2_vs_GEN_semifinals_2026-03-21_g3",
+          "video_url": "https://www.youtube.com/watch?v=rdzerQ9TYpo",
+          "start_time": 4830,
+          "end_time": 7080,
+          "duration_seconds": 2250
+        }
+      ]
+    },
+    {
+      "match_id": "fs_JDG_vs_BLG_semifinals_2026-03-21",
+      "team1": {
+        "code": "JDG",
+        "name": "Beijing JDG Esports",
+        "wins": 0
+      },
+      "team2": {
+        "code": "BLG",
+        "name": "BILIBILI GAMING",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Semifinals",
+      "date": "2026-03-21",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308424",
+          "match_id": "fs_JDG_vs_BLG_semifinals_2026-03-21_g1",
+          "video_url": "https://www.youtube.com/watch?v=05WupJLWfSI",
+          "start_time": 2,
+          "end_time": 2762,
+          "duration_seconds": 2760
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308425",
+          "match_id": "fs_JDG_vs_BLG_semifinals_2026-03-21_g2",
+          "video_url": "https://www.youtube.com/watch?v=05WupJLWfSI",
+          "start_time": 2400,
+          "end_time": 4800,
+          "duration_seconds": 2400
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308426",
+          "match_id": "fs_JDG_vs_BLG_semifinals_2026-03-21_g3",
+          "video_url": "https://www.youtube.com/watch?v=05WupJLWfSI",
+          "start_time": 4560,
+          "end_time": 7980,
+          "duration_seconds": 3420
+        }
+      ]
+    },
+    {
+      "match_id": "fs_G2_vs_BLG_finals_2026-03-22",
+      "team1": {
+        "code": "G2",
+        "name": "G2 Esports",
+        "wins": 1
+      },
+      "team2": {
+        "code": "BLG",
+        "name": "BILIBILI GAMING",
+        "wins": 3
+      },
+      "winner": "team2",
+      "block": "Finals",
+      "date": "2026-03-22",
+      "format": "bestOf5",
+      "games": [
+        {
+          "game_number": 1,
+          "game_id": "115570888977308436",
+          "match_id": "fs_G2_vs_BLG_finals_2026-03-22_g1",
+          "video_url": "https://www.youtube.com/watch?v=I4uLe1RegxQ",
+          "start_time": 5,
+          "end_time": 2755,
+          "duration_seconds": 2750
+        },
+        {
+          "game_number": 2,
+          "game_id": "115570888977308437",
+          "match_id": "fs_G2_vs_BLG_finals_2026-03-22_g2",
+          "video_url": "https://www.youtube.com/watch?v=I4uLe1RegxQ",
+          "start_time": 2760,
+          "end_time": 5578,
+          "duration_seconds": 2818
+        },
+        {
+          "game_number": 3,
+          "game_id": "115570888977308438",
+          "match_id": "fs_G2_vs_BLG_finals_2026-03-22_g3",
+          "video_url": "https://www.youtube.com/watch?v=I4uLe1RegxQ",
+          "start_time": 5582,
+          "end_time": 7790,
+          "duration_seconds": 2208
+        },
+        {
+          "game_number": 4,
+          "game_id": "115570888977308439",
+          "match_id": "fs_G2_vs_BLG_finals_2026-03-22_g4",
+          "video_url": "https://www.youtube.com/watch?v=I4uLe1RegxQ",
+          "start_time": 7800,
+          "end_time": 9900,
+          "duration_seconds": 2100
+        }
+      ]
+    }
+  ]
+}

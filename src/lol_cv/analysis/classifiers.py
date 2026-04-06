@@ -3,7 +3,7 @@ Win prediction classifiers using CV-extracted features.
 
 Compares multiple ML methods on the same feature set to determine
 which best predicts match outcomes. Supports ablation studies
-comparing CV-only, API-only, and combined feature sets.
+comparing spatial-only, OCR-only, and combined feature sets.
 
 Models:
     - Random Forest: good baseline, built-in feature importance
@@ -157,24 +157,32 @@ class WinPredictor:
 
     def ablation_study(
         self,
-        X_cv: pd.DataFrame,
-        X_api: pd.DataFrame,
+        X_spatial: pd.DataFrame,
+        X_ocr: pd.DataFrame,
         X_combined: pd.DataFrame,
         y: pd.Series,
         model_name: str = "gradient_boosting",
     ) -> dict:
-        """Compare CV-only, API-only, and combined feature sets.
+        """Compare spatial-only, OCR-only, and combined feature sets.
 
-        This is the core experiment: does CV add value beyond the API?
+        This is the core experiment: do spatial features from minimap detection
+        complement OCR-extracted features (gold, kills, items)?
+
+        Args:
+            X_spatial: Features from minimap detection only.
+            X_ocr: Features from OCR extraction only (gold, kills, items).
+            X_combined: All features together.
+            y: Binary target (1 = blue win, 0 = red win).
+            model_name: Which model to use for comparison.
 
         Returns:
-            Dict with keys 'cv_only', 'api_only', 'combined', each containing metrics.
+            Dict with keys 'spatial_only', 'ocr_only', 'combined', each containing metrics.
         """
         cv = StratifiedKFold(n_splits=self.cv_folds, shuffle=True, random_state=self.random_state)
         scoring = ["accuracy", "f1", "roc_auc"]
 
         results = {}
-        for label, X in [("cv_only", X_cv), ("api_only", X_api), ("combined", X_combined)]:
+        for label, X in [("spatial_only", X_spatial), ("ocr_only", X_ocr), ("combined", X_combined)]:
             pipeline = _build_models(self.random_state)[model_name]
             cv_results = cross_validate(pipeline, X, y, cv=cv, scoring=scoring)
             results[label] = {

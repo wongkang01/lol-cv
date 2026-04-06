@@ -242,6 +242,47 @@ class SpatialFeatures:
 
         return pd.DataFrame(rows)
 
+    def convergence_speed(
+        self,
+        df: pd.DataFrame,
+        champions: list[str],
+        objective: str,
+        target_count: int = 3,
+        proximity_threshold: float = 0.2,
+    ) -> float:
+        """Time (seconds) for target_count+ team members to arrive within proximity of objective.
+
+        Measures how quickly a team converges on an objective — a key coordination metric.
+        Returns NaN if team never reaches the target grouping count.
+
+        Args:
+            df: Position DataFrame with columns [timestamp, champion, x, y].
+            champions: List of champion names on the same team.
+            objective: Objective name (must be in OBJECTIVES dict).
+            target_count: Minimum number of team members required near the objective.
+            proximity_threshold: Max normalised distance from objective to be "near" it.
+
+        Returns:
+            First timestamp (seconds) at which target_count+ members are near the
+            objective, or NaN if this never happens.
+        """
+        if objective not in OBJECTIVES:
+            raise ValueError(f"Unknown objective: {objective}")
+
+        ox, oy = OBJECTIVES[objective]
+        timestamps = sorted(df["timestamp"].unique())
+
+        for ts in timestamps:
+            snap = df[(df["timestamp"] == ts) & (df["champion"].isin(champions))]
+            if snap.empty:
+                continue
+            dists = np.sqrt((snap["x"] - ox) ** 2 + (snap["y"] - oy) ** 2)
+            near_count = int((dists < proximity_threshold).sum())
+            if near_count >= target_count:
+                return float(ts)
+
+        return float("nan")
+
     # ── Heatmaps ─────────────────────────────────────────────────────
 
     def generate_heatmap(
@@ -346,6 +387,10 @@ class SpatialFeatures:
                 obj_grouping = self.grouping_near_objective(df, team, obj)
                 features[f"{side}_{obj}_grouped_near_pct"] = obj_grouping["grouped_near"].mean()
                 features[f"{side}_{obj}_avg_near_count"] = obj_grouping["near_count"].mean()
+
+            # Convergence speed for major objectives
+            for obj in ["dragon", "baron"]:
+                features[f"{side}_{obj}_convergence_speed"] = self.convergence_speed(df, team, obj)
 
             # Zone occupancy (averaged across team)
             zone_totals = {z: 0.0 for z in ZONES}

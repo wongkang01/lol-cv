@@ -162,3 +162,77 @@ class TestZoneOccupancy:
         df = pd.DataFrame(columns=["timestamp", "champion", "x", "y", "confidence"])
         occ = spatial.zone_occupancy(df, "Jinx")
         assert all(v == 0.0 for v in occ.values())
+
+
+# ── Convergence Speed ──────────────────────────────────────────────
+
+
+class TestConvergenceSpeed:
+    """Tests for SpatialFeatures.convergence_speed."""
+
+    def test_team_converges_near_dragon(self, spatial):
+        """Three champions arrive near dragon at t=20 -> returns 20.0."""
+        # Dragon is at (0.62, 0.78). Place champions far away first,
+        # then move 3 of them within proximity_threshold=0.2 at t=20.
+        df = pd.DataFrame({
+            "timestamp": [10, 10, 10, 10, 20, 20, 20, 20],
+            "champion": ["A", "B", "C", "D", "A", "B", "C", "D"],
+            "x": [0.1, 0.1, 0.1, 0.1, 0.62, 0.60, 0.64, 0.1],
+            "y": [0.1, 0.1, 0.1, 0.1, 0.78, 0.76, 0.80, 0.1],
+            "confidence": [0.9] * 8,
+        })
+        result = spatial.convergence_speed(df, ["A", "B", "C", "D"], "dragon")
+        assert result == 20.0
+
+    def test_team_never_groups(self, spatial):
+        """Champions never converge near baron -> returns NaN."""
+        # Baron is at (0.38, 0.22). All champions stay at (0.9, 0.9),
+        # well outside the default proximity_threshold=0.2.
+        df = pd.DataFrame({
+            "timestamp": [10, 10, 10, 20, 20, 20],
+            "champion": ["A", "B", "C", "A", "B", "C"],
+            "x": [0.9, 0.9, 0.9, 0.9, 0.9, 0.9],
+            "y": [0.9, 0.9, 0.9, 0.9, 0.9, 0.9],
+            "confidence": [0.9] * 6,
+        })
+        result = spatial.convergence_speed(df, ["A", "B", "C"], "baron")
+        assert np.isnan(result)
+
+    def test_fewer_champions_than_target(self, spatial):
+        """Only 2 champions in data but target_count=3 -> returns NaN."""
+        df = pd.DataFrame({
+            "timestamp": [10, 10],
+            "champion": ["A", "B"],
+            "x": [0.62, 0.62],
+            "y": [0.78, 0.78],
+            "confidence": [0.9, 0.9],
+        })
+        result = spatial.convergence_speed(
+            df, ["A", "B"], "dragon", target_count=3
+        )
+        assert np.isnan(result)
+
+    def test_invalid_objective_raises(self, spatial):
+        """Unknown objective name raises ValueError."""
+        df = pd.DataFrame({
+            "timestamp": [10],
+            "champion": ["A"],
+            "x": [0.5],
+            "y": [0.5],
+            "confidence": [0.9],
+        })
+        with pytest.raises(ValueError, match="Unknown objective"):
+            spatial.convergence_speed(df, ["A"], "invalid_objective")
+
+    def test_near_from_start(self, spatial):
+        """Champions already near objective at first timestamp -> returns that timestamp."""
+        # All three start right next to dragon at t=5.
+        df = pd.DataFrame({
+            "timestamp": [5, 5, 5],
+            "champion": ["A", "B", "C"],
+            "x": [0.62, 0.63, 0.61],
+            "y": [0.78, 0.79, 0.77],
+            "confidence": [0.9] * 3,
+        })
+        result = spatial.convergence_speed(df, ["A", "B", "C"], "dragon")
+        assert result == 5.0

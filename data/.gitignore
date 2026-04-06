@@ -2,3 +2,8 @@
 *
 !.gitignore
 !**/.gitkeep
+
+# Keep small metadata files for reproducibility (tracked)
+!match_metadata.json
+!champion_picks.json
+!champion_picks_raw.json

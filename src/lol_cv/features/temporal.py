@@ -189,6 +189,63 @@ class TemporalFeatures:
 
         return pd.DataFrame(rows)
 
+    # ── Gold & Lane Stability ───────────────────────────────────────
+
+    def gold_diff_slope(self, ocr_df: pd.DataFrame, phase: str = None) -> float:
+        """Linear regression slope of gold difference over time.
+
+        Positive = blue team gaining gold advantage.
+        If phase specified, only compute for that phase's time window.
+
+        Args:
+            ocr_df: DataFrame with columns [timestamp, gold_diff].
+            phase: Optional game phase name ('early', 'mid', 'late').
+
+        Returns:
+            Slope of gold difference trend line, or NaN if insufficient data.
+        """
+        data = ocr_df.copy()
+        if phase is not None:
+            if phase not in self.phases:
+                raise ValueError(f"Unknown phase: {phase}. Choose from {list(self.phases.keys())}")
+            start, end = self.phases[phase]
+            data = data[(data["timestamp"] >= start) & (data["timestamp"] < end)]
+
+        data = data.dropna(subset=["timestamp", "gold_diff"])
+        if len(data) < 2:
+            return float("nan")
+
+        timestamps = data["timestamp"].values.astype(float)
+        gold_diffs = data["gold_diff"].values.astype(float)
+        slope = np.polyfit(timestamps, gold_diffs, 1)[0]
+        return float(slope)
+
+    def lane_assignment_stability(
+        self, positions_df: pd.DataFrame, champion: str, expected_zone: str
+    ) -> float:
+        """Fraction of time a champion spends in their expected zone/lane.
+
+        Higher values indicate more stable laning; lower values indicate roaming.
+        Uses SpatialFeatures.classify_zone internally.
+
+        Args:
+            positions_df: Position DataFrame with columns [timestamp, champion, x, y].
+            champion: Champion name to analyze.
+            expected_zone: Zone name the champion is expected to occupy (e.g. 'mid_lane').
+
+        Returns:
+            Fraction (0-1) of timestamps the champion is in the expected zone,
+            or NaN if no data for the champion.
+        """
+        champ_df = positions_df[positions_df["champion"] == champion]
+        if champ_df.empty:
+            return float("nan")
+
+        zones = champ_df.apply(
+            lambda r: self._spatial.classify_zone(r["x"], r["y"]), axis=1
+        )
+        return float((zones == expected_zone).mean())
+
     # ── Aggregated Feature Vector ────────────────────────────────────
 
     def compute_all(
@@ -197,6 +254,7 @@ class TemporalFeatures:
         positions: pd.DataFrame = None,
         blue_team: list[str] = None,
         red_team: list[str] = None,
+        ocr_df: pd.DataFrame = None,
     ) -> dict:
         """Compute a full temporal feature vector for a game.
 
@@ -229,6 +287,12 @@ class TemporalFeatures:
                     if not rot.empty:
                         side_transitions.append(rot["transitions"].mean())
                 features[f"{side}_avg_rotations"] = np.mean(side_transitions) if side_transitions else 0.0
+
+        # Gold difference slope per phase (if OCR data available)
+        if ocr_df is not None and "gold_diff" in ocr_df.columns:
+            features["gold_diff_slope_overall"] = self.gold_diff_slope(ocr_df)
+            for phase in self.phases:
+                features[f"gold_diff_slope_{phase}"] = self.gold_diff_slope(ocr_df, phase=phase)
 
         logger.info("Computed %d temporal features", len(features))
         return features

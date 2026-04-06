@@ -11,13 +11,20 @@ extraction:
   ocr:
     engine: "paddleocr"
     regions:
-      # Define HUD regions to extract (spectator mode)
+      # HUD regions for LoL Esports broadcast (reference resolution 1920x1080)
+      # These scale automatically to 720p and other resolutions at runtime.
       scoreboard: [0, 0, 1920, 80]
-      timer: [920, 0, 1000, 30]
+      timer: [892, 72, 1035, 112]
+      kill_score: [877, 7, 1050, 52]
+      blue_gold: [712, 7, 862, 52]
+      red_gold: [1065, 7, 1215, 52]
+      blue_turrets: [645, 7, 712, 52]
+      red_turrets: [1215, 7, 1282, 52]
       minimap: [1650, 790, 1920, 1080]
 
+  # API integration is descoped — using CV-only pipeline
   api:
-    region: "euw1"
+    # region: "euw1"  # descoped: API not used in current pipeline
     queue: "RANKED_SOLO_5x5"
     tier: "MASTER"
 
@@ -29,7 +36,7 @@ features:
   spatial:
     zone_grid_size: 16  # 16x16 grid for zone analysis
     grouping_threshold: 200  # pixels for "grouped" detection
-    speed_window: 5  # seconds for speed calculation
+    convergence_target_count: 3  # members needed near objective for convergence
 
   temporal:
     early_game_end: 900   # 15 minutes
@@ -50,6 +57,19 @@ analysis:
   cv_folds: 5
   test_size: 0.2
   random_state: 42
+
+vod_processing:
+  quality: "1080p"
+  fps: 1
+  minimap_region: [1650, 790, 1920, 1080]
+  hud_regions:
+    scoreboard: [0, 0, 1920, 80]
+    timer: [892, 72, 1035, 112]
+    kill_score: [877, 7, 1050, 52]
+    blue_gold: [712, 7, 862, 52]
+    red_gold: [1065, 7, 1215, 52]
+    blue_turrets: [645, 7, 712, 52]
+    red_turrets: [1215, 7, 1282, 52]
 
 embedding:
   model: "gemini-embedding-002"

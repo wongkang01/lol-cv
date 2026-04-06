@@ -12,6 +12,7 @@ from lol_cv.visualization.plots import (
     plot_cluster_scatter,
     plot_grouping_timeline,
     plot_ablation_comparison,
+    plot_precision_recall_curves,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "plot_cluster_scatter",
     "plot_grouping_timeline",
     "plot_ablation_comparison",
+    "plot_precision_recall_curves",
 ]

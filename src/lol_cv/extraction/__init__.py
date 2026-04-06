@@ -5,6 +5,9 @@ Data extraction modules.
 - ocr: HUD data extraction (gold, KDA, items, timers) via PaddleOCR
 - api: Riot API client for supplementary match data
 - vlm: Vision-Language Model analysis via Gemini (Flash + Embedding)
+- vod_processor: VOD download, frame extraction, and region cropping pipeline
+- benchmark: Detection model benchmarking (YOLOv8 vs YOLOv11 comparison)
+- vod_discovery: Automated VOD URL + timestamp discovery via lolesports API
 """
 
 def __getattr__(name):
@@ -22,6 +25,18 @@ def __getattr__(name):
     if name == "VlmAnalyzer":
         from lol_cv.extraction.vlm import VlmAnalyzer
         return VlmAnalyzer
+    if name == "VodProcessor":
+        from lol_cv.extraction.vod_processor import VodProcessor
+        return VodProcessor
+    if name == "DetectionBenchmark":
+        from lol_cv.extraction.benchmark import DetectionBenchmark
+        return DetectionBenchmark
+    if name == "VodDiscovery":
+        from lol_cv.extraction.vod_discovery import VodDiscovery
+        return VodDiscovery
+    if name == "MatchMetadataFetcher":
+        from lol_cv.extraction.match_metadata import MatchMetadataFetcher
+        return MatchMetadataFetcher
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
-__all__ = ["RiotApiClient", "MinimapTracker", "HudExtractor", "VlmAnalyzer"]
+__all__ = ["RiotApiClient", "MinimapTracker", "HudExtractor", "VlmAnalyzer", "VodProcessor", "DetectionBenchmark", "VodDiscovery"]

@@ -38,6 +38,7 @@ Thumbs.db
 .env
 .env.local
 *.key
+cookies.txt
 
 # Data (large files - download separately)
 data/raw/*.rofl

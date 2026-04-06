@@ -92,6 +92,37 @@ class MinimapTracker:
             })
         return detections
 
+    def detect_frame_filtered(
+        self, frame: np.ndarray, valid_champions: set[str]
+    ) -> list[dict]:
+        """Run detection and keep only champions that are in the game.
+
+        Uses match metadata to discard false positives from the detector.
+        When multiple detections map to the same champion, the highest
+        confidence one is kept.
+
+        Args:
+            frame: BGR image of the minimap region.
+            valid_champions: Set of champion names actually in this game
+                (e.g. from MatchMetadataFetcher).
+
+        Returns:
+            Filtered list of detections (max 10 — one per champion).
+        """
+        raw = self.detect_frame(frame)
+
+        # Keep only valid champions
+        filtered = [d for d in raw if d["champion"] in valid_champions]
+
+        # Deduplicate: keep highest confidence per champion
+        best: dict[str, dict] = {}
+        for d in filtered:
+            champ = d["champion"]
+            if champ not in best or d["confidence"] > best[champ]["confidence"]:
+                best[champ] = d
+
+        return list(best.values())
+
     def extract_positions(self, video_path: str, fps: int = 1) -> dict[float, list[dict]]:
         """Extract champion positions from a minimap video.
 
