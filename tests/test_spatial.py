@@ -759,3 +759,160 @@ class TestPre3MinInvade:
         assert out["red_pre3min_invade_secs"] == 20
         assert out["pre3min_invade_diff"] == 0
         assert out["pre3min_invade_min"] == 20
+
+
+# ── Per-Objective Snapshot Features ─────────────────────────────────
+
+
+class TestObjectiveSnapshotFeatures:
+    """compute_objective_snapshot_features — per-t positional aggregates."""
+
+    METRICS = (
+        "grouping_dist",
+        "dragon_quadrant_count",
+        "baron_quadrant_count",
+        "enemy_half_count",
+        "centroid_x",
+        "centroid_y",
+        "spread",
+    )
+
+    def _expected_keys(self, snapshot_times):
+        keys = set()
+        for t in snapshot_times:
+            for side in ("blue", "red"):
+                for m in self.METRICS:
+                    keys.add(f"t{t}_{side}_{m}")
+        return keys
+
+    def test_stationary_teams_known_positions(self, spatial):
+        """Both teams stationary at known positions: grouping_dist == 0
+        (all teammates share the same point) and quadrant counts match."""
+        blue_team = ["B1", "B2", "B3"]
+        red_team = ["R1", "R2", "R3"]
+
+        rows = []
+        # Sample the full [150, 210) and [270, 330) windows at 1 Hz so each
+        # t in the default snapshot_times that overlaps gets coverage.
+        for t in range(150, 911):
+            # Blue team all at dragon quadrant (0.6, 0.8) — bot right.
+            for champ in blue_team:
+                rows.append({"timestamp": t, "champion": champ, "x": 0.6, "y": 0.8})
+            # Red team all at baron quadrant (0.4, 0.2) — top left.
+            for champ in red_team:
+                rows.append({"timestamp": t, "champion": champ, "x": 0.4, "y": 0.2})
+
+        df = _base_df(rows)
+        out = spatial.compute_objective_snapshot_features(
+            df, blue_team=blue_team, red_team=red_team,
+        )
+
+        snapshot_times = (180, 300, 420, 540, 660, 780, 900)
+        assert set(out.keys()) == self._expected_keys(snapshot_times)
+
+        for t in snapshot_times:
+            # Blue — 3 stationary champions at (0.6, 0.8).
+            assert out[f"t{t}_blue_grouping_dist"] == pytest.approx(0.0, abs=1e-9)
+            assert out[f"t{t}_blue_spread"] == pytest.approx(0.0, abs=1e-9)
+            assert out[f"t{t}_blue_dragon_quadrant_count"] == 3
+            assert out[f"t{t}_blue_baron_quadrant_count"] == 0
+            assert out[f"t{t}_blue_enemy_half_count"] == 0  # y >= 0.5
+            assert out[f"t{t}_blue_centroid_x"] == pytest.approx(0.6, abs=1e-9)
+            assert out[f"t{t}_blue_centroid_y"] == pytest.approx(0.8, abs=1e-9)
+
+            # Red — 3 stationary champions at (0.4, 0.2).
+            assert out[f"t{t}_red_grouping_dist"] == pytest.approx(0.0, abs=1e-9)
+            assert out[f"t{t}_red_spread"] == pytest.approx(0.0, abs=1e-9)
+            assert out[f"t{t}_red_baron_quadrant_count"] == 3
+            assert out[f"t{t}_red_dragon_quadrant_count"] == 0
+            assert out[f"t{t}_red_enemy_half_count"] == 0  # need y > 0.5
+            assert out[f"t{t}_red_centroid_x"] == pytest.approx(0.4, abs=1e-9)
+            assert out[f"t{t}_red_centroid_y"] == pytest.approx(0.2, abs=1e-9)
+
+    def test_empty_window_all_nan(self, spatial):
+        """If no positions fall in the [t-30, t+30) slice, all metrics NaN."""
+        # Only data at t=5000 (far outside default snapshot_times window).
+        df = _base_df([
+            {"timestamp": 5000, "champion": "B1", "x": 0.5, "y": 0.5},
+            {"timestamp": 5000, "champion": "R1", "x": 0.5, "y": 0.5},
+        ])
+        out = spatial.compute_objective_snapshot_features(
+            df, blue_team=["B1"], red_team=["R1"],
+        )
+        snapshot_times = (180, 300, 420, 540, 660, 780, 900)
+        assert set(out.keys()) == self._expected_keys(snapshot_times)
+        for k, v in out.items():
+            assert np.isnan(v), f"Expected NaN for {k}, got {v}"
+
+    def test_single_champion_grouping_nan_but_counts_populate(self, spatial):
+        """Only 1 champion in-window → grouping_dist/spread NaN but
+        counts and centroids are still computed."""
+        blue_team = ["B1", "B2"]
+        red_team = ["R1"]
+
+        rows = []
+        # Only B1 has data around t=300 — B2 has nothing in-window.
+        for t in range(270, 330):
+            rows.append({"timestamp": t, "champion": "B1", "x": 0.7, "y": 0.8})
+            rows.append({"timestamp": t, "champion": "R1", "x": 0.3, "y": 0.2})
+
+        df = _base_df(rows)
+        out = spatial.compute_objective_snapshot_features(
+            df,
+            blue_team=blue_team,
+            red_team=red_team,
+            snapshot_times=(300,),
+        )
+
+        # Blue: 1 champion → grouping NaN, counts still valid.
+        assert np.isnan(out["t300_blue_grouping_dist"])
+        assert np.isnan(out["t300_blue_spread"])
+        assert out["t300_blue_dragon_quadrant_count"] == 1  # (0.7, 0.8)
+        assert out["t300_blue_baron_quadrant_count"] == 0
+        assert out["t300_blue_enemy_half_count"] == 0
+        assert out["t300_blue_centroid_x"] == pytest.approx(0.7, abs=1e-9)
+        assert out["t300_blue_centroid_y"] == pytest.approx(0.8, abs=1e-9)
+
+        # Red: 1 champion → grouping NaN, counts still valid.
+        assert np.isnan(out["t300_red_grouping_dist"])
+        assert np.isnan(out["t300_red_spread"])
+        assert out["t300_red_baron_quadrant_count"] == 1  # (0.3, 0.2)
+        assert out["t300_red_dragon_quadrant_count"] == 0
+        assert out["t300_red_enemy_half_count"] == 0  # needs y > 0.5
+        assert out["t300_red_centroid_x"] == pytest.approx(0.3, abs=1e-9)
+        assert out["t300_red_centroid_y"] == pytest.approx(0.2, abs=1e-9)
+
+    def test_partial_time_coverage(self, spatial):
+        """Data only covers t=[270, 330). t=300 should populate but t=600
+        and beyond must be NaN."""
+        blue_team = ["B1", "B2"]
+        red_team = ["R1", "R2"]
+
+        rows = []
+        for t in range(270, 330):
+            rows.append({"timestamp": t, "champion": "B1", "x": 0.6, "y": 0.8})
+            rows.append({"timestamp": t, "champion": "B2", "x": 0.65, "y": 0.85})
+            rows.append({"timestamp": t, "champion": "R1", "x": 0.4, "y": 0.2})
+            rows.append({"timestamp": t, "champion": "R2", "x": 0.35, "y": 0.15})
+
+        df = _base_df(rows)
+        out = spatial.compute_objective_snapshot_features(
+            df,
+            blue_team=blue_team,
+            red_team=red_team,
+            snapshot_times=(300, 600, 900),
+        )
+
+        # t=300 — populated.
+        assert not np.isnan(out["t300_blue_grouping_dist"])
+        assert out["t300_blue_grouping_dist"] > 0
+        assert out["t300_blue_dragon_quadrant_count"] == 2
+        assert out["t300_red_baron_quadrant_count"] == 2
+
+        # t=600, t=900 — outside data window → all NaN.
+        for t in (600, 900):
+            for side in ("blue", "red"):
+                for m in self.METRICS:
+                    assert np.isnan(out[f"t{t}_{side}_{m}"]), (
+                        f"Expected NaN for t{t}_{side}_{m}"
+                    )

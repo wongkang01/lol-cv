@@ -812,6 +812,127 @@ class SpatialFeatures:
         logger.info("Computed %d strategic spatial features", len(features))
         return features
 
+    # ── Per-Objective Grouping Snapshots ─────────────────────────────
+
+    def compute_objective_snapshot_features(
+        self,
+        df: pd.DataFrame,
+        blue_team: list[str],
+        red_team: list[str],
+        snapshot_times: tuple[int, ...] = (180, 300, 420, 540, 660, 780, 900),
+        snapshot_window: int = 30,
+    ) -> dict:
+        """Compute per-objective grouping snapshots at fixed time points.
+
+        For each target time ``t`` in ``snapshot_times``, slice the positions
+        DataFrame to a window ``[t - snapshot_window, t + snapshot_window)``
+        and aggregate each champion's mean (x, y) over that window (centroid
+        of detections). Then, for each side, compute:
+
+            * ``grouping_dist`` — mean pairwise distance between teammates.
+            * ``dragon_quadrant_count`` — number of champions inside the
+              bottom-right quadrant (x in [0.5, 1.0], y in [0.5, 1.0]).
+            * ``baron_quadrant_count`` — number of champions inside the
+              top-left quadrant (x in [0.0, 0.5], y in [0.0, 0.5]).
+            * ``enemy_half_count`` — blue: y < 0.5, red: y > 0.5.
+            * ``centroid_x``, ``centroid_y`` — mean team position.
+            * ``spread`` — std of pairwise distances.
+
+        Edge cases:
+            * Empty slice for a time ``t`` → all metrics NaN for that ``t``.
+            * Only 1 champion available → ``grouping_dist`` and ``spread``
+              are NaN, counts/centroids still computed.
+            * All keys are present in the output dict even when NaN, so the
+              feature matrix stays consistent across games.
+
+        Returns:
+            Flat dict with keys ``t{t}_{side}_{metric}`` (e.g.
+            ``t300_blue_grouping_dist``). The caller is expected to prefix
+            keys with ``sp_snap_`` when writing into the feature matrix.
+        """
+        metrics = (
+            "grouping_dist",
+            "dragon_quadrant_count",
+            "baron_quadrant_count",
+            "enemy_half_count",
+            "centroid_x",
+            "centroid_y",
+            "spread",
+        )
+
+        features: dict = {}
+
+        def _nan_side(t: int, side: str) -> None:
+            for m in metrics:
+                features[f"t{t}_{side}_{m}"] = float("nan")
+
+        for t in snapshot_times:
+            lo = t - snapshot_window
+            hi = t + snapshot_window
+            window = df[(df["timestamp"] >= lo) & (df["timestamp"] < hi)]
+
+            if window.empty:
+                _nan_side(t, "blue")
+                _nan_side(t, "red")
+                continue
+
+            for side, team in (("blue", blue_team), ("red", red_team)):
+                side_win = window[window["champion"].isin(team)]
+                if side_win.empty:
+                    _nan_side(t, side)
+                    continue
+
+                # Mean position per champion over the window.
+                centroids = side_win.groupby("champion")[["x", "y"]].mean()
+                if centroids.empty:
+                    _nan_side(t, side)
+                    continue
+
+                coords = centroids[["x", "y"]].values
+                n = coords.shape[0]
+
+                # Grouping distance + spread (need >= 2 champions).
+                if n >= 2:
+                    dists = pdist(coords, metric="euclidean")
+                    features[f"t{t}_{side}_grouping_dist"] = float(np.mean(dists))
+                    features[f"t{t}_{side}_spread"] = float(np.std(dists))
+                else:
+                    features[f"t{t}_{side}_grouping_dist"] = float("nan")
+                    features[f"t{t}_{side}_spread"] = float("nan")
+
+                xs = coords[:, 0]
+                ys = coords[:, 1]
+
+                # Dragon quadrant: bottom-right (x in [0.5, 1], y in [0.5, 1]).
+                dragon_mask = (xs >= 0.5) & (xs <= 1.0) & (ys >= 0.5) & (ys <= 1.0)
+                features[f"t{t}_{side}_dragon_quadrant_count"] = float(
+                    int(dragon_mask.sum())
+                )
+
+                # Baron quadrant: top-left (x in [0, 0.5], y in [0, 0.5]).
+                baron_mask = (xs >= 0.0) & (xs <= 0.5) & (ys >= 0.0) & (ys <= 0.5)
+                features[f"t{t}_{side}_baron_quadrant_count"] = float(
+                    int(baron_mask.sum())
+                )
+
+                # Enemy-half count: blue moving into top half (y < 0.5),
+                # red moving into bottom half (y > 0.5).
+                if side == "blue":
+                    enemy_mask = ys < 0.5
+                else:
+                    enemy_mask = ys > 0.5
+                features[f"t{t}_{side}_enemy_half_count"] = float(
+                    int(enemy_mask.sum())
+                )
+
+                features[f"t{t}_{side}_centroid_x"] = float(np.mean(xs))
+                features[f"t{t}_{side}_centroid_y"] = float(np.mean(ys))
+
+        logger.info(
+            "Computed %d objective snapshot spatial features", len(features)
+        )
+        return features
+
     # ── Aggregated Feature Vector ────────────────────────────────────
 
     def compute_all(

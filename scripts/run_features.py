@@ -307,6 +307,18 @@ def main() -> None:
         except Exception:
             logger.exception("Strategic spatial failed for %s", match_id)
 
+        # ── Per-objective grouping snapshot features ──
+        try:
+            snapshot_feats = spatial.compute_objective_snapshot_features(
+                positions_df,
+                blue_team,
+                red_team,
+            )
+            for k, v in snapshot_feats.items():
+                feats[f"sp_snap_{k}"] = v
+        except Exception:
+            logger.exception("Snapshot spatial failed for %s", match_id)
+
         # ── OCR-derived features (best effort) ──
         ocr_smoothed = pd.DataFrame()
         if ocr_path.exists():

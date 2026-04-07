@@ -30,6 +30,60 @@ PHASE_BOUNDARIES = {
 EVENT_TYPES = ["kill", "tower", "dragon", "baron", "inhibitor", "herald"]
 
 
+def smooth_ocr(ocr_df: pd.DataFrame) -> pd.DataFrame:
+    """Clean noisy OCR readings before computing features.
+
+    - Drop rows with no game_time_seconds (no valid timer reading)
+    - Sort by game_time_seconds
+    - Drop rows where game_time_seconds is non-monotonic (clearly wrong)
+    - For kills: enforce non-decreasing (kills only go up)
+    - For gold: drop values outside (200, 100000)
+    - Compute gold_diff for downstream features
+    """
+    if ocr_df.empty:
+        return ocr_df
+
+    df = ocr_df.dropna(subset=["game_time_seconds"]).copy()
+    if df.empty:
+        return df
+
+    df = df.sort_values("game_time_seconds").reset_index(drop=True)
+
+    # Drop non-monotonic timer outliers (kept value must be ≥ previous)
+    keep_mask = [True]
+    last_t = df["game_time_seconds"].iloc[0]
+    for i in range(1, len(df)):
+        t = df["game_time_seconds"].iloc[i]
+        if t >= last_t and t - last_t < 600:  # at most 10 min jump
+            keep_mask.append(True)
+            last_t = t
+        else:
+            keep_mask.append(False)
+    df = df[keep_mask].reset_index(drop=True)
+
+    # Smooth kills: enforce non-decreasing
+    for col in ("blue_kills", "red_kills"):
+        if col in df.columns:
+            vals = df[col].astype("float")
+            # Reject impossible values (>50 kills total per team is rare)
+            vals = vals.where((vals >= 0) & (vals <= 50), np.nan)
+            vals = vals.cummax()  # only allow non-decreasing
+            df[col] = vals
+
+    # Filter gold to plausible range and drop NaN
+    for col in ("blue_gold", "red_gold"):
+        if col in df.columns:
+            vals = df[col].astype("float")
+            vals = vals.where((vals >= 200) & (vals <= 100_000), np.nan)
+            df[col] = vals
+
+    # Gold diff (NaN where either side missing)
+    if "blue_gold" in df.columns and "red_gold" in df.columns:
+        df["gold_diff"] = df["blue_gold"] - df["red_gold"]
+
+    return df
+
+
 class TemporalFeatures:
     """Compute temporal features from game event and position data."""
 

@@ -3,6 +3,9 @@
 Currently covers:
     - ``split_feature_groups`` — partitioning by column-name prefix
     - ``feature_correlations`` — Spearman correlation ranking table
+    - ``feature_correlations_regression`` — Pearson+Spearman vs continuous target
+    - ``load_data_regression`` — reads features + targets and drops NaN targets
+    - ``run_regression_cv`` — KFold CV over linear + GBR regressors
 """
 
 from __future__ import annotations
@@ -15,9 +18,21 @@ import numpy as np
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(_REPO_ROOT))
+# The package lives under ``src/`` but isn't installed, so make it importable
+# for both ``scripts.run_analysis`` (which imports ``lol_cv``) and the tests
+# themselves.
+sys.path.insert(0, str(_REPO_ROOT / "src"))
 
-from scripts.run_analysis import feature_correlations, split_feature_groups  # noqa: E402
+from scripts.run_analysis import (  # noqa: E402
+    feature_correlations,
+    feature_correlations_regression,
+    load_data_regression,
+    run_regression_cv,
+    split_feature_groups,
+)
+import scripts.run_analysis as run_analysis  # noqa: E402
 
 
 # ── Fixtures ────────────────────────────────────────────────────────
@@ -196,6 +211,167 @@ class TestFeatureCorrelations:
         # the helper). The anti-correlated column must be first.
         assert corr.iloc[0]["feature"] == "anti"
         assert corr.iloc[0]["abs_r"] == pytest.approx(1.0)
+
+
+# ── Regression path ─────────────────────────────────────────────────
+
+
+def _build_synthetic_regression_frame(n: int = 10, seed: int = 0):
+    """Build a tiny (n, 3) features frame + noisy-linear target."""
+    rng = np.random.default_rng(seed)
+    x1 = rng.normal(size=n)
+    x2 = rng.normal(size=n)
+    x3 = rng.normal(size=n)
+    y = 2.5 * x1 + 0.1 * rng.normal(size=n)  # strong positive dependence on x1
+    X = pd.DataFrame({"feat_a": x1, "feat_b": x2, "feat_c": x3})
+    y_series = pd.Series(y, name="synthetic_target")
+    return X, y_series
+
+
+class TestFeatureCorrelationsRegression:
+    def test_sign_of_strong_feature(self):
+        X, y = _build_synthetic_regression_frame(n=60, seed=1)
+        corr = feature_correlations_regression(X, y)
+        # Schema.
+        assert list(corr.columns) == [
+            "feature", "pearson_r", "pearson_p",
+            "spearman_r", "spearman_p", "abs_max_r",
+        ]
+        assert len(corr) == 3
+        # abs_max_r sorted descending.
+        assert corr["abs_max_r"].is_monotonic_decreasing
+
+        # The strongly-related feature should rank first and have a
+        # positive pearson_r (target was built as +2.5 * feat_a + noise).
+        top = corr.iloc[0]
+        assert top["feature"] == "feat_a"
+        assert top["pearson_r"] > 0.8
+        assert top["spearman_r"] > 0.8
+
+    def test_constant_column_returns_nan(self):
+        n = 20
+        X = pd.DataFrame({
+            "flat": np.full(n, 7.0),
+            "varying": np.arange(n, dtype=float),
+        })
+        y = pd.Series(np.arange(n, dtype=float), name="t")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            corr = feature_correlations_regression(X, y)
+
+        flat_row = corr[corr["feature"] == "flat"].iloc[0]
+        assert np.isnan(flat_row["pearson_r"])
+        assert np.isnan(flat_row["spearman_r"])
+        # Varying column perfectly linear in y -> pearson_r ~ 1.
+        varying_row = corr[corr["feature"] == "varying"].iloc[0]
+        assert varying_row["pearson_r"] == pytest.approx(1.0)
+
+
+class TestLoadDataRegression:
+    def test_drops_nan_target_rows(self, tmp_path, monkeypatch):
+        # Point the script's PROCESSED constant at a temporary directory
+        # with minimal features.csv / features_meta.csv / targets.csv files.
+        monkeypatch.setattr(run_analysis, "PROCESSED", tmp_path)
+
+        n = 10
+        match_ids = [f"g_{i}" for i in range(n)]
+        feats = pd.DataFrame({
+            "match_id": match_ids,
+            "sp_foo": np.arange(n, dtype=float),
+            "tp_bar": np.arange(n, dtype=float) * 0.5,
+            "ocr_baz": np.arange(n, dtype=float) + 2,
+        })
+        feats.to_csv(tmp_path / "features.csv", index=False)
+
+        meta = pd.DataFrame({
+            "match_id": match_ids,
+            "winner_side": ["blue"] * n,  # ignored by regression path
+        })
+        meta.to_csv(tmp_path / "features_meta.csv", index=False)
+
+        # 3 of 10 games have a NaN target and must be dropped.
+        target_vals = np.arange(n, dtype=float)
+        target_vals[[2, 5, 8]] = np.nan
+        targets = pd.DataFrame({
+            "match_id": match_ids,
+            "gold_diff_t600": target_vals,
+        })
+        targets.to_csv(tmp_path / "targets.csv", index=False)
+
+        X, y, _ = load_data_regression("features.csv", "gold_diff_t600")
+
+        assert len(X) == 7
+        assert len(y) == 7
+        assert y.name == "gold_diff_t600"
+        assert not y.isna().any()
+        # Dropped rows should not appear in the index.
+        dropped = {"g_2", "g_5", "g_8"}
+        assert dropped.isdisjoint(set(X.index))
+
+    def test_missing_targets_file_exits(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(run_analysis, "PROCESSED", tmp_path)
+        feats = pd.DataFrame({
+            "match_id": ["g_0"],
+            "sp_foo": [1.0],
+        })
+        feats.to_csv(tmp_path / "features.csv", index=False)
+
+        with pytest.raises(SystemExit, match="targets.csv"):
+            load_data_regression("features.csv", "gold_diff_t600")
+
+    def test_missing_target_column_exits(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(run_analysis, "PROCESSED", tmp_path)
+        match_ids = ["g_0", "g_1"]
+        pd.DataFrame({
+            "match_id": match_ids,
+            "sp_foo": [1.0, 2.0],
+        }).to_csv(tmp_path / "features.csv", index=False)
+        pd.DataFrame({
+            "match_id": match_ids,
+            "winner_side": ["blue", "red"],
+        }).to_csv(tmp_path / "features_meta.csv", index=False)
+        pd.DataFrame({
+            "match_id": match_ids,
+            "gold_diff_t600": [100.0, -100.0],
+        }).to_csv(tmp_path / "targets.csv", index=False)
+
+        with pytest.raises(SystemExit, match="not found in targets.csv"):
+            load_data_regression("features.csv", "nonexistent_target")
+
+
+class TestRunRegressionCv:
+    def test_returns_non_empty_results(self):
+        # Use a slightly larger frame so 2-fold CV is well-defined and
+        # linear regression can actually fit something meaningful.
+        X, y = _build_synthetic_regression_frame(n=40, seed=2)
+        cv_df, oof = run_regression_cv(X, y, cv_folds=2, random_state=42)
+
+        # Shape / schema.
+        assert not cv_df.empty
+        assert set(cv_df.columns) == {"r2_mean", "r2_std", "mae_mean", "mae_std", "n_samples"}
+        # Phase 5 added `ridge_regression` to the model dict so the regression
+        # pipeline can handle n≪d regimes. Keep the set assertion exhaustive so
+        # future additions force a test update.
+        assert set(cv_df.index) == {
+            "linear_regression",
+            "ridge_regression",
+            "gradient_boosting_regressor",
+        }
+
+        # Both linear models should have a sensible R² (target is almost
+        # linear in feat_a so linear/ridge in particular should be ~1).
+        assert cv_df.loc["linear_regression", "r2_mean"] > 0.8
+        assert cv_df.loc["ridge_regression", "r2_mean"] > 0.8
+
+        # Out-of-fold predictions must exist for every model and have
+        # the right length.
+        assert set(oof.keys()) == {
+            "linear_regression",
+            "ridge_regression",
+            "gradient_boosting_regressor",
+        }
+        for name, arr in oof.items():
+            assert len(arr) == len(y), f"{name} oof length mismatch"
 
 
 if __name__ == "__main__":  # pragma: no cover

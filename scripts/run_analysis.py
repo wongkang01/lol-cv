@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,7 +33,13 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from scipy.stats import spearmanr
+from scipy.stats import pearsonr, spearmanr
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 from lol_cv.analysis.classifiers import WinPredictor
 from lol_cv.utils import setup_logger, ensure_dir
@@ -43,43 +50,22 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 PROCESSED = REPO_ROOT / "data" / "processed"
 
 
-def load_data(features_filename: str) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
-    feats = pd.read_csv(PROCESSED / features_filename).set_index("match_id")
-    meta = pd.read_csv(PROCESSED / "features_meta.csv").set_index("match_id")
+def _apply_feature_nan_handling(feats: pd.DataFrame) -> pd.DataFrame:
+    """Apply the rare-event-aware NaN handling used by both classification
+    and regression paths.
 
-    # Drop rows missing winner
-    meta = meta.dropna(subset=["winner_side"])
-    common = feats.index.intersection(meta.index)
-    feats = feats.loc[common]
-    meta = meta.loc[common]
+    - Drops entirely-NaN columns.
+    - For ``sp_early_*``/``sp_strat_*`` columns adds a parallel
+      ``<col>_missing`` indicator (NaN -> 1) and fills the original with
+      either ``0`` (count-like features) or ``-1`` (continuous sentinel).
+    - Fills everything else with ``0.0``.
 
-    y = (meta["winner_side"] == "blue").astype(int)
-    y.name = "blue_wins"
-
-    # Drop entirely-NaN columns first.
+    The behaviour is intentionally identical to the logic that used to live
+    inline in ``load_data`` — regression reuses the same helper so that
+    feature semantics stay consistent across modes.
+    """
     feats = feats.dropna(axis=1, how="all")
 
-    # ── Smarter NaN handling for rare-event features ──
-    #
-    # Rare-event features (``sp_early_*`` / ``sp_strat_*``) have meaningful
-    # missingness: a NaN means "the event never happened" (e.g. the mid laner
-    # never roamed), which is NOT the same as "the event happened at t=0".
-    # Filling these with 0 would tell the model "roamed instantly" instead of
-    # "never roamed" — destroying signal for rare events.
-    #
-    # Strategy:
-    #   1. For each rare-event column, add a parallel ``<col>_missing`` int
-    #      indicator column BEFORE filling, so tree models can split on
-    #      presence/absence directly.
-    #   2. Fill continuous features (timestamps, distances, arrival times,
-    #      encoded categoricals) with a sentinel ``-1`` — tree models can
-    #      learn a split at >-0.5 to separate "real value" from "missing".
-    #   3. Fill count features (``_count``/``_frames``/``_secs``/``_recalls``)
-    #      with 0 — here 0 is the semantically correct "no invade / no
-    #      recall happened" value.
-    #   4. Existing full-game ``sp_*`` (zone occupancy) and ``tp_*`` (temporal)
-    #      features do NOT have rare-event semantics, so they keep the old
-    #      ``fillna(0.0)`` behaviour.
     rare_event_cols = [
         c for c in feats.columns
         if c.startswith("sp_early_") or c.startswith("sp_strat_")
@@ -105,9 +91,102 @@ def load_data(features_filename: str) -> tuple[pd.DataFrame, pd.Series, pd.DataF
 
     # For everything else (full-game sp_*, tp_*, ocr_*, meta), use legacy 0-fill.
     feats = feats.fillna(0.0)
+    return feats
+
+
+def load_data(features_filename: str) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
+    feats = pd.read_csv(PROCESSED / features_filename).set_index("match_id")
+    meta = pd.read_csv(PROCESSED / "features_meta.csv").set_index("match_id")
+
+    # Drop rows missing winner
+    meta = meta.dropna(subset=["winner_side"])
+    common = feats.index.intersection(meta.index)
+    feats = feats.loc[common]
+    meta = meta.loc[common]
+
+    y = (meta["winner_side"] == "blue").astype(int)
+    y.name = "blue_wins"
+
+    # ── Smarter NaN handling for rare-event features ──
+    #
+    # Rare-event features (``sp_early_*`` / ``sp_strat_*``) have meaningful
+    # missingness: a NaN means "the event never happened" (e.g. the mid laner
+    # never roamed), which is NOT the same as "the event happened at t=0".
+    # Filling these with 0 would tell the model "roamed instantly" instead of
+    # "never roamed" — destroying signal for rare events.
+    feats = _apply_feature_nan_handling(feats)
 
     logger.info("Loaded %d games × %d features", *feats.shape)
     logger.info("Class balance: blue_wins=%d red_wins=%d", int(y.sum()), int((1 - y).sum()))
+    return feats, y, meta
+
+
+def load_data_regression(
+    features_filename: str, target_name: str
+) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
+    """Load features and a continuous regression target keyed on match_id.
+
+    Behaves like ``load_data`` for the feature matrix (same NaN handling,
+    same meta join) but joins against ``data/processed/targets.csv`` and
+    returns ``y = targets[target_name]``. Rows where the target is NaN are
+    dropped so the downstream CV runner never sees a NaN in ``y``.
+
+    ``sys.exit`` is raised (with a helpful message) if ``targets.csv`` does
+    not exist or does not contain the requested column.
+    """
+    targets_path = PROCESSED / "targets.csv"
+    if not targets_path.exists():
+        sys.exit(
+            f"Missing {targets_path} — build_targets.py has not produced "
+            "targets.csv yet. Re-run once the targets agent finishes, or "
+            "drop the --regression-target flag to use classification mode."
+        )
+
+    targets = pd.read_csv(targets_path).set_index("match_id")
+    if target_name not in targets.columns:
+        sys.exit(
+            f"Target column '{target_name}' not found in targets.csv. "
+            f"Available: {sorted(targets.columns)}"
+        )
+
+    feats = pd.read_csv(PROCESSED / features_filename).set_index("match_id")
+    meta_path = PROCESSED / "features_meta.csv"
+    if meta_path.exists():
+        meta = pd.read_csv(meta_path).set_index("match_id")
+    else:
+        meta = pd.DataFrame(index=feats.index)
+
+    # Join on the 3-way intersection of feats / meta / targets, then drop
+    # rows where the target is NaN (some games may be missing e.g.
+    # gold_diff_t1200 because they ended early).
+    common = feats.index.intersection(targets.index)
+    if not meta.empty:
+        common = common.intersection(meta.index)
+    feats = feats.loc[common]
+    y_full = targets.loc[common, target_name]
+    mask = y_full.notna()
+    feats = feats.loc[mask]
+    y = y_full.loc[mask].astype(float)
+    y.name = target_name
+    if not meta.empty:
+        meta = meta.loc[feats.index]
+
+    dropped = int((~mask).sum())
+    if dropped:
+        logger.info(
+            "Dropped %d rows with NaN target (%s)", dropped, target_name
+        )
+
+    feats = _apply_feature_nan_handling(feats)
+
+    logger.info(
+        "Loaded %d games × %d features for regression target '%s'",
+        feats.shape[0], feats.shape[1], target_name,
+    )
+    logger.info(
+        "Target stats: mean=%.3f std=%.3f min=%.3f max=%.3f",
+        float(y.mean()), float(y.std(ddof=0)), float(y.min()), float(y.max()),
+    )
     return feats, y, meta
 
 
@@ -337,6 +416,344 @@ def feature_correlations(X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
     return df
 
 
+def feature_correlations_regression(X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
+    """Compute Pearson AND Spearman correlations between each feature and a
+    continuous target.
+
+    Returns a frame with columns
+    ``[feature, pearson_r, pearson_p, spearman_r, spearman_p, abs_max_r]``
+    sorted by ``abs_max_r`` descending, where ``abs_max_r = max(|pearson|,
+    |spearman|)``. Constant / zero-variance columns produce NaN without
+    raising (scipy warnings are silenced at the call site).
+    """
+    import warnings as _warnings
+
+    rows: list[dict] = []
+    y_vals = np.asarray(y, dtype=float)
+    for col in X.columns:
+        x_vals = np.asarray(X[col], dtype=float)
+        try:
+            with _warnings.catch_warnings():
+                _warnings.simplefilter("ignore")
+                if np.nanstd(x_vals) == 0 or np.nanstd(y_vals) == 0:
+                    pr, pp = np.nan, np.nan
+                    sr, sp = np.nan, np.nan
+                else:
+                    pr, pp = pearsonr(x_vals, y_vals)
+                    sr, sp = spearmanr(x_vals, y_vals)
+        except Exception:
+            pr, pp, sr, sp = np.nan, np.nan, np.nan, np.nan
+
+        abs_pr = 0.0 if pr is None or np.isnan(pr) else abs(pr)
+        abs_sr = 0.0 if sr is None or np.isnan(sr) else abs(sr)
+        rows.append({
+            "feature": col,
+            "pearson_r": pr,
+            "pearson_p": pp,
+            "spearman_r": sr,
+            "spearman_p": sp,
+            "abs_max_r": max(abs_pr, abs_sr),
+        })
+    df = pd.DataFrame(rows).sort_values("abs_max_r", ascending=False).reset_index(drop=True)
+    return df
+
+
+def _build_regression_models(random_state: int = 42) -> dict:
+    """Return the regression models used in regression mode.
+
+    - ``linear_regression``: unregularised baseline. Useful for comparison
+      but unstable when n is comparable to the number of features.
+    - ``ridge_regression``: L2-regularised linear model wrapped in a
+      ``StandardScaler`` so the regularisation strength applies uniformly
+      across features. Critical for n≪d regimes.
+    - ``gradient_boosting_regressor``: non-linear baseline. Tree-based so
+      it handles unscaled features and missing-indicator columns natively.
+
+    Kept as a tiny helper so the test suite can import and reuse it.
+    """
+    return {
+        "linear_regression": LinearRegression(),
+        "ridge_regression": Pipeline([
+            ("scaler", StandardScaler()),
+            ("model", Ridge(alpha=1.0, random_state=random_state)),
+        ]),
+        "gradient_boosting_regressor": GradientBoostingRegressor(
+            random_state=random_state
+        ),
+    }
+
+
+def _select_top_k_by_correlation(
+    X: pd.DataFrame, y: pd.Series, top_k: int
+) -> tuple[pd.DataFrame, list[str]]:
+    """Restrict X to the top-k features by absolute Spearman correlation.
+
+    Used by the regression pipeline to keep n ≫ d when fitting models on
+    a small dataset. Constant columns and missingness indicators are
+    excluded before ranking.
+    """
+    candidate_cols = [
+        c for c in X.columns
+        if not c.endswith("_missing") and X[c].nunique(dropna=False) > 1
+    ]
+    if not candidate_cols:
+        logger.warning("No non-constant features available for correlation ranking")
+        return X, list(X.columns)
+
+    scores: list[tuple[str, float]] = []
+    for col in candidate_cols:
+        try:
+            r, _ = spearmanr(X[col], y)
+        except Exception:
+            r = 0.0
+        if r is None or np.isnan(r):
+            r = 0.0
+        scores.append((col, abs(float(r))))
+    scores.sort(key=lambda kv: kv[1], reverse=True)
+    selected = [c for c, _ in scores[:top_k]]
+    return X[selected], selected
+
+
+def run_regression_cv(
+    X: pd.DataFrame,
+    y: pd.Series,
+    cv_folds: int,
+    random_state: int = 42,
+) -> tuple[pd.DataFrame, dict[str, np.ndarray]]:
+    """Run K-fold cross validation for both regression models.
+
+    Uses ``KFold`` (NOT stratified — the target is continuous). For each
+    model, computes per-fold R² and MAE and reports mean/std. Also returns
+    the out-of-fold predictions (via ``cross_val_predict``) keyed by model
+    name so the caller can build scatter plots.
+
+    Returns
+    -------
+    cv_df : pd.DataFrame
+        Indexed by model name, columns
+        ``[r2_mean, r2_std, mae_mean, mae_std, n_samples]``.
+    oof_preds : dict[str, np.ndarray]
+        Out-of-fold predictions per model, aligned to ``y.index``.
+    """
+    kf = KFold(n_splits=cv_folds, shuffle=True, random_state=random_state)
+    results: list[dict] = []
+    oof_preds: dict[str, np.ndarray] = {}
+    X_vals = X.values
+    y_vals = y.values.astype(float)
+
+    for name, model in _build_regression_models(random_state=random_state).items():
+        r2s: list[float] = []
+        maes: list[float] = []
+        for train_idx, test_idx in kf.split(X_vals):
+            model.fit(X_vals[train_idx], y_vals[train_idx])
+            pred = model.predict(X_vals[test_idx])
+            r2s.append(r2_score(y_vals[test_idx], pred))
+            maes.append(mean_absolute_error(y_vals[test_idx], pred))
+
+        # Separate call for out-of-fold predictions so we can plot actual
+        # vs. predicted later without interfering with the per-fold scoring
+        # above.
+        oof = cross_val_predict(
+            _build_regression_models(random_state=random_state)[name],
+            X_vals,
+            y_vals,
+            cv=KFold(n_splits=cv_folds, shuffle=True, random_state=random_state),
+        )
+        oof_preds[name] = oof
+
+        results.append({
+            "model": name,
+            "r2_mean": float(np.mean(r2s)),
+            "r2_std": float(np.std(r2s, ddof=0)),
+            "mae_mean": float(np.mean(maes)),
+            "mae_std": float(np.std(maes, ddof=0)),
+            "n_samples": int(len(y)),
+        })
+        logger.info(
+            "  %s: R²=%.3f±%.3f, MAE=%.3f±%.3f",
+            name, results[-1]["r2_mean"], results[-1]["r2_std"],
+            results[-1]["mae_mean"], results[-1]["mae_std"],
+        )
+
+    cv_df = pd.DataFrame(results).set_index("model")
+    return cv_df, oof_preds
+
+
+def plot_regression_correlations_top20(
+    corr_df: pd.DataFrame, out_path: Path, top_k: int = 20
+) -> None:
+    """Horizontal bar plot of the top features ranked by ``abs_max_r``.
+
+    The x-axis shows signed Spearman r (not |r|) so the reader can still
+    see direction, but ranking uses ``abs_max_r`` per the spec.
+    """
+    if corr_df.empty:
+        logger.warning("plot_regression_correlations_top20: empty frame — skipping")
+        return
+    top = corr_df.head(top_k).iloc[::-1]  # reverse so largest is at top
+    fig, ax = plt.subplots(figsize=(9, 7))
+    colors = ["#1f77b4" if r >= 0 else "#d62728" for r in top["spearman_r"].fillna(0)]
+    ax.barh(top["feature"], top["spearman_r"].fillna(0), color=colors)
+    ax.axvline(0, color="black", lw=0.8)
+    ax.set_xlabel("Spearman r vs target")
+    ax.set_title(f"Top {top_k} features by |correlation| with target")
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+
+
+def plot_regression_scatter(
+    y_true: pd.Series, y_pred: np.ndarray, model_name: str, out_path: Path
+) -> None:
+    """Scatter of out-of-fold predicted vs actual target values."""
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.scatter(y_true, y_pred, alpha=0.6, edgecolor="k", linewidth=0.3)
+    lo = float(min(y_true.min(), np.min(y_pred)))
+    hi = float(max(y_true.max(), np.max(y_pred)))
+    ax.plot([lo, hi], [lo, hi], "r--", lw=1, label="y = x")
+    ax.set_xlabel(f"Actual ({y_true.name})")
+    ax.set_ylabel("Predicted (out-of-fold)")
+    ax.set_title(f"{model_name}: predicted vs actual")
+    ax.legend()
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+
+
+def _sanitise_target_name(target: str) -> str:
+    """Make a target column name safe to use as a directory component.
+
+    Replaces any character that is not alphanumeric, underscore, dash or dot
+    with ``_``. Idempotent.
+    """
+    return re.sub(r"[^A-Za-z0-9_.\-]", "_", target)
+
+
+def run_regression_mode(args: argparse.Namespace) -> None:
+    """End-to-end regression pipeline for a single continuous target.
+
+    Mirrors the classification ``main()`` structure but uses KFold CV,
+    Pearson+Spearman correlations, and GradientBoostingRegressor feature
+    importances instead of the classifier-based outputs. Called from
+    ``main()`` when ``--regression-target`` is supplied.
+    """
+    target = args.regression_target
+    logger.info(
+        "Regression mode: target=%s, features=%s, output_dir=%s, top_k=%s",
+        target, args.features, args.output_dir, args.regression_top_k,
+    )
+
+    if not (PROCESSED / args.features).exists():
+        sys.exit(
+            f"Missing data/processed/{args.features} — run scripts/run_features.py first"
+        )
+
+    X_full, y, _ = load_data_regression(args.features, target)
+    n = len(y)
+    if n < 4:
+        sys.exit(
+            f"Cannot run regression CV with only {n} samples — need at least 4."
+        )
+    if n < 10:
+        cv_folds = max(2, n // 4)
+        logger.warning(
+            "Only %d samples — falling back to cv_folds=%d", n, cv_folds
+        )
+    else:
+        cv_folds = 5
+    logger.info("Using cv_folds=%d (n=%d)", cv_folds, n)
+
+    safe_target = _sanitise_target_name(target)
+    out_dir = PROCESSED / args.output_dir / f"regression_{safe_target}"
+    plots_dir = out_dir / "plots"
+    ensure_dir(out_dir)
+    ensure_dir(plots_dir)
+
+    # ── 1. Correlations (Pearson + Spearman) on the FULL feature matrix ──
+    # Compute correlations against the unfiltered matrix so the diagnostic
+    # CSV reflects every feature's relationship to the target — not just the
+    # top-k that the models will see.
+    logger.info("\n=== Feature correlations (Pearson + Spearman) ===")
+    corr_df = feature_correlations_regression(X_full, y)
+    corr_df.to_csv(out_dir / "feature_correlations.csv", index=False)
+    logger.info(
+        "\nTop 15 |r| with target:\n%s",
+        corr_df.head(15)[["feature", "pearson_r", "spearman_r", "abs_max_r"]].to_string(index=False),
+    )
+    plot_regression_correlations_top20(
+        corr_df, plots_dir / "correlations_top20.png"
+    )
+
+    # ── 1b. Filter features for the model fits ──
+    # n=34 vs ~210 features = guaranteed overfit. Restrict to the top-k by
+    # |Spearman r| against the target before fitting any model. This is a
+    # standard small-n regression workflow.
+    X, selected_features = _select_top_k_by_correlation(
+        X_full, y, top_k=args.regression_top_k
+    )
+    logger.info(
+        "Filtered features for modelling: %d → %d (top_k=%d)",
+        X_full.shape[1], X.shape[1], args.regression_top_k,
+    )
+
+    # ── 2. Cross-validated regression models ──
+    logger.info("\n=== Training regression models (KFold CV) ===")
+    cv_df, oof_preds = run_regression_cv(X, y, cv_folds=cv_folds)
+    cv_df.to_csv(out_dir / "cv_results.csv")
+    logger.info("\n%s", cv_df.to_string())
+
+    # Pick best model by R² mean.
+    best_model = str(cv_df["r2_mean"].idxmax())
+    best_r2 = float(cv_df.loc[best_model, "r2_mean"])
+    logger.info("Best model: %s (R²=%.3f)", best_model, best_r2)
+
+    # ── 3. Feature importance (refit GBR on full data) ──
+    logger.info("\n=== Feature importance (GradientBoostingRegressor) ===")
+    gbr = GradientBoostingRegressor(random_state=42)
+    gbr.fit(X.values, y.values.astype(float))
+    imp_df = pd.DataFrame({
+        "feature": list(X.columns),
+        "importance": gbr.feature_importances_,
+    }).sort_values("importance", ascending=False).reset_index(drop=True)
+    imp_df.to_csv(out_dir / "feature_importance.csv", index=False)
+    logger.info("\nTop 20 features:\n%s", imp_df.head(20).to_string(index=False))
+
+    # ── 4. Scatter plot for best model ──
+    plot_regression_scatter(
+        y, oof_preds[best_model], best_model,
+        plots_dir / f"regression_scatter_{best_model}.png",
+    )
+
+    # ── 5. Summary ──
+    summary = {
+        "n_samples": int(n),
+        "target": target,
+        "cv_folds": int(cv_folds),
+        "best_model": best_model,
+        "best_r2": best_r2,
+        "models": {
+            name: {
+                "r2_mean": float(cv_df.loc[name, "r2_mean"]),
+                "r2_std": float(cv_df.loc[name, "r2_std"]),
+                "mae_mean": float(cv_df.loc[name, "mae_mean"]),
+                "mae_std": float(cv_df.loc[name, "mae_std"]),
+            }
+            for name in cv_df.index
+        },
+        "top_5_correlations": corr_df.head(5)[
+            ["feature", "pearson_r", "spearman_r", "abs_max_r"]
+        ].to_dict("records"),
+        "top_5_features_by_importance": imp_df.head(5).to_dict("records"),
+    }
+    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
+
+    logger.info("\n=== Regression summary ===")
+    logger.info("Target: %s", target)
+    logger.info("n_samples=%d, best_model=%s, best_r2=%.3f", n, best_model, best_r2)
+    logger.info("All outputs in %s", out_dir)
+
+
 def plot_cv_results(cv_df: pd.DataFrame, out_path: Path) -> None:
     fig, ax = plt.subplots(figsize=(8, 5))
     metrics = ["accuracy", "f1", "roc_auc"]
@@ -413,7 +830,32 @@ def main() -> None:
         default="analysis",
         help="Name of the output directory under data/processed/ (default: analysis)",
     )
+    parser.add_argument(
+        "--regression-target",
+        type=str,
+        default=None,
+        help=(
+            "If set, run in regression mode against the named column from "
+            "data/processed/targets.csv (e.g. gold_diff_t600). Defaults to "
+            "classification mode."
+        ),
+    )
+    parser.add_argument(
+        "--regression-top-k",
+        type=int,
+        default=15,
+        help=(
+            "In regression mode, restrict the model fits to the top-K "
+            "features ranked by |Spearman r| against the target. With "
+            "n=34 a value of 10–20 keeps the n≫d safety margin. Set to a "
+            "very large number to disable filtering. Default: 15."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.regression_target is not None:
+        run_regression_mode(args)
+        return
 
     logger.info("Loading features from %s, output to %s", args.features, args.output_dir)
 
