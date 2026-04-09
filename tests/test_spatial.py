@@ -28,32 +28,35 @@ class TestClassifyZone:
         assert spatial.classify_zone(0.9, 0.1) == "red_base"
 
     def test_dragon_pit(self, spatial):
-        """Dragon pit should win over overlapping river_bot / bot_jungle_blue."""
-        assert spatial.classify_zone(0.62, 0.78) == "dragon_pit"
+        """Dragon pit centroid (as painted in zone_mask.png)."""
+        # Pit centre lies a touch up-left of the legacy rectangle centre.
+        assert spatial.classify_zone(0.64, 0.72) == "dragon_pit"
 
     def test_baron_pit(self, spatial):
-        assert spatial.classify_zone(0.38, 0.22) == "baron_pit"
+        """Baron pit centroid (as painted in zone_mask.png)."""
+        # Pit centre lies a touch down-left of the legacy rectangle centre.
+        assert spatial.classify_zone(0.34, 0.28) == "baron_pit"
 
     def test_mid_lane(self, spatial):
         assert spatial.classify_zone(0.5, 0.5) == "mid_lane"
 
     def test_unknown_region(self, spatial):
-        """A point outside all zone bounds returns 'unknown'."""
-        # (0.42, 0.0) is in a gap between top_lane and top_jungle_red
-        assert spatial.classify_zone(0.42, 0.0) == "unknown"
+        """The broadcast border region (outside the painted mask) returns 'unknown'."""
+        # The mask is shrunk to 0.95 of the minimap crop, so any point in
+        # the outermost ~2.5% border falls outside the painted area.
+        assert spatial.classify_zone(0.001, 0.5) == "unknown"
 
     def test_priority_covers_all_zones(self):
-        """Every zone in ZONES must appear in ZONE_PRIORITY."""
+        """Legacy ZONE_PRIORITY list still mirrors the ZONES keys (kept as a
+        zone-name inventory; the mask resolves overlaps at paint time)."""
         assert set(ZONE_PRIORITY) == set(ZONES.keys())
 
     def test_objective_pits_before_jungle(self, spatial):
-        """Points in dragon/baron pit should not be classified as jungle."""
-        # Dragon pit center
-        zone = spatial.classify_zone(0.625, 0.775)
-        assert zone == "dragon_pit"
-        # Baron pit center
-        zone = spatial.classify_zone(0.375, 0.225)
-        assert zone == "baron_pit"
+        """Pit centroids classify as the pit, not the surrounding jungle."""
+        # Dragon pit centroid (mask paint).
+        assert spatial.classify_zone(0.64, 0.72) == "dragon_pit"
+        # Baron pit centroid (mask paint).
+        assert spatial.classify_zone(0.34, 0.28) == "baron_pit"
 
 
 # ── Zone Transitions ────────────────────────────────────────────────

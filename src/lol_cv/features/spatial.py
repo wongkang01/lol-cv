@@ -12,20 +12,197 @@ discrete steps rather than smoothly, making per-second speed unreliable.
 Zone transitions capture the same macro-movement information more robustly.
 
 All coordinates are normalised to [0, 1] relative to minimap size
-(as output by MinimapTracker). Zone boundaries use these normalised coords.
+(as output by MinimapTracker). Zone boundaries are resolved by a hand-painted
+pixel mask (``zone_mask.png`` in this directory), classified via the
+:class:`ZoneMask` class below.
 """
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from PIL import Image
 from scipy.spatial.distance import pdist
 
 from lol_cv.utils import setup_logger
 
 logger = setup_logger("lol_cv.features.spatial")
 
-# LoL minimap zone definitions in normalised [0, 1] coordinates.
-# The minimap is oriented with blue base at bottom-left, red base at top-right.
-# Each zone is defined as (x_min, y_min, x_max, y_max).
+# ── Pixel-mask zone classifier ──────────────────────────────────────────────
+#
+# The legacy axis-aligned rectangle definitions have been replaced with a
+# hand-painted segmentation mask. The mask file lives next to this module so
+# the package is self-contained. Constants below are the user-tuned values
+# verified against the broadcast minimap; do NOT change without re-verifying
+# the overlay (see scripts/build_zone_mask_overlay.py).
+
+MASK_PATH = Path(__file__).parent / "zone_mask.png"
+
+# After shrinking, the mask is centred inside the minimap crop. A factor < 1
+# leaves a thin border that the mask doesn't cover (returned as ``unknown``).
+SHRINK_FACTOR = 0.95
+
+# Translation in normalised [0, 1] units (~0.005 per pixel on a 200px minimap).
+SHIFT_X = -2 / 200   # 2 pixels left
+SHIFT_Y = +1 / 200   # 1 pixel down
+
+# Dominant RGB → zone name. Pixels are snapped to the nearest anchor at load
+# time so anti-aliased borders resolve cleanly. ``river`` is split into
+# ``river_top`` and ``river_bot`` at classification time using (x + y) < 1.0.
+COLOR_TO_ZONE: dict[tuple[int, int, int], str] = {
+    (16, 16, 16):    "unknown",
+    (112, 16, 16):   "red_base",
+    (16, 48, 112):   "blue_base",
+    (48, 80, 16):    "top_jungle_blue",
+    (112, 80, 48):   "bot_jungle_red",
+    (240, 240, 80):  "bot_lane",
+    (176, 48, 112):  "top_lane",
+    (208, 112, 48):  "top_jungle_red",
+    (80, 48, 144):   "bot_jungle_blue",
+    (208, 208, 176): "mid_lane",
+    (112, 208, 208): "river",         # split at classification time
+    (208, 176, 48):  "baron_pit",
+    (176, 240, 80):  "dragon_pit",
+}
+
+
+class ZoneMask:
+    """Pixel-mask zone classifier with post-processing river split.
+
+    Loads the painted mask once, snaps every pixel to its nearest palette
+    anchor, and serves O(1) point queries via :meth:`classify`.
+
+    Usage:
+        mask = ZoneMask(MASK_PATH, COLOR_TO_ZONE,
+                        shrink_factor=SHRINK_FACTOR,
+                        shift_x=SHIFT_X, shift_y=SHIFT_Y)
+        zone = mask.classify(x_norm, y_norm)
+    """
+
+    def __init__(
+        self,
+        mask_path: Path,
+        palette: dict[tuple[int, int, int], str],
+        shrink_factor: float = 1.0,
+        shift_x: float = 0.0,
+        shift_y: float = 0.0,
+    ):
+        img = np.asarray(Image.open(mask_path).convert("RGB"))
+        self.h, self.w = img.shape[:2]
+        self.shrink_factor = float(shrink_factor)
+        self.shift_x = float(shift_x)
+        self.shift_y = float(shift_y)
+        # Inset applied on each side so the mask is centred at 1.0 - shrink
+        # total coverage. e.g. shrink=0.9 → 0.05 border on each side.
+        self._offset = (1.0 - self.shrink_factor) / 2.0
+
+        # Pre-compute a (H, W) integer grid of zone indices by nearest-colour
+        # lookup. This is faster than classifying each point lazily and also
+        # lets us visualise the resolved classification directly.
+        anchors = np.array(list(palette.keys()), dtype=np.int32)  # (K, 3)
+        self._labels = np.array(list(palette.values()))           # (K,)
+
+        pixels = img.astype(np.int32).reshape(-1, 3)  # (H*W, 3)
+        # L2 distance to each anchor; take argmin
+        dists = np.sum(
+            (pixels[:, None, :] - anchors[None, :, :]) ** 2, axis=-1
+        )  # (H*W, K)
+        nearest = np.argmin(dists, axis=-1)  # (H*W,)
+        self.zone_idx_grid = nearest.reshape(self.h, self.w).astype(np.int32)
+
+    # ── coordinate remapping ──
+    def _minimap_to_mask(self, x: float, y: float) -> tuple[float, float]:
+        """Map a normalised minimap coordinate into the mask's coordinate
+        space, accounting for shrink and translation.
+
+        The shift is applied BEFORE the shrink: the caller's (x, y) is first
+        moved by (-shift_x, -shift_y) so that a mask shifted right by Δx
+        (positive shift_x) is "found" Δx to the left of where we'd normally
+        look. Then the shrink-inset is applied.
+        """
+        xs = x - self.shift_x
+        ys = y - self.shift_y
+        mx = (xs - self._offset) / self.shrink_factor
+        my = (ys - self._offset) / self.shrink_factor
+        return mx, my
+
+    # ── single-point classification ────────────────────────────────────
+    def classify(self, x: float, y: float) -> str:
+        """Return the zone name at normalised coordinates (x, y) in [0, 1].
+
+        Points outside the inset (i.e. in the broadcast border that the
+        painted mask doesn't cover) return ``unknown``.
+        """
+        mx, my = self._minimap_to_mask(x, y)
+        if mx < 0.0 or mx >= 1.0 or my < 0.0 or my >= 1.0:
+            return "unknown"
+        px = int(np.clip(mx * self.w, 0, self.w - 1))
+        py = int(np.clip(my * self.h, 0, self.h - 1))
+        zone = str(self._labels[self.zone_idx_grid[py, px]])
+        if zone == "river":
+            return "river_top" if (x + y) < 1.0 else "river_bot"
+        return zone
+
+    # ── vectorised classification for pre-rendering ────────────────────
+    def classify_grid(self, h: int, w: int) -> np.ndarray:
+        """Return a (h, w) array of zone name strings at a chosen resolution.
+
+        Coordinates outside the inset (determined by shrink_factor) are
+        labelled ``unknown``. Applies the river split rule after lookup.
+        """
+        # Output-grid normalised coordinates (centre of each pixel)
+        y_norm = (np.arange(h) + 0.5) / h  # (h,)
+        x_norm = (np.arange(w) + 0.5) / w  # (w,)
+
+        # Remap into mask space: shift first, then shrink
+        my_norm = ((y_norm - self.shift_y) - self._offset) / self.shrink_factor  # (h,)
+        mx_norm = ((x_norm - self.shift_x) - self._offset) / self.shrink_factor  # (w,)
+
+        valid_y = (my_norm >= 0.0) & (my_norm < 1.0)
+        valid_x = (mx_norm >= 0.0) & (mx_norm < 1.0)
+
+        my_pix = np.clip((my_norm * self.h).astype(np.int32), 0, self.h - 1)
+        mx_pix = np.clip((mx_norm * self.w).astype(np.int32), 0, self.w - 1)
+
+        src = self.zone_idx_grid[my_pix[:, None], mx_pix[None, :]]  # (h, w)
+        labels = self._labels[src].astype(object)  # (h, w) of strings
+
+        # Points outside the inset are unknown
+        valid_grid = valid_y[:, None] & valid_x[None, :]
+        labels[~valid_grid] = "unknown"
+
+        # Replace "river" with "river_top" / "river_bot" using the ORIGINAL
+        # (un-shrunk) coordinates — the split diagonal is anchored to the
+        # minimap, not the mask.
+        diag = x_norm[None, :] + y_norm[:, None]  # (h, w)
+        river_mask = labels == "river"
+        labels[river_mask & (diag < 1.0)] = "river_top"
+        labels[river_mask & (diag >= 1.0)] = "river_bot"
+
+        return labels
+
+
+# Lazy module-level singleton — the PIL load + nearest-colour pre-compute is
+# the slow part, and we only need it once per process.
+_MASK_CLASSIFIER: "ZoneMask | None" = None
+
+
+def _get_mask() -> ZoneMask:
+    global _MASK_CLASSIFIER
+    if _MASK_CLASSIFIER is None:
+        _MASK_CLASSIFIER = ZoneMask(
+            MASK_PATH, COLOR_TO_ZONE,
+            shrink_factor=SHRINK_FACTOR,
+            shift_x=SHIFT_X, shift_y=SHIFT_Y,
+        )
+    return _MASK_CLASSIFIER
+
+
+# Inventory of zone names that the classifier (and downstream features) can
+# produce. Kept as a dict so existing callers that iterate ``ZONES.keys()``
+# (e.g. ``zone_occupancy``, ``compute_all``) keep working unchanged. The
+# rectangle tuples are now purely informational fall-backs / approximations
+# — actual classification is performed by the pixel mask.
 ZONES = {
     "top_lane": (0.0, 0.0, 0.2, 0.55),
     "mid_lane": (0.3, 0.3, 0.7, 0.7),
@@ -42,8 +219,8 @@ ZONES = {
     "red_base": (0.8, 0.0, 1.0, 0.2),
 }
 
-# Priority ordering for zone classification when zones overlap.
-# Checked first-to-last: bases > objective pits > river > lanes > jungle.
+# Legacy priority list — obsolete now that the mask resolves overlaps at
+# paint time, but kept so any external code that imports it still works.
 ZONE_PRIORITY = [
     "blue_base", "red_base",
     "dragon_pit", "baron_pit",
@@ -87,17 +264,16 @@ class SpatialFeatures:
     def classify_zone(self, x: float, y: float) -> str:
         """Determine which map zone a position falls in.
 
-        Zones are checked in priority order (bases > pits > river > lanes >
-        jungle) so that overlapping regions resolve deterministically.
+        Delegates to the hand-painted pixel mask in ``zone_mask.png``. The
+        mask resolves overlaps at paint time and post-processes the cyan
+        river region into ``river_top`` / ``river_bot`` using the
+        anti-diagonal ``x + y < 1.0`` rule. Points in the broadcast border
+        outside the painted area return ``"unknown"``.
 
         Returns:
-            Zone name, or 'unknown' if no zone matches.
+            Zone name, or ``"unknown"`` if outside the painted area.
         """
-        for zone_name in ZONE_PRIORITY:
-            x_min, y_min, x_max, y_max = ZONES[zone_name]
-            if x_min <= x <= x_max and y_min <= y <= y_max:
-                return zone_name
-        return "unknown"
+        return _get_mask().classify(x, y)
 
     def zone_occupancy(self, df: pd.DataFrame, champion: str) -> dict[str, float]:
         """Fraction of time a champion spends in each zone.
@@ -536,11 +712,7 @@ class SpatialFeatures:
         red_jungle_zones = ("bot_jungle_red", "top_jungle_red")
 
         def _in_any_zone(x: float, y: float, zone_names: tuple[str, ...]) -> bool:
-            for zn in zone_names:
-                x_min, y_min, x_max, y_max = ZONES[zn]
-                if x_min <= x <= x_max and y_min <= y <= y_max:
-                    return True
-            return False
+            return self.classify_zone(x, y) in zone_names
 
         lvl1 = df[(df["timestamp"] >= 0) & (df["timestamp"] <= 90)]
         if lvl1.empty:
@@ -767,11 +939,7 @@ class SpatialFeatures:
         # ── Feature 8: Pre-3-min counter-jungle asymmetry ─────────────
         # Jungler seconds inside the OPPOSING team's jungle in [90, 180].
         def _in_any_zone(x: float, y: float, zone_names: tuple[str, ...]) -> bool:
-            for zn in zone_names:
-                x_min, y_min, x_max, y_max = ZONES[zn]
-                if x_min <= x <= x_max and y_min <= y <= y_max:
-                    return True
-            return False
+            return self.classify_zone(x, y) in zone_names
 
         blue_jungle_zones = ("bot_jungle_blue", "top_jungle_blue")
         red_jungle_zones = ("bot_jungle_red", "top_jungle_red")
